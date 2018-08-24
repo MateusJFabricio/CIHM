@@ -1,0 +1,21 @@
+package Controller;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import DAO.Produto;
+import Model.ModelHome;
+
+public class ControllerHome {
+	private ModelHome model;
+	
+	public ControllerHome()
+	{
+		model = new ModelHome();
+	}
+	
+	public ArrayList<Produto> getProdutos()
+	{
+		return model.Produtos();
+	}
+}
