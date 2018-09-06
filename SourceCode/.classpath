@@ -7,5 +7,11 @@
 	<classpathentry kind="lib" path="pdfbox-2.0.11.jar"/>
 	<classpathentry kind="lib" path="fontbox-2.0.0.jar"/>
 	<classpathentry kind="lib" path="sqlite-jdbc-3.23.1.jar"/>
+	<classpathentry kind="lib" path="Keyboard.jar"/>
+	<classpathentry kind="lib" path="junit.jar"/>
+	<classpathentry kind="lib" path="pi4j-core.jar"/>
+	<classpathentry kind="lib" path="pi4j-device.jar"/>
+	<classpathentry kind="lib" path="pi4j-gpio-extension.jar"/>
+	<classpathentry kind="lib" path="pi4j-service.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

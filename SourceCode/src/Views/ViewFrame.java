@@ -32,6 +32,7 @@ public class ViewFrame extends JFrame {
 	private ViewConfiguracoes telaConfiguracoes;
 	private ViewEstatisticas telaEstatisticas;
 	private ViewDocumentacao telaDocumentacao;
+	private ViewSenha telaSenha;
 	private ControllerFrame control;
 	private JPanel panelTelas_1;
 	final int HOME = 1;
@@ -44,9 +45,9 @@ public class ViewFrame extends JFrame {
 		control = new ControllerFrame();
 		//setResizable(false);
 		setAutoRequestFocus(false);
-		setAlwaysOnTop(true);
+		//setAlwaysOnTop(true);
 		this.setUndecorated(true);
-		this.setExtendedState(JFrame.MAXIMIZED_BOTH);
+		//this.setExtendedState(JFrame.MAXIMIZED_BOTH);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 800, 480);
 		contentPane = new JPanel();
@@ -159,6 +160,8 @@ public class ViewFrame extends JFrame {
 			};
 			panelTelas_1.removeAll();
 			panelTelas_1.add(telaHome);
+			
+			
 		}else if (numTela == ESTATISTICAS){
 			if (telaEstatisticas == null)
 			{
@@ -166,6 +169,8 @@ public class ViewFrame extends JFrame {
 			}
 			panelTelas_1.removeAll();
 			panelTelas_1.add(telaEstatisticas);
+			
+			
 		}else if(numTela == CONFIGURACOES){
 			if (telaConfiguracoes == null)
 			{
@@ -173,6 +178,8 @@ public class ViewFrame extends JFrame {
 			}
 			panelTelas_1.removeAll();
 			panelTelas_1.add(telaConfiguracoes);
+			
+			
 		}else if(numTela == DOCUMENTOS){
 			if (telaDocumentacao == null)
 			{
@@ -180,35 +187,13 @@ public class ViewFrame extends JFrame {
 			}
 			panelTelas_1.removeAll();
 			panelTelas_1.add(telaDocumentacao);
-		}else if(numTela == DESLIGAR){
-			this.setAlwaysOnTop(false);
 			
-			JPasswordField password = new JPasswordField(10);
-			password.setEchoChar('*'); 
-			JLabel rotulo = new JLabel("Entre com a senha:");
-			JPanel entUsuario = new JPanel();
-			entUsuario.add(rotulo);
-			entUsuario.add(password);
-			JOptionPane.showMessageDialog(null, entUsuario, "Acesso restrito", JOptionPane.PLAIN_MESSAGE);
-			String senha = password.getText();
-			switch (control.confirmarSenha(senha)) {
-			case 2:
-				try {
-					Runtime.getRuntime().exec("shutdown -h now");
-				} catch (IOException e) {
-					e.printStackTrace();
-					this.setAlwaysOnTop(true);
-				}
-				break;
-			case 1:
-				System.exit(0);
-				break;
-
-			default:
-				JOptionPane.showMessageDialog(null, "Senha inválida");
-				break;
-			}
-			this.setAlwaysOnTop(true);
+			
+		}else if(numTela == DESLIGAR){
+			if (telaSenha == null) telaSenha = new ViewSenha(this);
+			this.setAlwaysOnTop(false);
+			telaSenha.setAlwaysOnTop(true);
+			telaSenha.setVisible(true);
 		}
 		panelTelas_1.repaint();
 		panelTelas_1.revalidate();
@@ -218,4 +203,6 @@ public class ViewFrame extends JFrame {
 	{
 		return true;
 	}
+	
+	
 }

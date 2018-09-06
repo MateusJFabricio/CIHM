@@ -17,6 +17,7 @@ import javax.swing.border.LineBorder;
 import Controller.Controller;
 import Controller.ControllerHome;
 import DAO.Maquina;
+import DAO.Produto;
 
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
@@ -36,8 +37,9 @@ public class ViewHome extends JPanel {
 	private JLabel lblPrevisaoTermino;
 	private JLabel lblTempoCiclo;
 	private JLabel lblProximaManutencao;
-	private ControllerHome control;
+	public ControllerHome control;
 	private JFrame frame;
+	ViewIniciarCicloDialog viewIniciarCiclo;
 
 	public ViewHome(JFrame frame) {
 		control = new ControllerHome();
@@ -59,27 +61,19 @@ public class ViewHome extends JPanel {
 		tglbtnIniciarCiclo = new JToggleButton("ON");
 		tglbtnIniciarCiclo.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				//Abrir a tela de inicio de ciclo, com os parametros configurados
-				frame.setAlwaysOnTop(false);
-				ViewIniciarCicloDialog viewIniciarCiclo = new ViewIniciarCicloDialog(control);
-				viewIniciarCiclo.setModal(true);
-				viewIniciarCiclo.setVisible(true);
-				
-				if(viewIniciarCiclo.clickOk)
-				{
-					lblNomeProduto.setText(viewIniciarCiclo.getProduto());
-					//lblInicioProducao.setText(viewIniciarCiclo.);
-					lblMetaProducao.setText(viewIniciarCiclo.getMetaProducao());
-				}
-				viewIniciarCiclo.dispose();
-				frame.setAlwaysOnTop(true);
-				
+				tglbtnOff.setSelected(false);
+				onToggleOnClick();
 			}
 		});
 		tglbtnIniciarCiclo.setBackground(Color.GRAY);
 		tglbtnIniciarCiclo.setFont(new Font("Tahoma", Font.PLAIN, 28));
 		
 		tglbtnOff = new JToggleButton("OFF");
+		tglbtnOff.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				actBtnOff();
+			}
+		});
 		tglbtnOff.setSelected(true);
 		tglbtnOff.setFont(new Font("Tahoma", Font.PLAIN, 28));
 		GroupLayout gl_panel_2 = new GroupLayout(panel_2);
@@ -282,5 +276,35 @@ public class ViewHome extends JPanel {
 		maq = control.dadosIniciaisMaquina();
 		lblNomeProduto.setText(maq.getModelo());
 		*/
+	}
+	
+	public void carregarDadosViewIniciaCiclo()
+	{
+		lblNomeProduto.setText(viewIniciarCiclo.getProduto());
+		//lblInicioProducao.setText(viewIniciarCiclo.);
+		lblMetaProducao.setText(viewIniciarCiclo.getMetaProducao());
+		
+		viewIniciarCiclo.dispose();
+	}
+	
+	public void viewIniciaCiclo(Produto produto, boolean frascosPosicionados)
+	{
+		control.iniciarCiclo(produto, frascosPosicionados);
+	}
+	
+	private void onToggleOnClick()
+	{
+		frame.setAlwaysOnTop(false);
+		frame.setAutoRequestFocus(false);
+		if (viewIniciarCiclo == null) viewIniciarCiclo = new ViewIniciarCicloDialog(this);
+		
+		viewIniciarCiclo.setVisible(true);
+		viewIniciarCiclo.setAlwaysOnTop(true);
+				
+	}
+	
+	public void actBtnOff()
+	{
+		control.interromperCiclo();
 	}
 }

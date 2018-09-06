@@ -15,7 +15,12 @@ import javax.swing.LayoutStyle.ComponentPlacement;
 import javax.swing.SwingConstants;
 import javax.swing.border.LineBorder;
 
-import Controller.Controller;
+import Controller.ControllerConfiguracoes;
+
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
 
 public class ViewConfiguracoes extends JPanel {
 
@@ -27,9 +32,13 @@ public class ViewConfiguracoes extends JPanel {
 	private JTextField txtVelocidadeEsteira;
 	private JTextField txtPassosTampador;
 	private JTextField txtDelayInicioCiclo;
+	@SuppressWarnings("unused")
+	private ControllerConfiguracoes control;
 
 	public ViewConfiguracoes() {
 		setLayout(null);
+		
+		control = new ControllerConfiguracoes();
 		
 		JPanel panel = new JPanel();
 		panel.setBorder(new LineBorder(new Color(0, 0, 0), 2));
@@ -45,6 +54,11 @@ public class ViewConfiguracoes extends JPanel {
 		panel.add(panel_3);
 		
 		JButton btnNovo = new JButton("Novo");
+		btnNovo.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				actBtnNovo();
+			}
+		});
 		btnNovo.setIcon(new ImageIcon(ViewConfiguracoes.class.getResource("/Assets/new-file (32).png")));
 		btnNovo.setFont(new Font("Tahoma", Font.PLAIN, 11));
 		btnNovo.setHorizontalTextPosition(SwingConstants.CENTER);
@@ -116,8 +130,13 @@ public class ViewConfiguracoes extends JPanel {
 		panel_1.add(lblData_1);
 		
 		txtNomeProduto = new JTextField();
+		txtNomeProduto.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent arg0) {
+				Main.Main.teclado.showKeyboard();
+			}
+		});
 		txtNomeProduto.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		txtNomeProduto.setText("LavaMax Sany Concentrado - Flor do Campo");
 		txtNomeProduto.setBounds(267, 11, 503, 23);
 		panel_1.add(txtNomeProduto);
 		txtNomeProduto.setColumns(10);
@@ -144,15 +163,27 @@ public class ViewConfiguracoes extends JPanel {
 		panel_1.add(lblVelocidadeDeEnvase);
 		
 		txtTempoEnvase = new JTextField();
+		txtTempoEnvase.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				Main.Main.teclado.setNumberOnly(true);
+				Main.Main.teclado.showKeyboard();
+			}
+		});
 		txtTempoEnvase.setHorizontalAlignment(SwingConstants.CENTER);
 		txtTempoEnvase.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		txtTempoEnvase.setText("12");
 		txtTempoEnvase.setColumns(10);
 		txtTempoEnvase.setBounds(267, 54, 139, 23);
 		panel_1.add(txtTempoEnvase);
 		
 		txtRetardoEnvase = new JTextField();
-		txtRetardoEnvase.setText("2");
+		txtRetardoEnvase.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				Main.Main.teclado.setNumberOnly(true);
+				Main.Main.teclado.showKeyboard();
+			}
+		});
 		txtRetardoEnvase.setHorizontalAlignment(SwingConstants.CENTER);
 		txtRetardoEnvase.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		txtRetardoEnvase.setColumns(10);
@@ -160,7 +191,13 @@ public class ViewConfiguracoes extends JPanel {
 		panel_1.add(txtRetardoEnvase);
 		
 		txtVelocidadeEnvase = new JTextField();
-		txtVelocidadeEnvase.setText("100");
+		txtVelocidadeEnvase.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				Main.Main.teclado.setNumberOnly(true);
+				Main.Main.teclado.showKeyboard();
+			}
+		});
 		txtVelocidadeEnvase.setHorizontalAlignment(SwingConstants.CENTER);
 		txtVelocidadeEnvase.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		txtVelocidadeEnvase.setColumns(10);
@@ -189,7 +226,13 @@ public class ViewConfiguracoes extends JPanel {
 		panel_1.add(lblDelayDeInicio);
 		
 		txtVelocidadeEsteira = new JTextField();
-		txtVelocidadeEsteira.setText("80");
+		txtVelocidadeEsteira.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				Main.Main.teclado.setNumberOnly(true);
+				Main.Main.teclado.showKeyboard();
+			}
+		});
 		txtVelocidadeEsteira.setHorizontalAlignment(SwingConstants.CENTER);
 		txtVelocidadeEsteira.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		txtVelocidadeEsteira.setColumns(10);
@@ -197,7 +240,13 @@ public class ViewConfiguracoes extends JPanel {
 		panel_1.add(txtVelocidadeEsteira);
 		
 		txtPassosTampador = new JTextField();
-		txtPassosTampador.setText("457");
+		txtPassosTampador.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				Main.Main.teclado.setNumberOnly(true);
+				Main.Main.teclado.showKeyboard();
+			}
+		});
 		txtPassosTampador.setHorizontalAlignment(SwingConstants.CENTER);
 		txtPassosTampador.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		txtPassosTampador.setColumns(10);
@@ -205,7 +254,13 @@ public class ViewConfiguracoes extends JPanel {
 		panel_1.add(txtPassosTampador);
 		
 		txtDelayInicioCiclo = new JTextField();
-		txtDelayInicioCiclo.setText("2");
+		txtDelayInicioCiclo.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				Main.Main.teclado.setNumberOnly(true);
+				Main.Main.teclado.showKeyboard();
+			}
+		});
 		txtDelayInicioCiclo.setHorizontalAlignment(SwingConstants.CENTER);
 		txtDelayInicioCiclo.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		txtDelayInicioCiclo.setColumns(10);
@@ -219,6 +274,23 @@ public class ViewConfiguracoes extends JPanel {
 		btnRelatorioErros.setHorizontalTextPosition(SwingConstants.CENTER);
 		btnRelatorioErros.setVerticalTextPosition(SwingConstants.BOTTOM);
 		panel.add(btnRelatorioErros);
+		
+		JButton btnTesteParametros = new JButton("Testar Par\u00E2metros");
+		btnTesteParametros.setVerticalTextPosition(SwingConstants.BOTTOM);
+		btnTesteParametros.setHorizontalTextPosition(SwingConstants.CENTER);
+		btnTesteParametros.setFont(new Font("Tahoma", Font.PLAIN, 11));
+		btnTesteParametros.setBounds(666, 254, 124, 66);
+		panel.add(btnTesteParametros);
+		
+		carregarDadosIniciais();
+	}
+	
+	protected void actBtnNovo() {
+		
+	}
 
+	private void carregarDadosIniciais()
+	{
+		
 	}
 }

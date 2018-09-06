@@ -1,8 +1,5 @@
 package Controller;
 
-import java.awt.event.ActionListener;
-import javax.swing.Timer;
-
 import DAO.Maquina;
 import Model.ModelWelcome;
 

@@ -1,7 +1,6 @@
 package Controller;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import DAO.Produto;
 import Model.ModelHome;
@@ -17,5 +16,15 @@ public class ControllerHome {
 	public ArrayList<Produto> getProdutos()
 	{
 		return model.Produtos();
+	}
+	
+	public void iniciarCiclo(Produto produto, boolean frascosPosicionados)
+	{
+		model.iniciarCiclo(produto, frascosPosicionados);
+	}
+	
+	public void interromperCiclo()
+	{
+		
 	}
 }

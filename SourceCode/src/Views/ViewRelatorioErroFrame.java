@@ -73,6 +73,10 @@ public class ViewRelatorioErroFrame extends JFrame {
 				"C\u00F3digo da Falha", "Hora", "Data", "Falha"
 			}
 		) {
+			/**
+			 * 
+			 */
+			private static final long serialVersionUID = 1L;
 			Class[] columnTypes = new Class[] {
 				Integer.class, String.class, String.class, String.class
 			};

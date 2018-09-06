@@ -1,44 +1,36 @@
 package Views;
 
-import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.FlowLayout;
+import java.awt.Font;
+import java.awt.SystemColor;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.util.ArrayList;
 
-import javax.swing.JButton;
-import javax.swing.JDialog;
-import javax.swing.JFrame;
-import javax.swing.JPanel;
-import javax.swing.border.EmptyBorder;
-
-import Controller.Controller;
-import Controller.ControllerHome;
-import DAO.Produto;
-
+import javax.swing.ButtonGroup;
 import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
+import javax.swing.JButton;
 import javax.swing.JComboBox;
-import javax.swing.JList;
+import javax.swing.JDialog;
+import javax.swing.JLabel;
 import javax.swing.JOptionPane;
-import javax.swing.AbstractListModel;
-import javax.swing.JScrollPane;
+import javax.swing.JPanel;
+import javax.swing.JRadioButton;
 import javax.swing.JTextField;
 import javax.swing.LayoutStyle.ComponentPlacement;
-import javax.swing.DefaultComboBoxModel;
-import javax.swing.JLabel;
-import java.awt.Font;
-import javax.swing.JRadioButton;
-import javax.swing.ButtonGroup;
-import java.awt.Color;
-import java.awt.SystemColor;
-import java.awt.Window.Type;
-import java.awt.event.ActionListener;
-import java.util.ArrayList;
-import java.awt.event.ActionEvent;
-import java.awt.event.FocusAdapter;
-import java.awt.event.FocusEvent;
-import java.io.IOException;
+import javax.swing.border.EmptyBorder;
+
+import DAO.Produto;
 
 public class ViewIniciarCicloDialog extends JDialog {
 
+	private static final long serialVersionUID = 1L;
 	private final JPanel contentPanel = new JPanel();
 	private final ButtonGroup buttonGroup = new ButtonGroup();
 	private JTextField txtMeta;
@@ -49,11 +41,10 @@ public class ViewIniciarCicloDialog extends JDialog {
 	private JRadioButton rbProdContinua;
 	private JRadioButton rbProdProgramada;
 	private JComboBox<String> cbProdutos;
-	private ControllerHome control;
+	private ViewHome frame;
 	private JButton btnOk;
+	private ArrayList<Produto> listProd;
 	
-	public boolean clickOk = false;
-	public boolean clickCancelar = false;
 	
 	public String getProduto() {
 		return cbProdutos.getSelectedItem().toString();
@@ -71,15 +62,22 @@ public class ViewIniciarCicloDialog extends JDialog {
 		return txtMeta.getText();
 	}
 
-	public ViewIniciarCicloDialog(ControllerHome control) {
-		this.control = control;
-		setUndecorated(true);
-		setModal(true);
-		setAlwaysOnTop(true);
-		setDefaultCloseOperation(JDialog.DO_NOTHING_ON_CLOSE);
+	public ViewIniciarCicloDialog(ViewHome frame) {
+		addWindowListener(new WindowAdapter() {
+			@Override
+			public void windowClosing(WindowEvent arg0) {
+				
+			}
+		});
+		setType(Type.UTILITY);
+		//setAutoRequestFocus(false);
+		this.frame = frame;
+		//setUndecorated(true);
+		//setModal(true);
+		setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 		setResizable(false);
 		getContentPane().setBackground(SystemColor.textHighlight);
-		setBounds(100, 100, 433, 260);
+		setBounds(100, 100, 437, 285);
 		contentPanel.setBackground(Color.WHITE);
 		contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
 		cbProdutos = new JComboBox();
@@ -91,28 +89,19 @@ public class ViewIniciarCicloDialog extends JDialog {
 		lblMetaDeProducao.setEnabled(false);
 		lblMetaDeProducao.setFont(new Font("Tahoma", Font.PLAIN, 24));
 		txtMeta = new JTextField();
-		txtMeta.addFocusListener(new FocusAdapter() {
+		txtMeta.addMouseListener(new MouseAdapter() {
 			@Override
-			public void focusGained(FocusEvent arg0) {
-				try {
-					Runtime.getRuntime().exec("sudo matchbox-keyboard");
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-			}
-			@Override
-			public void focusLost(FocusEvent e) {
-				try {
-					Runtime.getRuntime().exec("sudo killall matchbox-keyboard");
-				} catch (IOException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
+			public void mouseClicked(MouseEvent arg0) {
+				if (txtMeta.isEnabled())
+				{
+					Main.Main.teclado.setNumberOnly(true);
+					Main.Main.teclado.showKeyboard();
 				}
 			}
 		});
 		txtMeta.setEnabled(false);
 		txtMeta.setColumns(10);
-
+		
 		rbProdContinua = new JRadioButton("Produ\u00E7\u00E3o Cont\u00EDnua");
 		rbProdContinua.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -247,7 +236,7 @@ public class ViewIniciarCicloDialog extends JDialog {
 	}
 	private void inicializarDados(){
 		//Solicita para a Controller todos os produtos
-		ArrayList<Produto> listProd = control.getProdutos();
+		listProd = frame.control.getProdutos();
 		
 		if (listProd.size()==0)
 		{
@@ -273,13 +262,28 @@ public class ViewIniciarCicloDialog extends JDialog {
 	
 	private void acaoBotaoOk()
 	{
-		clickOk = true;
-		this.setVisible(false);		
+		Object[] options = { "Sim", "Não" };
+		int opcao = JOptionPane.showOptionDialog(null, "Há frascos já em posição de envase?", "Pergunta", JOptionPane.DEFAULT_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, options[0]);
+		boolean frascosPosicionados = (opcao == 0);
+		
+		frame.carregarDadosViewIniciaCiclo();
+		
+		Produto produto = new Produto();
+		for(Produto produtoTemp: listProd)
+		{
+			if (produtoTemp.getNome().equals(cbProdutos.getSelectedItem().toString()))
+			{
+				produto = produtoTemp;
+				break;
+			}
+		}
+		
+		frame.viewIniciaCiclo(produto, frascosPosicionados);
 	}
 	
 	private void acaoBotaoCancelar()
 	{
-		clickCancelar = true;
-		this.setVisible(false);	
+		this.dispose();
 	}
+
 }

@@ -17,8 +17,8 @@ import javax.swing.LayoutStyle.ComponentPlacement;
 import javax.swing.SwingConstants;
 import javax.swing.border.LineBorder;
 import javax.swing.table.DefaultTableModel;
-
-import Controller.Controller;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
 public class ViewEstatisticas extends JPanel {
 
@@ -121,6 +121,12 @@ public class ViewEstatisticas extends JPanel {
 		panel_1.add(lblData_1);
 		
 		textField = new JTextField();
+		textField.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent arg0) {
+				Main.Main.teclado.showKeyboard();
+			}
+		});
 		textField.setText("28/05/2018");
 		textField.setBounds(168, 41, 100, 20);
 		panel_1.add(textField);
@@ -182,6 +188,8 @@ public class ViewEstatisticas extends JPanel {
 		JButton btnNewButton_1 = new JButton("Aplicar Filtro");
 		btnNewButton_1.setBounds(20, 69, 115, 23);
 		panel_1.add(btnNewButton_1);
+		
+		rdbtnIgual.setSelected(true);
 
 	}
 }
