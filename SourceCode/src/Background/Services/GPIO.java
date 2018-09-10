@@ -1,5 +1,7 @@
 package Background.Services;
 
+import javax.swing.JOptionPane;
+
 import com.pi4j.io.gpio.GpioController;
 import com.pi4j.io.gpio.GpioFactory;
 import com.pi4j.io.gpio.GpioPinDigitalInput;
@@ -46,12 +48,18 @@ public class GPIO {
 	public GpioPinDigitalInput inAcumFrascoEmPosicao;
 	
 	public GpioController getGpio() {
-		if (gpio == null)
-			gpio = GpioFactory.getInstance();
-		
+	
+		try {
+			if (gpio == null)
+				gpio = GpioFactory.getInstance();
+		} catch (Exception e) {
+			System.out.println("Mensagem de erro: " + e.getMessage());
+		} catch (UnsatisfiedLinkError e) {
+			System.out.println("Mensagem de erro: " + e.getMessage());
+		}
 		return gpio;
 	}
-	
+
 	public GPIO()
 	{
 		getGpio();
