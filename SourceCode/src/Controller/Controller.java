@@ -5,7 +5,7 @@ import Views.ViewFrame;
 import Views.ViewWelcome;
 
 public class Controller {
-	private ViewFrame janelaPrincipal;
+	public static ViewFrame janelaPrincipal;
 	private ViewWelcome welcome;
 	
 	public void initTelas()

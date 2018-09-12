@@ -3,20 +3,32 @@ package Views;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.SystemColor;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+
 import javax.swing.ButtonGroup;
 import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
 import javax.swing.JButton;
+import javax.swing.JFormattedTextField;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
-import javax.swing.JTextField;
 import javax.swing.LayoutStyle.ComponentPlacement;
 import javax.swing.SwingConstants;
 import javax.swing.border.LineBorder;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.text.MaskFormatter;
+
+import Controller.ControllerEstatisticas;
+import DAO.Producao;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
@@ -24,15 +36,19 @@ public class ViewEstatisticas extends JPanel {
 
 	private static final long serialVersionUID = 1L;
 	private JTable tblHistoricoProd;
-	private JTextField textField;
 	private final ButtonGroup buttonGroup = new ButtonGroup();
-
+	private JFormattedTextField txtData;
+	private ControllerEstatisticas control;
+	private JRadioButton rdbtnIgual, rdbtnMenorQue, rdbtnMaiorQue;
+	private ArrayList<Producao> listProducao;
+	
 	public ViewEstatisticas() {
 		setLayout(null);
-		
+		listProducao = new ArrayList<Producao>();
+		control = new  ControllerEstatisticas();
 		JPanel panel = new JPanel();
 		panel.setBorder(new LineBorder(new Color(0, 0, 0), 2));
-		panel.setBackground(SystemColor.textHighlight);
+		panel.setBackground(new Color(30, 144, 255));
 		panel.setBounds(0, 0, 800, 329);
 		add(panel);
 		panel.setLayout(null);
@@ -46,7 +62,7 @@ public class ViewEstatisticas extends JPanel {
 		JLabel lblStatusDaProduo = new JLabel("Tempo M\u00E9dio de Ciclo:");
 		lblStatusDaProduo.setHorizontalAlignment(SwingConstants.CENTER);
 		lblStatusDaProduo.setForeground(Color.BLACK);
-		lblStatusDaProduo.setFont(new Font("Times New Roman", Font.PLAIN, 24));
+		lblStatusDaProduo.setFont(new Font("Times New Roman", Font.PLAIN, 20));
 		
 		JLabel lblSeg = new JLabel("36 seg");
 		lblSeg.setHorizontalAlignment(SwingConstants.CENTER);
@@ -56,7 +72,7 @@ public class ViewEstatisticas extends JPanel {
 		JLabel lblProduoMdiaDiria = new JLabel("Produ\u00E7\u00E3o M\u00E9dia Di\u00E1ria:");
 		lblProduoMdiaDiria.setHorizontalAlignment(SwingConstants.CENTER);
 		lblProduoMdiaDiria.setForeground(Color.BLACK);
-		lblProduoMdiaDiria.setFont(new Font("Times New Roman", Font.PLAIN, 24));
+		lblProduoMdiaDiria.setFont(new Font("Times New Roman", Font.PLAIN, 20));
 		
 		JLabel lblUn = new JLabel("4300 un");
 		lblUn.setHorizontalAlignment(SwingConstants.CENTER);
@@ -107,38 +123,26 @@ public class ViewEstatisticas extends JPanel {
 		lblData.setForeground(Color.BLACK);
 		lblData.setFont(new Font("Times New Roman", Font.PLAIN, 24));
 		
-		JRadioButton rdbtnHg = new JRadioButton("Maior que");
-		rdbtnHg.setBackground(Color.WHITE);
-		buttonGroup.add(rdbtnHg);
-		rdbtnHg.setBounds(412, 58, 109, 14);
-		panel_1.add(rdbtnHg);
+		rdbtnMaiorQue = new JRadioButton("Maior que");
+		rdbtnMaiorQue.setBackground(Color.WHITE);
+		buttonGroup.add(rdbtnMaiorQue);
+		rdbtnMaiorQue.setBounds(412, 58, 109, 14);
+		panel_1.add(rdbtnMaiorQue);
 		
 		JLabel lblData_1 = new JLabel("Data (dia/mes/ano):");
 		lblData_1.setHorizontalAlignment(SwingConstants.CENTER);
 		lblData_1.setForeground(Color.BLACK);
-		lblData_1.setFont(new Font("Times New Roman", Font.PLAIN, 18));
+		lblData_1.setFont(new Font("Times New Roman", Font.PLAIN, 16));
 		lblData_1.setBounds(10, 38, 159, 22);
 		panel_1.add(lblData_1);
 		
-		textField = new JTextField();
-		textField.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseClicked(MouseEvent arg0) {
-				Main.Main.teclado.showKeyboard();
-			}
-		});
-		textField.setText("28/05/2018");
-		textField.setBounds(168, 41, 100, 20);
-		panel_1.add(textField);
-		textField.setColumns(10);
-		
-		JRadioButton rdbtnIgual = new JRadioButton("Igual");
+		rdbtnIgual = new JRadioButton("Igual");
 		rdbtnIgual.setBackground(Color.WHITE);
 		buttonGroup.add(rdbtnIgual);
 		rdbtnIgual.setBounds(412, 41, 109, 14);
 		panel_1.add(rdbtnIgual);
 		
-		JRadioButton rdbtnMenorQue = new JRadioButton("Menor que");
+		rdbtnMenorQue = new JRadioButton("Menor que");
 		buttonGroup.add(rdbtnMenorQue);
 		rdbtnMenorQue.setBackground(Color.WHITE);
 		rdbtnMenorQue.setBounds(412, 73, 109, 14);
@@ -151,9 +155,14 @@ public class ViewEstatisticas extends JPanel {
 		lblTipoDeFiltro.setBounds(278, 38, 128, 22);
 		panel_1.add(lblTipoDeFiltro);
 		
-		JButton btnNewButton = new JButton("Exportar para CSV");
-		btnNewButton.setBounds(590, 45, 180, 37);
-		panel_1.add(btnNewButton);
+		JButton btnExportarCSV = new JButton("Exportar para CSV");
+		btnExportarCSV.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				actBtnExportarCSV();
+			}
+		});
+		btnExportarCSV.setBounds(590, 45, 180, 37);
+		panel_1.add(btnExportarCSV);
 		
 		JScrollPane scrollPane = new JScrollPane();
 		scrollPane.setBounds(10, 94, 760, 145);
@@ -173,9 +182,11 @@ public class ViewEstatisticas extends JPanel {
 			}
 		) {
 			private static final long serialVersionUID = 1L;
+			@SuppressWarnings("rawtypes")
 			Class[] columnTypes = new Class[] {
 				String.class, String.class, Integer.class, Integer.class, String.class
 			};
+			@SuppressWarnings({ "rawtypes", "unchecked" })
 			public Class getColumnClass(int columnIndex) {
 				return columnTypes[columnIndex];
 			}
@@ -186,10 +197,90 @@ public class ViewEstatisticas extends JPanel {
 		tblHistoricoProd.setBorder(new LineBorder(new Color(0, 0, 0)));
 		
 		JButton btnNewButton_1 = new JButton("Aplicar Filtro");
-		btnNewButton_1.setBounds(20, 69, 115, 23);
+		btnNewButton_1.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				actBtnAplicarFiltro();
+			}
+		});
+		btnNewButton_1.setBounds(20, 69, 149, 23);
 		panel_1.add(btnNewButton_1);
 		
 		rdbtnIgual.setSelected(true);
+		
+		try {
+			txtData = new JFormattedTextField(new MaskFormatter("##/##/####"));
+			txtData.addMouseListener(new MouseAdapter() {
+				@Override
+				public void mouseClicked(MouseEvent arg0) {
+					Main.Main.teclado.showKeyboard();
+				}
+			});
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+		txtData.setColumns(2);
+		txtData.setBounds(176, 41, 102, 20);
 
+		panel_1.add(txtData);
+
+	}
+
+	protected void actBtnExportarCSV() {
+		if (!listProducao.isEmpty())
+			control.salvarCSV(listProducao);
+		else
+			JOptionPane.showMessageDialog(null, "Sem registros");
+	}
+
+	protected void actBtnAplicarFiltro() {
+		validarTxtData();
+	}
+
+	private void validarTxtData() {
+		
+		int tipoFiltro = 0;
+		
+		if (rdbtnIgual.isSelected())
+			tipoFiltro = 1;
+		else if(rdbtnMaiorQue.isSelected())
+			tipoFiltro = 2;
+		else if (rdbtnMenorQue.isSelected())
+			tipoFiltro = 3;
+			
+			
+		if (tipoFiltro == 0)
+		{
+			JOptionPane.showMessageDialog(null, "Selecione um tipo de filtro");
+			return;
+		}
+
+		DateFormat df = new SimpleDateFormat ("dd/MM/yyyy");
+		df.setLenient(false);
+		try {
+		    df.parse (txtData.getText());
+		} catch (ParseException ex) {
+		   JOptionPane.showMessageDialog(null, "Data inválida");
+		   return;
+		}
+		
+		String data = txtData.getText().substring(6, 10) + txtData.getText().substring(3, 5) + txtData.getText().substring(0, 2);
+		listProducao.clear();
+		listProducao = control.buscarEstatisticas(data, tipoFiltro);
+		
+		DefaultTableModel modelo = (DefaultTableModel) tblHistoricoProd.getModel();
+		int count = modelo.getRowCount();
+		for (int i = 0; i < count; i++) {
+			modelo.removeRow(0);
+		}
+		
+		for (Producao producao : listProducao) {
+			modelo.addRow(new Object[] {
+					producao.getDataProducao(), 
+					producao.getNomeProduto(),
+					producao.getMeta(),
+					producao.getProduzido(),
+					producao.getTempoProducao()
+					});
+		}
 	}
 }

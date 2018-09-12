@@ -3,13 +3,10 @@ package Views;
 import java.awt.Color;
 import java.awt.FlowLayout;
 import java.awt.Font;
-import java.awt.SystemColor;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
 import java.util.ArrayList;
 
 import javax.swing.ButtonGroup;
@@ -35,7 +32,6 @@ public class ViewIniciarCicloDialog extends JDialog {
 	private final ButtonGroup buttonGroup = new ButtonGroup();
 	private JTextField txtMeta;
 	private JPanel buttonPane;
-	private String metaProducao;
 	private JLabel lblMetaDeProducao;
 	
 	private JRadioButton rbProdContinua;
@@ -63,24 +59,16 @@ public class ViewIniciarCicloDialog extends JDialog {
 	}
 
 	public ViewIniciarCicloDialog(ViewHome frame) {
-		addWindowListener(new WindowAdapter() {
-			@Override
-			public void windowClosing(WindowEvent arg0) {
-				
-			}
-		});
 		setType(Type.UTILITY);
-		//setAutoRequestFocus(false);
 		this.frame = frame;
-		//setUndecorated(true);
-		//setModal(true);
+		setModal(true);
 		setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 		setResizable(false);
-		getContentPane().setBackground(SystemColor.textHighlight);
-		setBounds(100, 100, 437, 285);
+		getContentPane().setBackground(new Color(30, 144, 255));
+		setBounds(100, 100, 468, 285);
 		contentPanel.setBackground(Color.WHITE);
 		contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
-		cbProdutos = new JComboBox();
+		cbProdutos = new JComboBox<String>();
 		JLabel lblProduto = new JLabel("Produto:");
 		lblProduto.setFont(new Font("Tahoma", Font.PLAIN, 24));
 		JLabel lblTipoDeProduo = new JLabel("Tipo de Produ\u00E7\u00E3o:");
@@ -202,12 +190,9 @@ public class ViewIniciarCicloDialog extends JDialog {
 		GroupLayout groupLayout = new GroupLayout(getContentPane());
 		groupLayout.setHorizontalGroup(
 			groupLayout.createParallelGroup(Alignment.LEADING)
-				.addGroup(groupLayout.createSequentialGroup()
-					.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
-						.addComponent(panel, GroupLayout.PREFERRED_SIZE, 433, GroupLayout.PREFERRED_SIZE)
-						.addComponent(buttonPane, GroupLayout.PREFERRED_SIZE, 434, GroupLayout.PREFERRED_SIZE)
-						.addComponent(contentPanel, GroupLayout.PREFERRED_SIZE, 434, GroupLayout.PREFERRED_SIZE))
-					.addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+				.addComponent(contentPanel, GroupLayout.PREFERRED_SIZE, 462, Short.MAX_VALUE)
+				.addComponent(buttonPane, GroupLayout.DEFAULT_SIZE, 462, Short.MAX_VALUE)
+				.addComponent(panel, GroupLayout.DEFAULT_SIZE, 462, Short.MAX_VALUE)
 		);
 		groupLayout.setVerticalGroup(
 			groupLayout.createParallelGroup(Alignment.LEADING)
@@ -279,6 +264,7 @@ public class ViewIniciarCicloDialog extends JDialog {
 		}
 		
 		frame.viewIniciaCiclo(produto, frascosPosicionados);
+		this.dispose();
 	}
 	
 	private void acaoBotaoCancelar()

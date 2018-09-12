@@ -8,49 +8,59 @@ import javax.swing.JOptionPane;
 
 public class ManagerProduto {
 	private java.sql.Statement query;
-	private CommBD commDb;
 	
-	public ManagerProduto()
+	public ManagerProduto(java.sql.Statement query)
 	{
-		commDb = new CommBD();
+		this.query = query;
 	}
 	
-	@Override
-	public void finalize() {
-		commDb.desconectar();
+	public void insertProduto(Produto produto) {		  
+		try {		  
+			query.executeUpdate("INSERT INTO Produto("
+					+ "	Nome, "
+					+ "TempoEnvase) "
+					+ "VALUES ('" 
+					+ produto.getNome() + "',"
+					+ produto.getTempoEnvase()+ ")");
+		}
+		catch (SQLException e) {
+			JOptionPane.showMessageDialog(null, e.getMessage());
+		}
 	}
-	
-	public ArrayList<Produto> getAll()
-	{
-		ArrayList<Produto> listProd = new ArrayList<>();
+
+	public void removeProduto(Produto produto) {		  
+		try {		  
+			query.executeUpdate("DELETE FROM Produto WHERE id = " + produto.getId());
+			
+		}
+		catch (SQLException e) {
+			JOptionPane.showMessageDialog(null, e.getMessage());  
+		}  
+	}
+
+	public ArrayList<Produto> getAllProduto() {
+		ArrayList<Produto> lista = new ArrayList<Produto>();	  
+		ResultSet rs;
+
 		try {
-			if (query == null) 
-				query = commDb.getStatement();
-			
-			ResultSet resultado = query.executeQuery("SELECT * FROM Produto ORDER BY Nome DESC");
-			while (resultado.next())
-			{
+			rs = query.executeQuery("SELECT * FROM Produto ORDER BY Nome");
+
+			while (rs.next()) {
 				Produto prod = new Produto();
-				prod.setNome(resultado.getString("Nome"));
-				prod.setDelayInicioCiclo(resultado.getInt("DelayInicioCiclo"));
-				prod.setPassoTampador(resultado.getInt("PassoTampador"));
-				prod.setTempoEnvase(resultado.getInt("tempoEnvase"));
-				prod.setTempoRetardoRetorno(resultado.getInt("tempoRetardoRetorno"));
-				prod.setVelocidadeEnvase(resultado.getInt("VelocidadeEnvase"));
-				prod.setVelocidadeEsteira(resultado.getInt("VelocidadeEsteira"));
-				prod.setId(resultado.getInt("Id"));
-				listProd.add(prod);
+				prod.setId(rs.getInt("Id"));
+				prod.setNome(rs.getString("Nome"));
+				prod.setTempoEnvase(rs.getInt("TempoEnvase"));
+				
+				lista.add(prod);
 			}
-			
-		} catch (SQLException e) {
-			JOptionPane.showMessageDialog(null, "Houve um problema com o banco de dados. Problema: " +  e.getMessage());
-			System.exit(0);
+
+			rs.close();
+
 		}
-		finally {
-			commDb.desconectar();
-			query = null;
+		catch (SQLException e) {
+			e.printStackTrace();
 		}
-		
-		return listProd;
+
+		return lista;
 	}
 }

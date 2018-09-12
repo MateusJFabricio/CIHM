@@ -43,7 +43,7 @@ public class ManagerIO {
 	private ActionListener actEmergencia;
 	
 	//Obj Comuns
-	private GPIO gpio;
+	private ControllerIO controlIO;
 	public Produto produto;
 	
 	public ManagerIO()
@@ -52,7 +52,7 @@ public class ManagerIO {
 		initComunicadores();
 		initTasks();
 		submitThreads();
-		iniciaMonitorEmergencia();
+		//iniciaMonitorEmergencia();
 	}
 	
 	private void iniciaMonitorEmergencia() {
@@ -71,7 +71,7 @@ public class ManagerIO {
 
 	private void initGPIO()
 	{
-		gpio = new GPIO();
+		controlIO = new ControllerIO();
 	}
 	
 	private void initComunicadores()
@@ -85,11 +85,11 @@ public class ManagerIO {
 	
 	private void initTasks()
 	{
-		envase 		= new TaskEnvase(commEnvase, gpio);
-		acumulador 	= new TaskAcumulador(commAcumulador, gpio);
-		tampador 	= new TaskTampador(commTampador, gpio);
-		home 		= new TaskHome(commHome, gpio);
-		emergencia 	= new TaskEmergencia(commEmergencia, gpio);
+		envase 		= new TaskEnvase(commEnvase, controlIO.getGpio());
+		acumulador 	= new TaskAcumulador(commAcumulador, controlIO.getGpio());
+		tampador 	= new TaskTampador(commTampador, controlIO.getGpio());
+		home 		= new TaskHome(commHome, controlIO.getGpio());
+		emergencia 	= new TaskEmergencia(commEmergencia, controlIO);
 	}
 	
 	private void submitThreads()

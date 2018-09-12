@@ -2,8 +2,6 @@ package Views;
 
 import java.awt.Color;
 import java.awt.Font;
-import java.awt.SystemColor;
-
 import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
 import javax.swing.ImageIcon;
@@ -13,23 +11,19 @@ import javax.swing.JPanel;
 import javax.swing.JTextPane;
 import javax.swing.SwingConstants;
 import javax.swing.border.LineBorder;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
 
 public class ViewDocumentacao extends JPanel {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
-
-	/**
-	 * Create the panel.
-	 */
+	
 	public ViewDocumentacao() {
 		setLayout(null);
 		
 		JPanel panel = new JPanel();
 		panel.setBorder(new LineBorder(new Color(0, 0, 0), 2));
-		panel.setBackground(SystemColor.textHighlight);
+		panel.setBackground(new Color(30, 144, 255));
 		panel.setBounds(0, 0, 800, 329);
 		add(panel);
 		panel.setLayout(null);
@@ -61,7 +55,7 @@ public class ViewDocumentacao extends JPanel {
 		
 		JPanel panel_1 = new JPanel();
 		panel_1.setBackground(Color.WHITE);
-		panel_1.setBounds(10, 68, 780, 175);
+		panel_1.setBounds(10, 68, 780, 181);
 		panel.add(panel_1);
 		panel_1.setLayout(null);
 		
@@ -78,7 +72,7 @@ public class ViewDocumentacao extends JPanel {
 		JTextPane txtpnCnpjEndereo = new JTextPane();
 		txtpnCnpjEndereo.setEditable(false);
 		txtpnCnpjEndereo.setText("CNPJ: 30.762.475/0001-86\r\nEndere\u00E7o: Aviador Max Fontoura, 1011, Distrito Industrial Mau\u00E1, Colombo, PR\r\nDireitos Reservados");
-		txtpnCnpjEndereo.setBounds(10, 36, 391, 55);
+		txtpnCnpjEndereo.setBounds(10, 36, 639, 55);
 		panel_1.add(txtpnCnpjEndereo);
 		
 		JLabel lblSoftware = new JLabel("Software");
@@ -89,32 +83,62 @@ public class ViewDocumentacao extends JPanel {
 		JTextPane txtpnVersoDoSoftware = new JTextPane();
 		txtpnVersoDoSoftware.setEditable(false);
 		txtpnVersoDoSoftware.setText("Vers\u00E3o do Software: 0 - Build: 0 - Credits for Icons www.flaticon.com\r\nN\u00FAmero de s\u00E9rie: ASKDB3R4OISBD\r\nC\u00F3pia Licenciada para: Sany do Brasil - 2018");
-		txtpnVersoDoSoftware.setBounds(10, 107, 391, 57);
+		txtpnVersoDoSoftware.setBounds(10, 107, 639, 63);
 		panel_1.add(txtpnVersoDoSoftware);
 		
 		JButton btnManualMaquina = new JButton("Manual da M\u00E1quina");
+		btnManualMaquina.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				actBtnManualMaquina();
+			}
+		});
 		btnManualMaquina.setIcon(new ImageIcon(ViewDocumentacao.class.getResource("/Assets/guide (32).png")));
-		btnManualMaquina.setBounds(220, 252, 124, 66);
+		btnManualMaquina.setBounds(201, 252, 146, 66);
 		btnManualMaquina.setFont(new Font("Tahoma", Font.PLAIN, 11));
 		btnManualMaquina.setHorizontalTextPosition(SwingConstants.CENTER);
 		btnManualMaquina.setVerticalTextPosition(SwingConstants.BOTTOM);
 		panel.add(btnManualMaquina);
 		
 		JButton btnManuaisPerifericos = new JButton("Manuais dos Perif\u00E9ricos");
+		btnManuaisPerifericos.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				actBtnManuaisPerifericos();
+			}
+		});
 		btnManuaisPerifericos.setIcon(new ImageIcon(ViewDocumentacao.class.getResource("/Assets/guide_two (32).png")));
 		btnManuaisPerifericos.setVerticalTextPosition(SwingConstants.BOTTOM);
 		btnManuaisPerifericos.setHorizontalTextPosition(SwingConstants.CENTER);
 		btnManuaisPerifericos.setFont(new Font("Tahoma", Font.PLAIN, 10));
-		btnManuaisPerifericos.setBounds(357, 252, 137, 66);
+		btnManuaisPerifericos.setBounds(357, 252, 159, 66);
 		panel.add(btnManuaisPerifericos);
 		
 		JButton btnEsquemaEltrico = new JButton("Esquema El\u00E9trico");
+		btnEsquemaEltrico.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				actBtnEsquemaEletrico();
+			}
+		});
 		btnEsquemaEltrico.setIcon(new ImageIcon(ViewDocumentacao.class.getResource("/Assets/manual (32).png")));
-		btnEsquemaEltrico.setBounds(504, 252, 124, 66);
+		btnEsquemaEltrico.setBounds(526, 252, 146, 66);
 		panel.add(btnEsquemaEltrico);
 		btnEsquemaEltrico.setVerticalTextPosition(SwingConstants.BOTTOM);
 		btnEsquemaEltrico.setHorizontalTextPosition(SwingConstants.CENTER);
 		btnEsquemaEltrico.setFont(new Font("Tahoma", Font.PLAIN, 11));
 
+	}
+
+	protected void actBtnEsquemaEletrico() {
+			ViewManuaisFrame manualFrame = new ViewManuaisFrame("/home/pi/Desktop/boleto.pdf");
+			manualFrame.setVisible(true);
+	}
+
+	protected void actBtnManuaisPerifericos() {
+		ViewManuaisFrame manualFrame = new ViewManuaisFrame("/home/pi/Desktop/boleto.pdf");
+		manualFrame.setVisible(true);
+	}
+
+	protected void actBtnManualMaquina() {
+		ViewManuaisFrame manualFrame = new ViewManuaisFrame("C:\\Users\\Mateus\\Desktop\\Temp\\boletos\\Fonte 24 vcc.pdf");
+		manualFrame.setVisible(true);
 	}
 }

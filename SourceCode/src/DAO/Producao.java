@@ -3,6 +3,7 @@ package DAO;
 public class Producao {
 	private int Id;
 	private int Fk_Produto;
+	private String nomeProduto;
 	private String DataProducao; //Grava quando inicia a producao
 	private int Meta; //Grava a meta quando inicia a producao, se for producao planejada
 	private String TipoProducao; //Planejada ou continua
@@ -54,5 +55,15 @@ public class Producao {
 	}
 	public int getId() {
 		return Id;
+	}
+	
+	public void setId(int id) {
+		this.Id = id;
+	}
+	public String getNomeProduto() {
+		return nomeProduto;
+	}
+	public void setNomeProduto(String nomeProduto) {
+		this.nomeProduto = nomeProduto;
 	}
 }

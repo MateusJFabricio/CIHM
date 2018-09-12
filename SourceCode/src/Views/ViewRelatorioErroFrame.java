@@ -2,7 +2,10 @@ package Views;
 
 import java.awt.Color;
 import java.awt.Font;
-import java.awt.SystemColor;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.ArrayList;
+
 import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
 import javax.swing.ImageIcon;
@@ -18,11 +21,11 @@ import javax.swing.border.BevelBorder;
 import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
 
+import Controller.ControllerRelErros;
+import DAO.LogFalhas;
+
 public class ViewRelatorioErroFrame extends JFrame {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
 	private JScrollPane scrollPane;
@@ -30,14 +33,18 @@ public class ViewRelatorioErroFrame extends JFrame {
 	private JLabel lblRelatrioDeFalhas;
 	private JLabel lblOsDadosSo;
 	private JLabel lblSoArmazenadoSomente;
+	private ControllerRelErros control;
+	private ArrayList<LogFalhas> listProducao;
 	
 	public ViewRelatorioErroFrame() {
-		setResizable(false);
-		//this.setExtendedState(JFrame.MAXIMIZED_BOTH);
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		Controller.Controller.janelaPrincipal.setAlwaysOnTop(false);
+		setType(Type.UTILITY);
+		control = new ControllerRelErros();
+		this.setExtendedState(JFrame.MAXIMIZED_BOTH);
+		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		setBounds(100, 100, 800, 480);
 		contentPane = new JPanel();
-		contentPane.setBackground(SystemColor.textHighlight);
+		contentPane.setBackground(new Color(30, 144, 255));
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
 		
@@ -73,15 +80,12 @@ public class ViewRelatorioErroFrame extends JFrame {
 				"C\u00F3digo da Falha", "Hora", "Data", "Falha"
 			}
 		) {
-			/**
-			 * 
-			 */
 			private static final long serialVersionUID = 1L;
-			Class[] columnTypes = new Class[] {
-				Integer.class, String.class, String.class, String.class
+			boolean[] columnEditables = new boolean[] {
+				false, false, false, false
 			};
-			public Class getColumnClass(int columnIndex) {
-				return columnTypes[columnIndex];
+			public boolean isCellEditable(int row, int column) {
+				return columnEditables[column];
 			}
 		});
 		table.getColumnModel().getColumn(0).setPreferredWidth(131);
@@ -89,13 +93,18 @@ public class ViewRelatorioErroFrame extends JFrame {
 		scrollPane.setViewportView(table);
 		panel.setLayout(null);
 		
-		JButton btnHome = new JButton("Salvar");
-		btnHome.setIcon(new ImageIcon(ViewRelatorioErroFrame.class.getResource("/Assets/csv (32).png")));
-		btnHome.setBounds(677, 11, 97, 61);
-		btnHome.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		btnHome.setHorizontalTextPosition(SwingConstants.CENTER);
-		btnHome.setVerticalTextPosition(SwingConstants.BOTTOM);
-		panel.add(btnHome);
+		JButton btnSalvar = new JButton("Salvar");
+		btnSalvar.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				actBtnSalvar();
+			}
+		});
+		btnSalvar.setIcon(new ImageIcon(ViewRelatorioErroFrame.class.getResource("/Assets/csv (32).png")));
+		btnSalvar.setBounds(677, 11, 97, 61);
+		btnSalvar.setFont(new Font("Tahoma", Font.PLAIN, 14));
+		btnSalvar.setHorizontalTextPosition(SwingConstants.CENTER);
+		btnSalvar.setVerticalTextPosition(SwingConstants.BOTTOM);
+		panel.add(btnSalvar);
 		
 		lblRelatrioDeFalhas = new JLabel("Relat\u00F3rio de Falhas da M\u00E1quina");
 		lblRelatrioDeFalhas.setFont(new Font("Tahoma", Font.PLAIN, 24));
@@ -112,6 +121,34 @@ public class ViewRelatorioErroFrame extends JFrame {
 		
 		
 		contentPane.setLayout(gl_contentPane);	
+		carregarDadosIniciais();
+	}
+	
+	protected void actBtnSalvar() {
+		if (!listProducao.isEmpty())
+		{
+			control.salvarCSV(listProducao);
+		}
+	}
+
+	private void carregarDadosIniciais()
+	{
+		listProducao = new ArrayList<LogFalhas>();
+		listProducao = control.buscarDados();
 		
+		DefaultTableModel modelo = (DefaultTableModel) table.getModel();
+		int count = modelo.getRowCount();
+		for (int i = 0; i < count; i++) {
+			modelo.removeRow(0);
+		}
+
+		for (LogFalhas logFalhas : listProducao) {
+			modelo.addRow(new Object[] {
+					logFalhas.getId(),
+					logFalhas.getDataHora(),
+					logFalhas.getDataHora(),
+					logFalhas.getFalha()
+					});
+		}
 	}
 }

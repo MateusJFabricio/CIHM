@@ -3,20 +3,15 @@ package Views;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Font;
-import java.awt.SystemColor;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.IOException;
 
 import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.JPasswordField;
 import javax.swing.LayoutStyle.ComponentPlacement;
 import javax.swing.SwingConstants;
 import javax.swing.border.BevelBorder;
@@ -43,11 +38,10 @@ public class ViewFrame extends JFrame {
 	
 	public ViewFrame() {
 		control = new ControllerFrame();
-		//setResizable(false);
 		setAutoRequestFocus(false);
 		//setAlwaysOnTop(true);
-		this.setUndecorated(true);
-		//this.setExtendedState(JFrame.MAXIMIZED_BOTH);
+		setUndecorated(true);
+		setExtendedState(JFrame.MAXIMIZED_BOTH);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 800, 480);
 		contentPane = new JPanel();
@@ -57,9 +51,10 @@ public class ViewFrame extends JFrame {
 		
 		JPanel panel = new JPanel();
 		panel.setBorder(new BevelBorder(BevelBorder.LOWERED, null, null, null, null));
-		panel.setBackground(SystemColor.menu);
+		panel.setBackground(new Color(30, 144, 255));
 		
 		panelTelas_1 = new JPanel();
+		panelTelas_1.setBackground(new Color(255, 255, 255));
 		panelTelas_1.setLayout(new BorderLayout(0, 0));
 		switchScreen(HOME);
 		

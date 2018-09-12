@@ -12,7 +12,7 @@ import com.pi4j.io.gpio.RaspiPin;
 
 public class GPIO {
 	private GpioController gpio;
-	
+
 	//Saídas Envase
 	public GpioPinDigitalOutput outEnvBombaEnvase;
 	public GpioPinDigitalOutput outEnvPistaoEnvaseAvanca;
@@ -52,10 +52,12 @@ public class GPIO {
 		try {
 			if (gpio == null)
 				gpio = GpioFactory.getInstance();
+			
 		} catch (Exception e) {
 			System.out.println("Mensagem de erro: " + e.getMessage());
 		} catch (UnsatisfiedLinkError e) {
 			System.out.println("Mensagem de erro: " + e.getMessage());
+			
 		}
 		return gpio;
 	}
@@ -63,12 +65,12 @@ public class GPIO {
 	public GPIO()
 	{
 		getGpio();
-		registraGPIOEnvase();
-		registraGPIOTampador();
-		registraGPIOAcumulador();
+		registraGPIOEnvase(gpio);
+		registraGPIOTampador(gpio);
+		registraGPIOAcumulador(gpio);
 	}
 
-	public void registraGPIOEnvase()
+	public void registraGPIOEnvase(GpioController gpio)
 	{
 		//Saídas
 		outEnvBombaEnvase 		= gpio.provisionDigitalOutputPin(RaspiPin.GPIO_01, "outEnvBombaEnvase", PinState.HIGH);
@@ -76,39 +78,39 @@ public class GPIO {
 		outEnvEsteira2 			= gpio.provisionDigitalOutputPin(RaspiPin.GPIO_03, "outEnvEsteira2", PinState.HIGH);
 		outEnvPistaoEnforcador	= gpio.provisionDigitalOutputPin(RaspiPin.GPIO_04, "outEnvPistaoEnforcador", PinState.HIGH);
 		outEnvPistaoEnvaseAvanca= gpio.provisionDigitalOutputPin(RaspiPin.GPIO_05, "outEnvPistaoEnvaseAvanca", PinState.HIGH);
-		outEnvPistaoEnvaseRecua	= gpio.provisionDigitalOutputPin(RaspiPin.GPIO_06, "outEnvPistaoEnvaseRecua", PinState.HIGH);
-		outEnvTrava1			= gpio.provisionDigitalOutputPin(RaspiPin.GPIO_07, "outEnvTrava1", PinState.HIGH);
-		outEnvTrava2			= gpio.provisionDigitalOutputPin(RaspiPin.GPIO_08, "outEnvTrava2", PinState.HIGH);
+		outEnvPistaoEnvaseRecua	= gpio.provisionDigitalOutputPin(RaspiPin.GPIO_07, "outEnvPistaoEnvaseRecua", PinState.HIGH);
+		outEnvTrava1			= gpio.provisionDigitalOutputPin(RaspiPin.GPIO_08, "outEnvTrava1", PinState.HIGH);
+		outEnvTrava2			= gpio.provisionDigitalOutputPin(RaspiPin.GPIO_10, "outEnvTrava2", PinState.HIGH);
 		
 		//Entradas
-		inEnvBombaLigada 					= gpio.provisionDigitalInputPin(RaspiPin.GPIO_09,"inEnvBombaLigada", PinPullResistance.PULL_DOWN); 
-		inEnvBotaoEmergenciaAcionado 		= gpio.provisionDigitalInputPin(RaspiPin.GPIO_10,"inEnvBotaoEmergenciaAcionado", PinPullResistance.PULL_DOWN);
-		inEnvFimDeCursoEnforcadorAvancado 	= gpio.provisionDigitalInputPin(RaspiPin.GPIO_11,"inEnvFimDeCursoEnforcadorAvancado", PinPullResistance.PULL_DOWN);
-		inEnvFimDeCursoEnvasadoraEmbaixo 	= gpio.provisionDigitalInputPin(RaspiPin.GPIO_12,"inEnvFimDeCursoEnvasadoraEmbaixo", PinPullResistance.PULL_DOWN);
-		inEnvFimDeCursoEnvasadoraEmCima 	= gpio.provisionDigitalInputPin(RaspiPin.GPIO_13,"inEnvFimDeCursoEnvasadoraEmCima", PinPullResistance.PULL_DOWN);
-		inEnvFrascoEntrandoNaAreaEnvase 	= gpio.provisionDigitalInputPin(RaspiPin.GPIO_14,"inEnvFrascoEntrandoNaAreaEnvase", PinPullResistance.PULL_DOWN);
-		inEnvProdutoNivelCritico 			= gpio.provisionDigitalInputPin(RaspiPin.GPIO_15,"inEnvProdutoNivelCritico", PinPullResistance.PULL_DOWN);
+		inEnvBombaLigada 					= gpio.provisionDigitalInputPin(RaspiPin.GPIO_11,"inEnvBombaLigada", PinPullResistance.PULL_DOWN); 
+		inEnvBotaoEmergenciaAcionado 		= gpio.provisionDigitalInputPin(RaspiPin.GPIO_12,"inEnvBotaoEmergenciaAcionado", PinPullResistance.PULL_DOWN);
+		inEnvFimDeCursoEnforcadorAvancado 	= gpio.provisionDigitalInputPin(RaspiPin.GPIO_13,"inEnvFimDeCursoEnforcadorAvancado", PinPullResistance.PULL_DOWN);
+		inEnvFimDeCursoEnvasadoraEmbaixo 	= gpio.provisionDigitalInputPin(RaspiPin.GPIO_14,"inEnvFimDeCursoEnvasadoraEmbaixo", PinPullResistance.PULL_DOWN);
+		inEnvFimDeCursoEnvasadoraEmCima 	= gpio.provisionDigitalInputPin(RaspiPin.GPIO_15,"inEnvFimDeCursoEnvasadoraEmCima", PinPullResistance.PULL_DOWN);
+		inEnvFrascoEntrandoNaAreaEnvase 	= gpio.provisionDigitalInputPin(RaspiPin.GPIO_16,"inEnvFrascoEntrandoNaAreaEnvase", PinPullResistance.PULL_DOWN);
+		inEnvProdutoNivelCritico 			= gpio.provisionDigitalInputPin(RaspiPin.GPIO_17,"inEnvProdutoNivelCritico", PinPullResistance.PULL_DOWN);
 				
 	}
 	
-	private void registraGPIOTampador()
+	private void registraGPIOTampador(GpioController gpio)
 	{
 		//Saídas
-		outTampMotor 					= gpio.provisionDigitalOutputPin(RaspiPin.GPIO_16, "outTampMotor", PinState.HIGH);
-		outTampTampador					= gpio.provisionDigitalOutputPin(RaspiPin.GPIO_17, "outTampTampador", PinState.HIGH);
+		outTampMotor 					= gpio.provisionDigitalOutputPin(RaspiPin.GPIO_18, "outTampMotor", PinState.HIGH);
+		outTampTampador					= gpio.provisionDigitalOutputPin(RaspiPin.GPIO_19, "outTampTampador", PinState.HIGH);
 		
 		//Entradas
-		inTampFrascoEmPosicao 			= gpio.provisionDigitalInputPin(RaspiPin.GPIO_18,"inTampFrascoEmPosicao", PinPullResistance.PULL_DOWN);
-		inTampFrascoEntrandoCarrossel 	= gpio.provisionDigitalInputPin(RaspiPin.GPIO_19,"inTampFrascoEntrandoCarrossel", PinPullResistance.PULL_DOWN);
+		inTampFrascoEmPosicao 			= gpio.provisionDigitalInputPin(RaspiPin.GPIO_20,"inTampFrascoEmPosicao", PinPullResistance.PULL_DOWN);
+		inTampFrascoEntrandoCarrossel 	= gpio.provisionDigitalInputPin(RaspiPin.GPIO_21,"inTampFrascoEntrandoCarrossel", PinPullResistance.PULL_DOWN);
 	}
 	
-	private void registraGPIOAcumulador()
+	private void registraGPIOAcumulador(GpioController gpio)
 	{
 		//Saídas
-		outAcumMotor 			= gpio.provisionDigitalOutputPin(RaspiPin.GPIO_20, "outAcumMotor", PinState.HIGH);
+		outAcumMotor 			= gpio.provisionDigitalOutputPin(RaspiPin.GPIO_22, "outAcumMotor", PinState.HIGH);
 		
 		//Entradas
-		inAcumFrascoEmPosicao 	= gpio.provisionDigitalInputPin(RaspiPin.GPIO_21,"inAcumFrascoEmPosicao", PinPullResistance.PULL_DOWN);
+		inAcumFrascoEmPosicao 	= gpio.provisionDigitalInputPin(RaspiPin.GPIO_23,"inAcumFrascoEmPosicao", PinPullResistance.PULL_DOWN);
 	}
 	
 	public void finalize()
@@ -116,7 +118,5 @@ public class GPIO {
 		if (!(gpio == null))
 			gpio.shutdown();
 	}
-	
-	
-	
+
 }

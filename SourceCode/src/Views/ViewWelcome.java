@@ -3,8 +3,6 @@ package Views;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.event.ActionListener;
-import java.awt.event.ComponentAdapter;
-import java.awt.event.ComponentEvent;
 
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
@@ -21,16 +19,11 @@ public class ViewWelcome extends JFrame {
 	private Controller controlMain;
 	private ControllerWelcome controlLocal;
 	private Timer timerWelcomePage;
+	private JLabel lblModeloDaMaquina;
 	
 	public ViewWelcome(Controller controlMain) {
 		this.controlMain = controlMain;
 		controlLocal = new ControllerWelcome();
-		
-		addComponentListener(new ComponentAdapter() {
-			@Override
-			public void componentShown(ComponentEvent arg0) {
-			}
-		});
 		
 		setBackground(Color.LIGHT_GRAY);
 		getContentPane().setLayout(null);
@@ -41,29 +34,29 @@ public class ViewWelcome extends JFrame {
 		JLabel lblNewLabel = new JLabel("Envasadoras e Automa\u00E7\u00E3o Industrial");
 		lblNewLabel.setHorizontalAlignment(SwingConstants.CENTER);
 		lblNewLabel.setFont(new Font("Times New Roman", Font.PLAIN, 24));
-		lblNewLabel.setBounds(201, 257, 388, 28);
+		lblNewLabel.setBounds(0, 257, 800, 28);
 		getContentPane().add(lblNewLabel);
 		
 		JLabel lblSejaBemVindo = new JLabel("Seja bem vindo");
 		lblSejaBemVindo.setHorizontalAlignment(SwingConstants.CENTER);
 		lblSejaBemVindo.setFont(new Font("Times New Roman", Font.PLAIN, 18));
-		lblSejaBemVindo.setBounds(295, 312, 199, 14);
+		lblSejaBemVindo.setBounds(0, 304, 800, 22);
 		getContentPane().add(lblSejaBemVindo);
 		
 		JLabel lblNewLabel_1 = new JLabel("Inicializando Sistema...");
 		lblNewLabel_1.setHorizontalAlignment(SwingConstants.CENTER);
 		lblNewLabel_1.setFont(new Font("Times New Roman", Font.PLAIN, 18));
-		lblNewLabel_1.setBounds(295, 337, 199, 14);
+		lblNewLabel_1.setBounds(0, 337, 800, 28);
 		getContentPane().add(lblNewLabel_1);
 		
-		JLabel lblModeloDaMaquina = new JLabel("Envasadora " + controlLocal.dadosIniciaisMaquina().getModelo());
+		lblModeloDaMaquina = new JLabel("Envasadora ClaraMaq init");
 		lblModeloDaMaquina.setHorizontalAlignment(SwingConstants.CENTER);
 		lblModeloDaMaquina.setFont(new Font("Times New Roman", Font.PLAIN, 20));
-		lblModeloDaMaquina.setBounds(275, 383, 246, 28);
+		lblModeloDaMaquina.setBounds(0, 383, 800, 39);
 		getContentPane().add(lblModeloDaMaquina);
 		
 		JLabel lblNewLabel_2 = new JLabel("Vers\u00E3o: 0.0");
-		lblNewLabel_2.setBounds(731, 466, 69, 14);
+		lblNewLabel_2.setBounds(697, 466, 103, 14);
 		getContentPane().add(lblNewLabel_2);
 		
 		JLabel label = new JLabel("");
@@ -73,8 +66,13 @@ public class ViewWelcome extends JFrame {
 		
 		inicializaTimer();
 		
+		buscarModeloMaquina();
 	}
 	
+	private void buscarModeloMaquina() {
+		lblModeloDaMaquina.setText("Envasadora " + controlLocal.dadosIniciaisMaquina().getModelo());
+	}
+
 	private void inicializaTimer() {
 		ActionListener action = new ActionListener() {
 			public void actionPerformed(java.awt.event.ActionEvent e) {

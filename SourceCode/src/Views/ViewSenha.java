@@ -26,18 +26,19 @@ public class ViewSenha extends JFrame {
 	private ViewFrame frame;
 	 
 	public ViewSenha(ViewFrame frame) {
+		Controller.Controller.janelaPrincipal.setAlwaysOnTop(false);
 		this.frame = frame;
 		control = new ControllerSenha();
 		setType(Type.UTILITY);
 		setTitle("Terminal de senha");
 		setResizable(false);
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-		setBounds(frame.getHeight() / 2, frame.getWidth() / 2, 433,69);
+		setBounds(frame.getHeight() / 2, 150, 433,69);
 		getContentPane().setLayout(null);
 		
 		JLabel lblNewLabel = new JLabel("Entre com a senha:");
 		lblNewLabel.setFont(new Font("Tahoma", Font.PLAIN, 18));
-		lblNewLabel.setBounds(10, 11, 187, 22);
+		lblNewLabel.setBounds(10, 11, 171, 22);
 		getContentPane().add(lblNewLabel);
 		
 		password = new JPasswordField(10);
@@ -49,7 +50,7 @@ public class ViewSenha extends JFrame {
 			}
 		});
 		password.setEchoChar('*'); 
-		password.setBounds(171, 11, 153, 25);
+		password.setBounds(186, 11, 144, 25);
 		getContentPane().add(password);
 		
 		JButton btnConfirmar = new JButton("Ok");
@@ -58,7 +59,7 @@ public class ViewSenha extends JFrame {
 				actBtnConfirmar();
 			}
 		});
-		btnConfirmar.setBounds(331, 11, 89, 26);
+		btnConfirmar.setBounds(340, 11, 80, 26);
 		getContentPane().add(btnConfirmar);
 		
 	}

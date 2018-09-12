@@ -2,28 +2,18 @@ package Model;
 
 import java.util.ArrayList;
 
-import Background.ManagerIO;
-import DAO.ManagerProduto;
 import DAO.Produto;
 
 public class ModelHome {
-	private ManagerProduto produto;
-	private ManagerIO controladorIo;
-	
-	public ModelHome()
-	{
-		produto = new ManagerProduto();
-		controladorIo = new ManagerIO();
-	}
 	
 	public ArrayList<Produto> Produtos()
 	{
-		return produto.getAll();
+		return Main.Main.mannBD.mannProduto.getAllProduto();
 	}
 	
 	public void iniciarCiclo(Produto produto, boolean frascosPosicionados)
 	{
-		controladorIo.iniciarCiclo(produto, frascosPosicionados);
+		Main.Main.mannIO.iniciarCiclo(produto, frascosPosicionados);
 	}
 	
 	

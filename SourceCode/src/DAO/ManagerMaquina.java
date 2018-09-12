@@ -7,17 +7,10 @@ import javax.swing.JOptionPane;
 
 public class ManagerMaquina {
 	private java.sql.Statement query;
-	private CommBD commDb;
 	
-	public ManagerMaquina()
+	public ManagerMaquina(java.sql.Statement query)
 	{
-		commDb = new CommBD();
-		query = commDb.getStatement();
-	}
-	
-	@Override
-	public void finalize() {
-		commDb.desconectar();
+		this.query = query;
 	}
 	
 	public Maquina selectMaquina()

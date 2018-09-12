@@ -7,14 +7,12 @@ import java.sql.Statement;
 import javax.swing.JOptionPane;
 
 public class ManagerSenha {
-	private CommBD commBd;
 	private Statement query;
 	
 	
-	public ManagerSenha()
+	public ManagerSenha(Statement query)
 	{
-		commBd = new CommBD();
-		query = commBd.getStatement();
+		this.query = query;
 	}
 	
 	public Senha selectSenha()
@@ -32,9 +30,4 @@ public class ManagerSenha {
 		}
 		return senha;
 	}
-	
-	public void desconectar()
-    {
-		commBd.desconectar();
-    }
 }

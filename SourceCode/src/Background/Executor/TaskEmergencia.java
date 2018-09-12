@@ -1,54 +1,44 @@
 package Background.Executor;
 
-import com.pi4j.io.gpio.event.GpioPinDigitalStateChangeEvent;
-import com.pi4j.io.gpio.event.GpioPinListenerDigital;
-
+import Background.ControllerIO;
 import Background.Services.CommEmergencia;
 import Background.Services.GPIO;
 
 public class TaskEmergencia implements Runnable {
 	private CommEmergencia comm;
+	private ControllerIO controlIO;
 	private GPIO gpio;
 	
 	
-	public TaskEmergencia(CommEmergencia comm, GPIO gpio)
+	public TaskEmergencia(CommEmergencia comm, ControllerIO controlIO)
 	{
-		this.gpio = gpio;
+		this.controlIO = controlIO;
+		this.gpio = controlIO.getGpio();
 		this.comm = comm;
 	}
 
 
 	@Override
 	public void run() {
-		adicionarListener();
+		while(true)
+		{
+			if (gpio.inEnvBotaoEmergenciaAcionado.isHigh())
+			{
+				gpio = controlIO.getGpioEmergencia();
+				comm.setEmEmergencia(true);
+				iniciaCicloEmergencia();	
+			}
+		}
 	}
-
-
-	private void adicionarListener() {
-		gpio.inEnvBotaoEmergenciaAcionado.addListener(new GpioPinListenerDigital() {
-            @Override
-            public void handleGpioPinDigitalStateChangeEvent(GpioPinDigitalStateChangeEvent event) {
-            	if (event.getState().isHigh())
-                {
-            		comm.setEmEmergencia(true);
-                	iniciaCicloEmergencia();
-                }
-            }
-
-    	});
-	}
-
 
 	protected void iniciaCicloEmergencia() {
-		while(!comm.isGPIOLiberada())
-		{
-			aguardar(20);
-		}
-		
 		desabilitarBomba();
 		bloquearPistaoPrincipal();
 		desligarEsteiras();
 		pararAcumulador();
+		
+		while(gpio.inEnvBotaoEmergenciaAcionado.isLow())
+			aguardar(20);
 	}
 	
 	private void pararAcumulador() {

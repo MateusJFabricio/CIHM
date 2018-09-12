@@ -52,7 +52,8 @@ public class TaskEnvase implements Runnable {
 	
 	@Override
 	public void run() {
-		ciclo();
+		if (comm.isIniciaNovaProducao())
+			ciclo();
 	}
 	
 	private void ciclo()

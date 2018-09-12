@@ -4,18 +4,10 @@ import java.io.IOException;
 
 import javax.swing.JOptionPane;
 
-import DAO.ManagerSenha;
 import DAO.Senha;
 
 public class ModelSenha {
 
-	private ManagerSenha managerSenha;
-	
-	public ModelSenha()
-	{
-		managerSenha = new ManagerSenha();
-	}
-	
 	public boolean confirmarSenha(String senha)
 	{
 		int tipo = tipoSenha(senha);
@@ -45,7 +37,7 @@ public class ModelSenha {
 	private int tipoSenha(String senha)
 	{
 		Senha objSenha = new Senha();
-		objSenha = managerSenha.selectSenha();
+		objSenha = Main.Main.mannBD.mannSenha.selectSenha();
 		
 		if (objSenha.getSenhaGeral().equals(senha))
 		{

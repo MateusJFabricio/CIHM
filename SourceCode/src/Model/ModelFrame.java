@@ -1,19 +1,12 @@
 package Model;
 
-import DAO.ManagerSenha;
 import DAO.Senha;
 
 public class ModelFrame {
-	private ManagerSenha manager;
-	
-	public ModelFrame()
-	{
-		manager = new ManagerSenha();
-	}
-	
+
 	public int confirmarSenha(String senha)
 	{
-		Senha objSenha = manager.selectSenha();
+		Senha objSenha = Main.Main.mannBD.mannSenha.selectSenha();
 		if (objSenha.getSenhaGeral().equals(senha))
 		{
 			return 1;

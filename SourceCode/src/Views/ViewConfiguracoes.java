@@ -2,47 +2,52 @@ package Views;
 
 import java.awt.Color;
 import java.awt.Font;
-import java.awt.SystemColor;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.util.ArrayList;
 
-import javax.swing.GroupLayout;
-import javax.swing.GroupLayout.Alignment;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
-import javax.swing.LayoutStyle.ComponentPlacement;
 import javax.swing.SwingConstants;
 import javax.swing.border.LineBorder;
 
 import Controller.ControllerConfiguracoes;
+import DAO.Produto;
 
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.ActionEvent;
 
 public class ViewConfiguracoes extends JPanel {
 
+	
 	private static final long serialVersionUID = 1L;
 	private JTextField txtNomeProduto;
 	private JTextField txtTempoEnvase;
-	private JTextField txtRetardoEnvase;
-	private JTextField txtVelocidadeEnvase;
-	private JTextField txtVelocidadeEsteira;
-	private JTextField txtPassosTampador;
-	private JTextField txtDelayInicioCiclo;
-	@SuppressWarnings("unused")
+	private JButton btnAnterior;
+	private JButton btnProximo;
+	private JButton btnNovo;
+	private JButton btnSalvar;
+	private JButton btnExcluir;
+	
 	private ControllerConfiguracoes control;
-
+	private ArrayList<Produto> listProduto;
+	private Produto produto;
+	private int indexProduto = 0;
+	
 	public ViewConfiguracoes() {
 		setLayout(null);
 		
 		control = new ControllerConfiguracoes();
+		listProduto = new ArrayList<Produto>();
+		produto = new Produto();
 		
 		JPanel panel = new JPanel();
 		panel.setBorder(new LineBorder(new Color(0, 0, 0), 2));
-		panel.setBackground(SystemColor.textHighlight);
+		panel.setBackground(new Color(30, 144, 255));
 		panel.setBounds(0, 0, 800, 329);
 		add(panel);
 		panel.setLayout(null);
@@ -50,10 +55,11 @@ public class ViewConfiguracoes extends JPanel {
 		JPanel panel_3 = new JPanel();
 		panel_3.setBackground(Color.WHITE);
 		panel_3.setBorder(new LineBorder(new Color(0, 0, 0)));
-		panel_3.setBounds(10, 11, 780, 59);
+		panel_3.setBounds(10, 8, 764, 66);
 		panel.add(panel_3);
 		
-		JButton btnNovo = new JButton("Novo");
+		btnNovo = new JButton("Novo");
+		btnNovo.setBounds(10, 4, 90, 57);
 		btnNovo.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				actBtnNovo();
@@ -64,61 +70,63 @@ public class ViewConfiguracoes extends JPanel {
 		btnNovo.setHorizontalTextPosition(SwingConstants.CENTER);
 		btnNovo.setVerticalTextPosition(SwingConstants.BOTTOM);
 		
-		JButton btnSalvar = new JButton("Salvar");
+		btnSalvar = new JButton("Salvar");
+		btnSalvar.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				actBtnSalvar();
+			}
+		});
+		btnSalvar.setBounds(107, 4, 100, 57);
 		btnSalvar.setIcon(new ImageIcon(ViewConfiguracoes.class.getResource("/Assets/floppy-disk (32).png")));
 		btnSalvar.setFont(new Font("Tahoma", Font.PLAIN, 11));
 		btnSalvar.setHorizontalTextPosition(SwingConstants.CENTER);
 		btnSalvar.setVerticalTextPosition(SwingConstants.BOTTOM);
 		
-		JButton btnExcluir = new JButton("Excluir");
+		btnExcluir = new JButton("Excluir");
+		btnExcluir.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				actBtnExcluir();
+			}
+		});
+		btnExcluir.setBounds(213, 4, 100, 57);
 		btnExcluir.setIcon(new ImageIcon(ViewConfiguracoes.class.getResource("/Assets/file (32).png")));
 		btnExcluir.setFont(new Font("Tahoma", Font.PLAIN, 11));
 		btnExcluir.setHorizontalTextPosition(SwingConstants.CENTER);
 		btnExcluir.setVerticalTextPosition(SwingConstants.BOTTOM);
 		
-		JButton btnAnteiror = new JButton("Anterior");
-		btnAnteiror.setIcon(new ImageIcon(ViewConfiguracoes.class.getResource("/Assets/left-arrow (32).png")));
-		btnAnteiror.setFont(new Font("Tahoma", Font.PLAIN, 11));
-		btnAnteiror.setHorizontalTextPosition(SwingConstants.CENTER);
-		btnAnteiror.setVerticalTextPosition(SwingConstants.BOTTOM);
+		btnAnterior = new JButton("Anterior");
+		btnAnterior.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				anteriorProduto();
+			}
+		});
+		btnAnterior.setBounds(319, 4, 100, 57);
+		btnAnterior.setIcon(new ImageIcon(ViewConfiguracoes.class.getResource("/Assets/left-arrow (32).png")));
+		btnAnterior.setFont(new Font("Tahoma", Font.PLAIN, 11));
+		btnAnterior.setHorizontalTextPosition(SwingConstants.CENTER);
+		btnAnterior.setVerticalTextPosition(SwingConstants.BOTTOM);
 		
-		JButton btnProximo = new JButton("Pr\u00F3ximo");
+		btnProximo = new JButton("Pr\u00F3ximo");
+		btnProximo.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				proximoProduto();
+			}
+		});
+		btnProximo.setBounds(425, 4, 100, 57);
 		btnProximo.setIcon(new ImageIcon(ViewConfiguracoes.class.getResource("/Assets/right-arrow (32).png")));
 		btnProximo.setFont(new Font("Tahoma", Font.PLAIN, 11));
 		btnProximo.setHorizontalTextPosition(SwingConstants.CENTER);
 		btnProximo.setVerticalTextPosition(SwingConstants.BOTTOM);
-		
-		GroupLayout gl_panel_3 = new GroupLayout(panel_3);
-		gl_panel_3.setHorizontalGroup(
-			gl_panel_3.createParallelGroup(Alignment.LEADING)
-				.addGroup(gl_panel_3.createSequentialGroup()
-					.addComponent(btnNovo, GroupLayout.PREFERRED_SIZE, 100, GroupLayout.PREFERRED_SIZE)
-					.addPreferredGap(ComponentPlacement.RELATED)
-					.addComponent(btnSalvar, GroupLayout.PREFERRED_SIZE, 100, GroupLayout.PREFERRED_SIZE)
-					.addPreferredGap(ComponentPlacement.RELATED)
-					.addComponent(btnExcluir, GroupLayout.PREFERRED_SIZE, 100, GroupLayout.PREFERRED_SIZE)
-					.addPreferredGap(ComponentPlacement.RELATED)
-					.addComponent(btnAnteiror, GroupLayout.PREFERRED_SIZE, 100, GroupLayout.PREFERRED_SIZE)
-					.addPreferredGap(ComponentPlacement.RELATED)
-					.addComponent(btnProximo, GroupLayout.PREFERRED_SIZE, 100, GroupLayout.PREFERRED_SIZE)
-					.addContainerGap(254, Short.MAX_VALUE))
-		);
-		gl_panel_3.setVerticalGroup(
-			gl_panel_3.createParallelGroup(Alignment.LEADING)
-				.addGroup(gl_panel_3.createSequentialGroup()
-					.addGroup(gl_panel_3.createParallelGroup(Alignment.LEADING, false)
-						.addComponent(btnAnteiror, GroupLayout.PREFERRED_SIZE, 57, Short.MAX_VALUE)
-						.addComponent(btnProximo, GroupLayout.PREFERRED_SIZE, 57, Short.MAX_VALUE)
-						.addComponent(btnSalvar, 0, 0, Short.MAX_VALUE)
-						.addComponent(btnExcluir, GroupLayout.PREFERRED_SIZE, 57, Short.MAX_VALUE)
-						.addComponent(btnNovo, 0, 0, Short.MAX_VALUE))
-					.addGap(2))
-		);
-		panel_3.setLayout(gl_panel_3);
+		panel_3.setLayout(null);
+		panel_3.add(btnNovo);
+		panel_3.add(btnSalvar);
+		panel_3.add(btnExcluir);
+		panel_3.add(btnAnterior);
+		panel_3.add(btnProximo);
 		
 		JPanel panel_1 = new JPanel();
 		panel_1.setBackground(Color.WHITE);
-		panel_1.setBounds(10, 68, 780, 175);
+		panel_1.setBounds(10, 74, 764, 169);
 		panel.add(panel_1);
 		panel_1.setLayout(null);
 		
@@ -137,7 +145,7 @@ public class ViewConfiguracoes extends JPanel {
 			}
 		});
 		txtNomeProduto.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		txtNomeProduto.setBounds(267, 11, 503, 23);
+		txtNomeProduto.setBounds(267, 11, 487, 23);
 		panel_1.add(txtNomeProduto);
 		txtNomeProduto.setColumns(10);
 		
@@ -147,20 +155,6 @@ public class ViewConfiguracoes extends JPanel {
 		lblTempoDeEnvase.setFont(new Font("Times New Roman", Font.PLAIN, 18));
 		lblTempoDeEnvase.setBounds(10, 54, 247, 22);
 		panel_1.add(lblTempoDeEnvase);
-		
-		JLabel lblTempoDeRetardo = new JLabel("Tempo de Retardo do envase (s):");
-		lblTempoDeRetardo.setHorizontalAlignment(SwingConstants.LEFT);
-		lblTempoDeRetardo.setForeground(Color.BLACK);
-		lblTempoDeRetardo.setFont(new Font("Times New Roman", Font.PLAIN, 18));
-		lblTempoDeRetardo.setBounds(10, 98, 247, 22);
-		panel_1.add(lblTempoDeRetardo);
-		
-		JLabel lblVelocidadeDeEnvase = new JLabel("Velocidade de Envase (%):");
-		lblVelocidadeDeEnvase.setHorizontalAlignment(SwingConstants.LEFT);
-		lblVelocidadeDeEnvase.setForeground(Color.BLACK);
-		lblVelocidadeDeEnvase.setFont(new Font("Times New Roman", Font.PLAIN, 18));
-		lblVelocidadeDeEnvase.setBounds(10, 142, 229, 22);
-		panel_1.add(lblVelocidadeDeEnvase);
 		
 		txtTempoEnvase = new JTextField();
 		txtTempoEnvase.addMouseListener(new MouseAdapter() {
@@ -176,100 +170,14 @@ public class ViewConfiguracoes extends JPanel {
 		txtTempoEnvase.setBounds(267, 54, 139, 23);
 		panel_1.add(txtTempoEnvase);
 		
-		txtRetardoEnvase = new JTextField();
-		txtRetardoEnvase.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseClicked(MouseEvent e) {
-				Main.Main.teclado.setNumberOnly(true);
-				Main.Main.teclado.showKeyboard();
-			}
-		});
-		txtRetardoEnvase.setHorizontalAlignment(SwingConstants.CENTER);
-		txtRetardoEnvase.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		txtRetardoEnvase.setColumns(10);
-		txtRetardoEnvase.setBounds(267, 98, 139, 23);
-		panel_1.add(txtRetardoEnvase);
-		
-		txtVelocidadeEnvase = new JTextField();
-		txtVelocidadeEnvase.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseClicked(MouseEvent e) {
-				Main.Main.teclado.setNumberOnly(true);
-				Main.Main.teclado.showKeyboard();
-			}
-		});
-		txtVelocidadeEnvase.setHorizontalAlignment(SwingConstants.CENTER);
-		txtVelocidadeEnvase.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		txtVelocidadeEnvase.setColumns(10);
-		txtVelocidadeEnvase.setBounds(267, 142, 139, 23);
-		panel_1.add(txtVelocidadeEnvase);
-		
-		JLabel lblVelocidadeDaEsteira = new JLabel("Velocidade da Esteira (%):");
-		lblVelocidadeDaEsteira.setHorizontalAlignment(SwingConstants.LEFT);
-		lblVelocidadeDaEsteira.setForeground(Color.BLACK);
-		lblVelocidadeDaEsteira.setFont(new Font("Times New Roman", Font.PLAIN, 18));
-		lblVelocidadeDaEsteira.setBounds(422, 54, 217, 22);
-		panel_1.add(lblVelocidadeDaEsteira);
-		
-		JLabel lblPassosDoTampador = new JLabel("Passos do Tampador (un):");
-		lblPassosDoTampador.setHorizontalAlignment(SwingConstants.LEFT);
-		lblPassosDoTampador.setForeground(Color.BLACK);
-		lblPassosDoTampador.setFont(new Font("Times New Roman", Font.PLAIN, 18));
-		lblPassosDoTampador.setBounds(422, 98, 217, 22);
-		panel_1.add(lblPassosDoTampador);
-		
-		JLabel lblDelayDeInicio = new JLabel("Delay de Inicio do Ciclo (s):");
-		lblDelayDeInicio.setHorizontalAlignment(SwingConstants.LEFT);
-		lblDelayDeInicio.setForeground(Color.BLACK);
-		lblDelayDeInicio.setFont(new Font("Times New Roman", Font.PLAIN, 18));
-		lblDelayDeInicio.setBounds(422, 142, 217, 22);
-		panel_1.add(lblDelayDeInicio);
-		
-		txtVelocidadeEsteira = new JTextField();
-		txtVelocidadeEsteira.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseClicked(MouseEvent e) {
-				Main.Main.teclado.setNumberOnly(true);
-				Main.Main.teclado.showKeyboard();
-			}
-		});
-		txtVelocidadeEsteira.setHorizontalAlignment(SwingConstants.CENTER);
-		txtVelocidadeEsteira.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		txtVelocidadeEsteira.setColumns(10);
-		txtVelocidadeEsteira.setBounds(631, 53, 139, 23);
-		panel_1.add(txtVelocidadeEsteira);
-		
-		txtPassosTampador = new JTextField();
-		txtPassosTampador.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseClicked(MouseEvent e) {
-				Main.Main.teclado.setNumberOnly(true);
-				Main.Main.teclado.showKeyboard();
-			}
-		});
-		txtPassosTampador.setHorizontalAlignment(SwingConstants.CENTER);
-		txtPassosTampador.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		txtPassosTampador.setColumns(10);
-		txtPassosTampador.setBounds(631, 97, 139, 23);
-		panel_1.add(txtPassosTampador);
-		
-		txtDelayInicioCiclo = new JTextField();
-		txtDelayInicioCiclo.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseClicked(MouseEvent e) {
-				Main.Main.teclado.setNumberOnly(true);
-				Main.Main.teclado.showKeyboard();
-			}
-		});
-		txtDelayInicioCiclo.setHorizontalAlignment(SwingConstants.CENTER);
-		txtDelayInicioCiclo.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		txtDelayInicioCiclo.setColumns(10);
-		txtDelayInicioCiclo.setBounds(631, 141, 139, 23);
-		panel_1.add(txtDelayInicioCiclo);
-		
 		JButton btnRelatorioErros = new JButton("Relat\u00F3rio de Erros");
+		btnRelatorioErros.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				actBtnRelatoriosErros();
+			}
+		});
 		btnRelatorioErros.setIcon(new ImageIcon(ViewConfiguracoes.class.getResource("/Assets/computer (32).png")));
-		btnRelatorioErros.setBounds(10, 252, 124, 66);
+		btnRelatorioErros.setBounds(10, 252, 203, 66);
 		btnRelatorioErros.setFont(new Font("Tahoma", Font.PLAIN, 11));
 		btnRelatorioErros.setHorizontalTextPosition(SwingConstants.CENTER);
 		btnRelatorioErros.setVerticalTextPosition(SwingConstants.BOTTOM);
@@ -279,18 +187,170 @@ public class ViewConfiguracoes extends JPanel {
 		btnTesteParametros.setVerticalTextPosition(SwingConstants.BOTTOM);
 		btnTesteParametros.setHorizontalTextPosition(SwingConstants.CENTER);
 		btnTesteParametros.setFont(new Font("Tahoma", Font.PLAIN, 11));
-		btnTesteParametros.setBounds(666, 254, 124, 66);
+		btnTesteParametros.setBounds(571, 254, 203, 66);
 		panel.add(btnTesteParametros);
 		
 		carregarDadosIniciais();
+		txtNomeProduto.setEditable(false);
+		txtTempoEnvase.setEditable(false);
+		btnSalvar.setEnabled(false);
 	}
 	
+	protected void actBtnRelatoriosErros() {
+		ViewRelatorioErroFrame relErros = new ViewRelatorioErroFrame();
+		relErros.setVisible(true);
+	}
+
+	protected void actBtnExcluir() {
+		if (listProduto.isEmpty())
+			return;
+		
+		control.excluirProduto(produto);
+		listProduto.remove(produto);
+		indexProduto--;
+		if (indexProduto < 0)
+		{
+			indexProduto = 0;
+			
+			if (!listProduto.isEmpty())
+				produto = listProduto.get(indexProduto);
+			else
+				produto = null;
+		}else
+			produto = listProduto.get(indexProduto);
+		
+		loadProduto();
+	}
+
 	protected void actBtnNovo() {
 		
+		txtNomeProduto.setEditable(true);
+		txtNomeProduto.setText("");
+		
+		txtTempoEnvase.setEditable(true);
+		txtTempoEnvase.setText("");
+		
+		btnProximo.setEnabled(false);
+		btnAnterior.setEnabled(false);
+		btnExcluir.setEnabled(false);
+		btnNovo.setEnabled(false);
+		btnSalvar.setEnabled(true);
+		
+	}
+	
+	protected void actBtnSalvar() {
+				
+		if (txtNomeProduto.getText().isEmpty())
+		{
+			JOptionPane.showMessageDialog(null, "Você não preencheu o nome do produto");
+			return;
+		}
+		
+		for (Produto temp_produto : listProduto) {
+			if (txtNomeProduto.getText().equals(temp_produto.getNome()))
+			{
+				JOptionPane.showMessageDialog(null, "Este nome de produto já esta cadastrado");;
+				return;
+			}
+		}
+		
+		if (txtTempoEnvase.getText().isEmpty())
+		{
+			JOptionPane.showMessageDialog(null, "Você não preencheu o tempo de ciclo");
+			return;
+		}
+		
+		int tempoEnvase = 0;
+		try
+		{
+			tempoEnvase = Integer.parseInt(txtTempoEnvase.getText());
+		}catch (NumberFormatException e) {
+			JOptionPane.showMessageDialog(null, "Há um problema com o tempo de envase. Deve conter apenas números.");
+			return;
+		}
+		
+		if (!btnNovo.isEnabled())
+		{
+			txtNomeProduto.setEditable(false);
+			txtTempoEnvase.setEditable(false);
+			
+			btnProximo.setEnabled(true);
+			btnAnterior.setEnabled(true);
+			btnExcluir.setEnabled(true);
+			btnNovo.setEnabled(true);
+		}
+		
+		if (produto == null)
+			produto = new Produto();
+		
+		produto.setNome(txtNomeProduto.getText());
+		produto.setTempoEnvase(tempoEnvase);
+		control.inserirNovoProduto(produto);
+		
+		
+		listProduto = control.buscarProdutosCadastrados();
+	
+		for (Produto tempProduto : listProduto) {
+			if (tempProduto.getNome().equals(produto.getNome()))
+			{
+				indexProduto = listProduto.indexOf(tempProduto);
+				break;
+			}
+		}
+		produto = listProduto.get(indexProduto);
+		loadProduto();
+		btnSalvar.setEnabled(false);
+	
 	}
 
 	private void carregarDadosIniciais()
 	{
+		listProduto = control.buscarProdutosCadastrados();
+		if (!listProduto.isEmpty())
+		{
+			produto = listProduto.get(0);
+			indexProduto = 0;
+			loadProduto();
+		}
+				
+	}
+
+	private void anteriorProduto() {
+		if (!listProduto.isEmpty())
+		{
+			if (indexProduto > 0)
+			{
+				indexProduto--;
+				produto = listProduto.get(indexProduto);
+			}
+			loadProduto();
+		}
+	}
+
+	private void proximoProduto() {
+		if (!listProduto.isEmpty())
+		{
+			if (indexProduto < listProduto.size() - 1)
+			{
+				indexProduto++;
+				produto = listProduto.get(indexProduto);
+			}
+
+			loadProduto();
+		}
 		
+	}
+	
+	private void loadProduto()
+	{
+		if (produto == null)
+		{
+			txtNomeProduto.setText("");
+			txtTempoEnvase.setText("");
+		}else
+		{
+			txtNomeProduto.setText(produto.getNome());
+			txtTempoEnvase.setText(String.valueOf(produto.getTempoEnvase()));
+		}
 	}
 }

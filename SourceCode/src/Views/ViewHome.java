@@ -3,9 +3,13 @@ package Views;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.SystemColor;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
+import javax.swing.JButton;
+import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextPane;
@@ -14,15 +18,8 @@ import javax.swing.LayoutStyle.ComponentPlacement;
 import javax.swing.SwingConstants;
 import javax.swing.border.LineBorder;
 
-import Controller.Controller;
 import Controller.ControllerHome;
-import DAO.Maquina;
 import DAO.Produto;
-
-import java.awt.event.ActionListener;
-import java.awt.event.ActionEvent;
-import javax.swing.JButton;
-import javax.swing.JFrame;
 
 public class ViewHome extends JPanel {
 
@@ -48,7 +45,7 @@ public class ViewHome extends JPanel {
 		setBackground(SystemColor.textHighlight);
 		JPanel panel = new JPanel();
 		panel.setBorder(new LineBorder(new Color(0, 0, 0), 2));
-		panel.setBackground(SystemColor.textHighlight);
+		panel.setBackground(new Color(30, 144, 255));
 		panel.setBounds(0, 0, 800, 329);
 		add(panel);
 		panel.setLayout(null);
@@ -99,7 +96,7 @@ public class ViewHome extends JPanel {
 		
 		JPanel panel_1 = new JPanel();
 		panel_1.setBorder(new LineBorder(Color.WHITE));
-		panel_1.setBackground(SystemColor.textHighlight);
+		panel_1.setBackground(new Color(0, 0, 205));
 		panel_1.setBounds(402, 11, 10, 301);
 		panel.add(panel_1);
 		
@@ -187,7 +184,7 @@ public class ViewHome extends JPanel {
 		lblDescFaltando.setBounds(26, 166, 81, 22);
 		panel.add(lblDescFaltando);
 		
-		JLabel lblPrevisoDeTrmino = new JLabel("Previs\u00E3o de T\u00E9rmino: ");
+		JLabel lblPrevisoDeTrmino = new JLabel("T\u00E9rmino em: ");
 		lblPrevisoDeTrmino.setFont(new Font("Tahoma", Font.PLAIN, 18));
 		lblPrevisoDeTrmino.setBounds(26, 187, 173, 22);
 		panel.add(lblPrevisoDeTrmino);
@@ -219,37 +216,37 @@ public class ViewHome extends JPanel {
 		
 		JLabel lblEstado = new JLabel("Estado:");
 		lblEstado.setFont(new Font("Tahoma", Font.PLAIN, 18));
-		lblEstado.setBounds(439, 53, 81, 22);
+		lblEstado.setBounds(439, 53, 158, 22);
 		panel.add(lblEstado);
 		
 		JLabel lblTempoDeCiclo = new JLabel("Tempo de Ciclo:");
 		lblTempoDeCiclo.setFont(new Font("Tahoma", Font.PLAIN, 18));
-		lblTempoDeCiclo.setBounds(439, 89, 135, 22);
+		lblTempoDeCiclo.setBounds(439, 89, 158, 22);
 		panel.add(lblTempoDeCiclo);
 		
-		JLabel lblPrximaManuteno = new JLabel("Pr\u00F3xima Manuten\u00E7\u00E3o:");
-		lblPrximaManuteno.setFont(new Font("Tahoma", Font.PLAIN, 18));
-		lblPrximaManuteno.setBounds(439, 123, 182, 22);
+		JLabel lblPrximaManuteno = new JLabel("Pr\u00F3x. Manuten\u00E7\u00E3o:");
+		lblPrximaManuteno.setFont(new Font("Tahoma", Font.PLAIN, 16));
+		lblPrximaManuteno.setBounds(439, 123, 158, 22);
 		panel.add(lblPrximaManuteno);
 		
 		JLabel lblEstadoMaquina = new JLabel("Aguardando Ciclo");
 		lblEstadoMaquina.setFont(new Font("Tahoma", Font.PLAIN, 18));
-		lblEstadoMaquina.setBounds(581, 53, 188, 22);
+		lblEstadoMaquina.setBounds(599, 53, 173, 22);
 		panel.add(lblEstadoMaquina);
 		
 		lblTempoCiclo = new JLabel("");
 		lblTempoCiclo.setFont(new Font("Tahoma", Font.PLAIN, 18));
-		lblTempoCiclo.setBounds(584, 89, 81, 22);
+		lblTempoCiclo.setBounds(599, 89, 170, 22);
 		panel.add(lblTempoCiclo);
 		
 		lblProximaManutencao = new JLabel("13/09/2018");
 		lblProximaManutencao.setFont(new Font("Tahoma", Font.PLAIN, 18));
-		lblProximaManutencao.setBounds(610, 123, 106, 22);
+		lblProximaManutencao.setBounds(647, 123, 106, 22);
 		panel.add(lblProximaManutencao);
 		
 		JLabel lblUltimaFalha = new JLabel("Ultimas falhas:");
 		lblUltimaFalha.setFont(new Font("Tahoma", Font.PLAIN, 18));
-		lblUltimaFalha.setBounds(439, 156, 182, 22);
+		lblUltimaFalha.setBounds(439, 156, 158, 22);
 		panel.add(lblUltimaFalha);
 		
 		JTextPane txtpnLAs = new JTextPane();
@@ -283,8 +280,6 @@ public class ViewHome extends JPanel {
 		lblNomeProduto.setText(viewIniciarCiclo.getProduto());
 		//lblInicioProducao.setText(viewIniciarCiclo.);
 		lblMetaProducao.setText(viewIniciarCiclo.getMetaProducao());
-		
-		viewIniciarCiclo.dispose();
 	}
 	
 	public void viewIniciaCiclo(Produto produto, boolean frascosPosicionados)
@@ -294,10 +289,8 @@ public class ViewHome extends JPanel {
 	
 	private void onToggleOnClick()
 	{
-		frame.setAlwaysOnTop(false);
-		frame.setAutoRequestFocus(false);
-		if (viewIniciarCiclo == null) viewIniciarCiclo = new ViewIniciarCicloDialog(this);
-		
+		viewIniciarCiclo = new ViewIniciarCicloDialog(this);
+		Controller.Controller.janelaPrincipal.setAlwaysOnTop(false);
 		viewIniciarCiclo.setVisible(true);
 		viewIniciarCiclo.setAlwaysOnTop(true);
 				
