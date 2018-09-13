@@ -11,7 +11,7 @@ import Background.Services.CommTampador;
 import Background.Services.GPIO;
 
 public class TaskTampador implements Runnable {
-	private GPIO gpio;
+	public GPIO gpio;
 	private CommTampador comm;
 	private Timer timer;
 	private ActionListener action;

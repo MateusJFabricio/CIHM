@@ -8,7 +8,7 @@ import Background.Services.GPIO;
 
 public class TaskAcumulador implements Runnable {
 	private CommAcumulador comm;
-	private GPIO gpio;
+	public GPIO gpio;
 	protected boolean frascoSemGirar;
 	
 	public TaskAcumulador(CommAcumulador comm, GPIO gpio)

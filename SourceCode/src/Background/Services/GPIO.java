@@ -1,7 +1,5 @@
 package Background.Services;
 
-import javax.swing.JOptionPane;
-
 import com.pi4j.io.gpio.GpioController;
 import com.pi4j.io.gpio.GpioFactory;
 import com.pi4j.io.gpio.GpioPinDigitalInput;
@@ -113,7 +111,7 @@ public class GPIO {
 		inAcumFrascoEmPosicao 	= gpio.provisionDigitalInputPin(RaspiPin.GPIO_23,"inAcumFrascoEmPosicao", PinPullResistance.PULL_DOWN);
 	}
 	
-	public void finalize()
+	protected void finalize()
 	{
 		if (!(gpio == null))
 			gpio.shutdown();

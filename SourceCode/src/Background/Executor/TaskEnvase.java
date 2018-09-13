@@ -52,31 +52,43 @@ public class TaskEnvase implements Runnable {
 	
 	@Override
 	public void run() {
-		if (comm.isIniciaNovaProducao())
-			ciclo();
+		try{
+			comm.setAlive(true);
+			while(comm.isIniciaProducao())
+			{
+				
+				if (comm.isCicloContinuo())
+					ciclo();
+				else if (comm.getMetaProducao() > 0)
+					ciclo();
+				else
+					comm.setIniciaProducao(false);
+			}
+			
+		}catch (Exception e) {
+			System.out.println("Thread Envase finalizada");
+			comm.setCicloContinuo(false);
+			comm.setIniciaProducao(false);
+		}finally {
+			comm.setAlive(false);
+		}
 	}
 	
 	private void ciclo()
 	{
 		goHome();
 		
-		while(true)
+		if (!comm.isInicioRapido())
 		{
-			while (comm.getMetaProducao() != 0 || comm.isCicloContinuo())
-			{
-				if (!comm.isInicioRapido())
-				{
-					comm.setInicioRapido(true);
-					buscarFrascos();
-				}
-				
-				envase();
-				enviarParaTampador();
-			}
-			aguarda(1000);
+			comm.setInicioRapido(true);
+			buscarFrascos();
 		}
+		
+		envase();
+		enviarParaTampador();
+		aguarda(1000);
 	}
-	
+
 
 	private void envase()
 	{

@@ -1,19 +1,16 @@
 package Background.Executor;
 
-import Background.ControllerIO;
 import Background.Services.CommEmergencia;
 import Background.Services.GPIO;
 
 public class TaskEmergencia implements Runnable {
 	private CommEmergencia comm;
-	private ControllerIO controlIO;
 	private GPIO gpio;
 	
 	
-	public TaskEmergencia(CommEmergencia comm, ControllerIO controlIO)
+	public TaskEmergencia(CommEmergencia comm, GPIO gpio)
 	{
-		this.controlIO = controlIO;
-		this.gpio = controlIO.getGpio();
+		this.gpio = gpio;
 		this.comm = comm;
 	}
 
@@ -24,8 +21,10 @@ public class TaskEmergencia implements Runnable {
 		{
 			if (gpio.inEnvBotaoEmergenciaAcionado.isHigh())
 			{
-				gpio = controlIO.getGpioEmergencia();
 				comm.setEmEmergencia(true);
+				while(!comm.isGPIOLiberada())
+					aguardar(10);
+				
 				iniciaCicloEmergencia();	
 			}
 		}
@@ -38,7 +37,7 @@ public class TaskEmergencia implements Runnable {
 		pararAcumulador();
 		
 		while(gpio.inEnvBotaoEmergenciaAcionado.isLow())
-			aguardar(20);
+			aguardar(200);
 	}
 	
 	private void pararAcumulador() {

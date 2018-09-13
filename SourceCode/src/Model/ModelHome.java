@@ -11,9 +11,13 @@ public class ModelHome {
 		return Main.Main.mannBD.mannProduto.getAllProduto();
 	}
 	
-	public void iniciarCiclo(Produto produto, boolean frascosPosicionados)
+	public void iniciarCiclo(Produto produto, boolean frascosPosicionados, int meta)
 	{
-		Main.Main.mannIO.iniciarCiclo(produto, frascosPosicionados);
+		Main.Main.mannIO.iniciarCiclo(produto, frascosPosicionados, meta);
+	}
+
+	public void interromperCiclo() {
+		Main.Main.mannIO.interromperCiclo();
 	}
 	
 	

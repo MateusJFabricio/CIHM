@@ -43,8 +43,8 @@ public class ManagerIO {
 	private ActionListener actEmergencia;
 	
 	//Obj Comuns
-	private ControllerIO controlIO;
 	public Produto produto;
+	private GPIO gpio;
 	
 	public ManagerIO()
 	{
@@ -52,7 +52,7 @@ public class ManagerIO {
 		initComunicadores();
 		initTasks();
 		submitThreads();
-		//iniciaMonitorEmergencia();
+		iniciaMonitorEmergencia();
 	}
 	
 	private void iniciaMonitorEmergencia() {
@@ -60,7 +60,13 @@ public class ManagerIO {
 			public void actionPerformed(java.awt.event.ActionEvent e) {
 				if (commEmergencia.isEmEmergencia())
 				{
-					actEmergencia();
+					if (gpio.inEnvBotaoEmergenciaAcionado.isLow())
+						voltarEmergencia();
+					
+				}else if(!commEmergencia.isEmEmergencia())
+				{
+					if (gpio.inEnvBotaoEmergenciaAcionado.isHigh())
+						actEmergencia();
 				}
 		}};
 		
@@ -71,7 +77,7 @@ public class ManagerIO {
 
 	private void initGPIO()
 	{
-		controlIO = new ControllerIO();
+		gpio = new GPIO();
 	}
 	
 	private void initComunicadores()
@@ -85,11 +91,11 @@ public class ManagerIO {
 	
 	private void initTasks()
 	{
-		envase 		= new TaskEnvase(commEnvase, controlIO.getGpio());
-		acumulador 	= new TaskAcumulador(commAcumulador, controlIO.getGpio());
-		tampador 	= new TaskTampador(commTampador, controlIO.getGpio());
-		home 		= new TaskHome(commHome, controlIO.getGpio());
-		emergencia 	= new TaskEmergencia(commEmergencia, controlIO);
+		envase 		= new TaskEnvase(commEnvase, gpio);
+		acumulador 	= new TaskAcumulador(commAcumulador, gpio);
+		tampador 	= new TaskTampador(commTampador, gpio);
+		home 		= new TaskHome(commHome, gpio);
+		emergencia 	= new TaskEmergencia(commEmergencia, gpio);
 	}
 	
 	private void submitThreads()
@@ -102,17 +108,21 @@ public class ManagerIO {
 		pool.submit(home);
 		pool.submit(emergencia);
 		
-		pool.execute(emergencia);
-		pool.execute(acumulador);
-		pool.execute(envase);
-		pool.execute(home);
-		pool.execute(tampador);
-		
 	}
 	
-	public void iniciarCiclo(Produto produto, boolean frascosPosicionados)
+	public void iniciarCiclo(Produto produto, boolean frascosPosicionados, int meta)
 	{
-		
+		commEnvase.setCicloContinuo(meta <= 0);
+		commEnvase.setIniciaProducao(true);
+
+		if (commEnvase.isAlive())
+		{
+			commEnvase.setMetaProducao(commEnvase.getMetaProducao() + meta);
+		}else
+		{
+			commEnvase.setMetaProducao(meta);
+			pool.execute(envase);
+		}
 	}
 	
 	public void goHome()
@@ -122,18 +132,31 @@ public class ManagerIO {
 	
 	private void actEmergencia()
 	{
-		timerMonitorEmergencia.stop();
-		pool.remove(envase);
-		pool.remove(acumulador);
-		pool.remove(tampador);
-		pool.remove(home);
-		
+		envase.gpio = null;
+		acumulador.gpio = null;
+		tampador.gpio = null;
+		home.gpio = null;
+
 		commEmergencia.setGPIOLiberada(true);
 	}
 	
 	public void voltarEmergencia()
 	{
+		commEmergencia.setGPIOLiberada(false);
 		
+		envase.gpio = gpio;
+		acumulador.gpio = gpio;
+		tampador.gpio = gpio;
+		home.gpio = gpio;
+		
+		pool.execute(envase);
+		pool.execute(acumulador);
+		pool.execute(tampador);
+		pool.execute(home);
+	}
+
+	public void interromperCiclo() {
+		commEnvase.setIniciaProducao(false);
 	}
 
 }

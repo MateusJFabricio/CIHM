@@ -4,7 +4,7 @@ import DAO.Produto;
 
 public class CommEnvase {
 	private boolean inicioRapido;
-	private boolean iniciaNovaProducao;
+	private boolean iniciaProducao;
 	private boolean continuaProducaoAtual;
 	private boolean pararProducao;
 	private Produto produto;
@@ -14,6 +14,7 @@ public class CommEnvase {
 	private int frascosEnvasado = 0;
 	private int frascosParaEnvasar = 0;
 	private int metaProducao = 0;
+	private boolean isAlive = false;
 	
 	public int getTempoEnvase()
 	{
@@ -28,12 +29,12 @@ public class CommEnvase {
 		this.inicioRapido = inicioRapido;
 	}
 
-	public boolean isIniciaNovaProducao() {
-		return iniciaNovaProducao;
+	public boolean isIniciaProducao() {
+		return iniciaProducao;
 	}
 
-	public void setIniciaNovaProducao(boolean iniciaNovaProducao) {
-		this.iniciaNovaProducao = iniciaNovaProducao;
+	public void setIniciaProducao(boolean iniciaProducao) {
+		this.iniciaProducao = iniciaProducao;
 	}
 
 	public boolean isContinuaProducaoAtual() {
@@ -103,5 +104,13 @@ public class CommEnvase {
 
 	public void setMetaProducao(int metaProducao) {
 		this.metaProducao = metaProducao;
+	}
+	
+	public boolean isAlive() {
+		return isAlive;
+	}
+
+	public void setAlive(boolean isAlive) {
+		this.isAlive = isAlive;
 	}
 }

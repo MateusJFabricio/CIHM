@@ -5,6 +5,7 @@ import java.awt.Font;
 import java.awt.SystemColor;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Calendar;
 
 import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
@@ -13,19 +14,17 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextPane;
-import javax.swing.JToggleButton;
 import javax.swing.LayoutStyle.ComponentPlacement;
 import javax.swing.SwingConstants;
 import javax.swing.border.LineBorder;
 
 import Controller.ControllerHome;
+import DAO.Maquina;
 import DAO.Produto;
 
 public class ViewHome extends JPanel {
 
 	private static final long serialVersionUID = 1L;
-	private JToggleButton tglbtnIniciarCiclo;
-	private JToggleButton tglbtnOff;
 	private JLabel lblNomeProduto;
 	private JLabel lblInicioProducao;
 	private JLabel lblMetaProducao;
@@ -35,12 +34,10 @@ public class ViewHome extends JPanel {
 	private JLabel lblTempoCiclo;
 	private JLabel lblProximaManutencao;
 	public ControllerHome control;
-	private JFrame frame;
 	ViewIniciarCicloDialog viewIniciarCiclo;
 
 	public ViewHome(JFrame frame) {
 		control = new ControllerHome();
-		this.frame = frame;
 		setLayout(null);
 		setBackground(SystemColor.textHighlight);
 		JPanel panel = new JPanel();
@@ -55,41 +52,42 @@ public class ViewHome extends JPanel {
 		panel_2.setBounds(65, 220, 271, 90);
 		panel.add(panel_2);
 		
-		tglbtnIniciarCiclo = new JToggleButton("ON");
-		tglbtnIniciarCiclo.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				tglbtnOff.setSelected(false);
-				onToggleOnClick();
-			}
-		});
-		tglbtnIniciarCiclo.setBackground(Color.GRAY);
-		tglbtnIniciarCiclo.setFont(new Font("Tahoma", Font.PLAIN, 28));
-		
-		tglbtnOff = new JToggleButton("OFF");
-		tglbtnOff.addActionListener(new ActionListener() {
+		JButton btnLiga = new JButton("LIGA");
+		JButton btnDesliga = new JButton("DESLIGA");
+		btnDesliga.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				actBtnOff();
+				btnLiga.setEnabled(true);
+				btnDesliga.setEnabled(false);
+				actBtnDesliga();
 			}
 		});
-		tglbtnOff.setSelected(true);
-		tglbtnOff.setFont(new Font("Tahoma", Font.PLAIN, 28));
+		
+		btnLiga.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				btnLiga.setEnabled(false);
+				btnDesliga.setEnabled(true);
+				actBtnLiga();
+			}
+		});
+		
+		
 		GroupLayout gl_panel_2 = new GroupLayout(panel_2);
 		gl_panel_2.setHorizontalGroup(
 			gl_panel_2.createParallelGroup(Alignment.LEADING)
 				.addGroup(gl_panel_2.createSequentialGroup()
 					.addContainerGap()
-					.addComponent(tglbtnIniciarCiclo, GroupLayout.PREFERRED_SIZE, 123, GroupLayout.PREFERRED_SIZE)
-					.addPreferredGap(ComponentPlacement.RELATED)
-					.addComponent(tglbtnOff, GroupLayout.PREFERRED_SIZE, 123, GroupLayout.PREFERRED_SIZE)
-					.addContainerGap(32, Short.MAX_VALUE))
+					.addComponent(btnLiga, GroupLayout.PREFERRED_SIZE, 114, GroupLayout.PREFERRED_SIZE)
+					.addPreferredGap(ComponentPlacement.RELATED, 23, Short.MAX_VALUE)
+					.addComponent(btnDesliga, GroupLayout.PREFERRED_SIZE, 114, GroupLayout.PREFERRED_SIZE)
+					.addContainerGap())
 		);
 		gl_panel_2.setVerticalGroup(
 			gl_panel_2.createParallelGroup(Alignment.LEADING)
 				.addGroup(gl_panel_2.createSequentialGroup()
-					.addGap(5)
+					.addContainerGap()
 					.addGroup(gl_panel_2.createParallelGroup(Alignment.LEADING)
-						.addComponent(tglbtnOff, GroupLayout.PREFERRED_SIZE, 74, GroupLayout.PREFERRED_SIZE)
-						.addComponent(tglbtnIniciarCiclo, GroupLayout.DEFAULT_SIZE, 74, Short.MAX_VALUE))
+						.addComponent(btnDesliga, GroupLayout.PREFERRED_SIZE, 68, GroupLayout.PREFERRED_SIZE)
+						.addComponent(btnLiga, GroupLayout.DEFAULT_SIZE, 68, Short.MAX_VALUE))
 					.addContainerGap())
 		);
 		panel_2.setLayout(gl_panel_2);
@@ -186,32 +184,32 @@ public class ViewHome extends JPanel {
 		
 		JLabel lblPrevisoDeTrmino = new JLabel("T\u00E9rmino em: ");
 		lblPrevisoDeTrmino.setFont(new Font("Tahoma", Font.PLAIN, 18));
-		lblPrevisoDeTrmino.setBounds(26, 187, 173, 22);
+		lblPrevisoDeTrmino.setBounds(26, 187, 127, 22);
 		panel.add(lblPrevisoDeTrmino);
 		
 		lblInicioProducao = new JLabel("");
 		lblInicioProducao.setFont(new Font("Tahoma", Font.PLAIN, 18));
-		lblInicioProducao.setBounds(130, 101, 81, 22);
+		lblInicioProducao.setBounds(163, 101, 214, 22);
 		panel.add(lblInicioProducao);
 		
 		lblMetaProducao = new JLabel("");
 		lblMetaProducao.setFont(new Font("Tahoma", Font.PLAIN, 18));
-		lblMetaProducao.setBounds(132, 123, 81, 22);
+		lblMetaProducao.setBounds(163, 123, 214, 22);
 		panel.add(lblMetaProducao);
 		
 		lblProduzido = new JLabel("");
 		lblProduzido.setFont(new Font("Tahoma", Font.PLAIN, 18));
-		lblProduzido.setBounds(132, 144, 96, 22);
+		lblProduzido.setBounds(163, 144, 214, 22);
 		panel.add(lblProduzido);
 		
 		lblFaltando = new JLabel("");
 		lblFaltando.setFont(new Font("Tahoma", Font.PLAIN, 18));
-		lblFaltando.setBounds(130, 166, 81, 22);
+		lblFaltando.setBounds(163, 166, 214, 22);
 		panel.add(lblFaltando);
 		
 		lblPrevisaoTermino = new JLabel("");
 		lblPrevisaoTermino.setFont(new Font("Tahoma", Font.PLAIN, 18));
-		lblPrevisaoTermino.setBounds(196, 187, 173, 22);
+		lblPrevisaoTermino.setBounds(163, 187, 214, 22);
 		panel.add(lblPrevisaoTermino);
 		
 		JLabel lblEstado = new JLabel("Estado:");
@@ -239,7 +237,7 @@ public class ViewHome extends JPanel {
 		lblTempoCiclo.setBounds(599, 89, 170, 22);
 		panel.add(lblTempoCiclo);
 		
-		lblProximaManutencao = new JLabel("13/09/2018");
+		lblProximaManutencao = new JLabel("");
 		lblProximaManutencao.setFont(new Font("Tahoma", Font.PLAIN, 18));
 		lblProximaManutencao.setBounds(647, 123, 106, 22);
 		panel.add(lblProximaManutencao);
@@ -264,39 +262,47 @@ public class ViewHome extends JPanel {
 		panel.add(btnLimpar);
 
 		CarregarEstadoInicial();
+		btnLiga.setEnabled(true);
+		btnDesliga.setEnabled(false);
 	}
 
 	private void CarregarEstadoInicial()
 	{
-		/*
+		
 		Maquina maq = new Maquina(); 
-		maq = control.dadosIniciaisMaquina();
-		lblNomeProduto.setText(maq.getModelo());
-		*/
+		maq = control.dadosMaquina();
+		lblProximaManutencao.setText(maq.getProximaManutencao());
 	}
 	
 	public void carregarDadosViewIniciaCiclo()
 	{
+		Calendar data = Calendar.getInstance();
 		lblNomeProduto.setText(viewIniciarCiclo.getProduto());
-		//lblInicioProducao.setText(viewIniciarCiclo.);
+		lblInicioProducao.setText(
+				String.valueOf(data.get(Calendar.HOUR_OF_DAY)) + ":" +
+				String.valueOf(data.get(Calendar.MINUTE)) + ":" +
+				String.valueOf(data.get(Calendar.SECOND))
+				);
 		lblMetaProducao.setText(viewIniciarCiclo.getMetaProducao());
+		lblProduzido.setText("0");
+		lblFaltando.setText(viewIniciarCiclo.getMetaProducao());
+		lblPrevisaoTermino.setText("Indeterminado");
 	}
 	
-	public void viewIniciaCiclo(Produto produto, boolean frascosPosicionados)
+	public void viewIniciaCiclo(Produto produto, boolean frascosPosicionados, int meta)
 	{
-		control.iniciarCiclo(produto, frascosPosicionados);
+		control.iniciarCiclo(produto, frascosPosicionados, meta);
 	}
 	
-	private void onToggleOnClick()
+	private void actBtnLiga()
 	{
 		viewIniciarCiclo = new ViewIniciarCicloDialog(this);
 		Controller.Controller.janelaPrincipal.setAlwaysOnTop(false);
 		viewIniciarCiclo.setVisible(true);
 		viewIniciarCiclo.setAlwaysOnTop(true);
-				
 	}
 	
-	public void actBtnOff()
+	private void actBtnDesliga()
 	{
 		control.interromperCiclo();
 	}

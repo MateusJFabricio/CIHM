@@ -2,6 +2,7 @@ package Controller;
 
 import java.util.ArrayList;
 
+import DAO.Maquina;
 import DAO.Produto;
 import Model.ModelHome;
 
@@ -18,13 +19,17 @@ public class ControllerHome {
 		return model.Produtos();
 	}
 	
-	public void iniciarCiclo(Produto produto, boolean frascosPosicionados)
+	public void iniciarCiclo(Produto produto, boolean frascosPosicionados, int meta)
 	{
-		model.iniciarCiclo(produto, frascosPosicionados);
+		model.iniciarCiclo(produto, frascosPosicionados, meta);
 	}
 	
 	public void interromperCiclo()
 	{
-		
+		model.interromperCiclo();
+	}
+
+	public Maquina dadosMaquina() {
+		return Main.Main.mannBD.mannMaquina.selectMaquina();
 	}
 }

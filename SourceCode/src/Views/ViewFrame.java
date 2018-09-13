@@ -28,7 +28,6 @@ public class ViewFrame extends JFrame {
 	private ViewEstatisticas telaEstatisticas;
 	private ViewDocumentacao telaDocumentacao;
 	private ViewSenha telaSenha;
-	private ControllerFrame control;
 	private JPanel panelTelas_1;
 	final int HOME = 1;
 	final int ESTATISTICAS = 2;
@@ -37,7 +36,7 @@ public class ViewFrame extends JFrame {
 	final int DESLIGAR = 5;
 	
 	public ViewFrame() {
-		control = new ControllerFrame();
+		new ControllerFrame();
 		setAutoRequestFocus(false);
 		//setAlwaysOnTop(true);
 		setUndecorated(true);

@@ -247,6 +247,18 @@ public class ViewIniciarCicloDialog extends JDialog {
 	
 	private void acaoBotaoOk()
 	{
+		int meta = 0;
+		//Valida meta
+		if (rbProdProgramada.isSelected())
+		{
+			if (!validarMeta())
+			{
+				JOptionPane.showMessageDialog(null, "Meta invalida!");
+				return;
+			}
+			meta = Integer.parseInt(txtMeta.getText());
+		}
+		
 		Object[] options = { "Sim", "Não" };
 		int opcao = JOptionPane.showOptionDialog(null, "Há frascos já em posição de envase?", "Pergunta", JOptionPane.DEFAULT_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, options[0]);
 		boolean frascosPosicionados = (opcao == 0);
@@ -263,10 +275,21 @@ public class ViewIniciarCicloDialog extends JDialog {
 			}
 		}
 		
-		frame.viewIniciaCiclo(produto, frascosPosicionados);
+		frame.viewIniciaCiclo(produto, frascosPosicionados, meta);
 		this.dispose();
 	}
 	
+	private boolean validarMeta() {
+		try {
+	        if (Integer.parseInt(txtMeta.getText()) > 0)
+	        	return true;
+	        else
+	        	return false;
+	    } catch (NumberFormatException ex) {
+	        return false;
+	    }
+	}
+
 	private void acaoBotaoCancelar()
 	{
 		this.dispose();

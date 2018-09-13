@@ -4,7 +4,7 @@ import Background.Services.CommHome;
 import Background.Services.GPIO;
 
 public class TaskHome implements Runnable {
-	private GPIO gpio;
+	public GPIO gpio;
 	private CommHome comm;
 	
 	public TaskHome(CommHome comm, GPIO gpio)
