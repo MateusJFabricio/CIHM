@@ -20,7 +20,6 @@ public class TaskEnvase implements Runnable {
 	private ActionListener actionInicioLinha, actionFimLinha;
 	private boolean contagemInicioLinhaFinalizada = false, contagemFimLinhaFinalizada = false;
 	
-	
 	public TaskEnvase(CommEnvase comm, GPIO gpio)
 	{
 		this.comm = comm;
@@ -362,7 +361,7 @@ public class TaskEnvase implements Runnable {
 				gpio.inEnvFimDeCursoEnforcadorAvancado.isLow() &&
 				gpio.inEnvBombaLigada.isLow() &&
 				gpio.inEnvFrascoSaindoDaAreaEnvase.isHigh() &&
-				gpio.inEnvProdutoNivelCritico.isLow() &&
+				gpio.inEnvProdutoNivelCriticoBaixo.isLow() &&
 				gpio.outEnvBombaEnvase.isLow() &&
 				gpio.outEnvEsteira1.isLow() &&
 				gpio.outEnvTrava2.isLow() &&
