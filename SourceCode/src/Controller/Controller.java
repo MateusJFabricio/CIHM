@@ -8,20 +8,17 @@ public class Controller {
 	public static ViewFrame janelaPrincipal;
 	private ViewWelcome welcome;
 	
-	public void initTelas()
+	public void initWelcomeScreen()
 	{
-		welcome = new ViewWelcome(this);
-
-		//Habilita tela Bem Vindo
+		welcome = new ViewWelcome();
 		welcome.setVisible(true);
-		
 	}
 	
 	public void abrirTelaHome()
 	{
-		welcome.dispose();
 		janelaPrincipal = new ViewFrame();
 		janelaPrincipal.setVisible(true);
+		welcome.dispose();
 	}
 	
 	

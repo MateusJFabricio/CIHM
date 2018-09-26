@@ -44,7 +44,7 @@ public class ManagerIO {
 	
 	//Obj Comuns
 	public Produto produto;
-	private GPIO gpio;
+	public GPIO gpio;
 	
 	public ManagerIO()
 	{

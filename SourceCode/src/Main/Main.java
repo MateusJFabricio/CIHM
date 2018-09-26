@@ -11,11 +11,11 @@ public class Main {
 	public static ManagerIO mannIO;
 	
 	public static void main(String[] args) {
-
+		Controller controller = new Controller();
+		controller.initWelcomeScreen();
 		teclado = new MtsKeyboard();
 		mannBD = new  ManagerBD();
 		mannIO = new ManagerIO();
-		Controller controller = new Controller();
-		controller.initTelas();
+		controller.abrirTelaHome();
 	}
 }

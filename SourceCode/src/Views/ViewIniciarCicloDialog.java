@@ -40,12 +40,11 @@ public class ViewIniciarCicloDialog extends JDialog {
 	private ViewHome frame;
 	private JButton btnOk;
 	private ArrayList<Produto> listProd;
+	private Produto produtoSelecionado;
+	private boolean frascosPosicionados;
+	private int metaProducao;
+	public int comando = 0;
 	
-	
-	public String getProduto() {
-		return cbProdutos.getSelectedItem().toString();
-	}
-
 	public String getTipoProducao() {
 		if (rbProdContinua.isSelected())
 		{
@@ -54,14 +53,13 @@ public class ViewIniciarCicloDialog extends JDialog {
 			return "Programada";
 	}
 
-	public String getMetaProducao() {
-		return txtMeta.getText();
+	public int getMetaProducao() {
+		return metaProducao;
 	}
 
 	public ViewIniciarCicloDialog(ViewHome frame) {
 		setType(Type.UTILITY);
 		this.frame = frame;
-		setModal(true);
 		setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 		setResizable(false);
 		getContentPane().setBackground(new Color(30, 144, 255));
@@ -82,6 +80,7 @@ public class ViewIniciarCicloDialog extends JDialog {
 			public void mouseClicked(MouseEvent arg0) {
 				if (txtMeta.isEnabled())
 				{
+					Main.Main.teclado.setModalExclusionType(ModalExclusionType.APPLICATION_EXCLUDE);
 					Main.Main.teclado.setNumberOnly(true);
 					Main.Main.teclado.showKeyboard();
 				}
@@ -247,35 +246,35 @@ public class ViewIniciarCicloDialog extends JDialog {
 	
 	private void acaoBotaoOk()
 	{
-		int meta = 0;
+		metaProducao = 0;
+		comando = 1;
+		
 		//Valida meta
 		if (rbProdProgramada.isSelected())
 		{
 			if (!validarMeta())
 			{
-				JOptionPane.showMessageDialog(null, "Meta invalida!");
+				JOptionPane.showMessageDialog(this, "Meta invalida!");
 				return;
 			}
-			meta = Integer.parseInt(txtMeta.getText());
+			metaProducao = Integer.parseInt(txtMeta.getText());
 		}
 		
 		Object[] options = { "Sim", "Não" };
-		int opcao = JOptionPane.showOptionDialog(null, "Há frascos já em posição de envase?", "Pergunta", JOptionPane.DEFAULT_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, options[0]);
-		boolean frascosPosicionados = (opcao == 0);
+		int opcao = JOptionPane.showOptionDialog(this, "Há frascos já em posição de envase?", "Pergunta", JOptionPane.DEFAULT_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, options[0]);
 		
-		frame.carregarDadosViewIniciaCiclo();
+		frascosPosicionados = (opcao == 0);
 		
-		Produto produto = new Produto();
+		produtoSelecionado = new Produto();
 		for(Produto produtoTemp: listProd)
 		{
 			if (produtoTemp.getNome().equals(cbProdutos.getSelectedItem().toString()))
 			{
-				produto = produtoTemp;
+				produtoSelecionado = produtoTemp;
 				break;
 			}
 		}
 		
-		frame.viewIniciaCiclo(produto, frascosPosicionados, meta);
 		this.dispose();
 	}
 	
@@ -292,7 +291,16 @@ public class ViewIniciarCicloDialog extends JDialog {
 
 	private void acaoBotaoCancelar()
 	{
+		comando = 0;
 		this.dispose();
+	}
+
+	public Produto getProdutoSelecionado() {
+		return produtoSelecionado;
+	}
+
+	public boolean isFrascosPosicionados() {
+		return frascosPosicionados;
 	}
 
 }

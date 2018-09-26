@@ -10,9 +10,9 @@ public class ControllerSenha {
 		model = new ModelSenha();
 	}
 	
-	public boolean confirmarSenha(String senha)
+	public int confirmarSenha(String senha)
 	{
-		return model.confirmarSenha(senha);
+		return model.tipoSenha(senha);
 	}
-	
+
 }

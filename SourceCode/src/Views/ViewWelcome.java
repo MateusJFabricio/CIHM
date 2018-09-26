@@ -2,29 +2,18 @@ package Views;
 
 import java.awt.Color;
 import java.awt.Font;
-import java.awt.event.ActionListener;
 
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.SwingConstants;
-import javax.swing.Timer;
-
-import Controller.Controller;
-import Controller.ControllerWelcome;
 
 public class ViewWelcome extends JFrame {
 	
 	private static final long serialVersionUID = 1L;
-	private Controller controlMain;
-	private ControllerWelcome controlLocal;
-	private Timer timerWelcomePage;
 	private JLabel lblModeloDaMaquina;
 	
-	public ViewWelcome(Controller controlMain) {
-		this.controlMain = controlMain;
-		controlLocal = new ControllerWelcome();
-		
+	public ViewWelcome() {
 		setBackground(Color.LIGHT_GRAY);
 		getContentPane().setLayout(null);
 		setBounds(100, 100, 800, 480);
@@ -49,7 +38,7 @@ public class ViewWelcome extends JFrame {
 		lblNewLabel_1.setBounds(0, 337, 800, 28);
 		getContentPane().add(lblNewLabel_1);
 		
-		lblModeloDaMaquina = new JLabel("Envasadora ClaraMaq init");
+		lblModeloDaMaquina = new JLabel("Envasadora CMEV12B");
 		lblModeloDaMaquina.setHorizontalAlignment(SwingConstants.CENTER);
 		lblModeloDaMaquina.setFont(new Font("Times New Roman", Font.PLAIN, 20));
 		lblModeloDaMaquina.setBounds(0, 383, 800, 39);
@@ -64,24 +53,6 @@ public class ViewWelcome extends JFrame {
 		label.setBounds(0, 0, 800, 480);
 		getContentPane().add(label);
 		
-		inicializaTimer();
-		
-		buscarModeloMaquina();
-	}
-	
-	private void buscarModeloMaquina() {
-		lblModeloDaMaquina.setText("Envasadora " + controlLocal.dadosIniciaisMaquina().getModelo());
-	}
-
-	private void inicializaTimer() {
-		ActionListener action = new ActionListener() {
-			public void actionPerformed(java.awt.event.ActionEvent e) {
-				controlMain.abrirTelaHome();
-				timerWelcomePage.stop();
-			}
-		};
-		timerWelcomePage = new Timer(2000, action);
-		timerWelcomePage.start();
 	}
 	
 }

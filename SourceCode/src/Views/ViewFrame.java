@@ -2,15 +2,20 @@ package Views;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Dialog.ModalExclusionType;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowFocusListener;
 
 import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.LayoutStyle.ComponentPlacement;
 import javax.swing.SwingConstants;
@@ -29,6 +34,7 @@ public class ViewFrame extends JFrame {
 	private ViewDocumentacao telaDocumentacao;
 	private ViewSenha telaSenha;
 	private JPanel panelTelas_1;
+	private ControllerFrame control;
 	final int HOME = 1;
 	final int ESTATISTICAS = 2;
 	final int CONFIGURACOES = 3;
@@ -36,12 +42,24 @@ public class ViewFrame extends JFrame {
 	final int DESLIGAR = 5;
 	
 	public ViewFrame() {
-		new ControllerFrame();
+		addWindowFocusListener(new WindowFocusListener() {
+			public void windowGainedFocus(WindowEvent arg0) {
+			}
+			public void windowLostFocus(WindowEvent arg0) {
+			}
+		});
+		addWindowListener(new WindowAdapter() {
+			@Override
+			public void windowClosing(WindowEvent arg0) {
+				actExit(arg0);
+			}
+		});
+		control = new ControllerFrame();
 		setAutoRequestFocus(false);
 		//setAlwaysOnTop(true);
 		setUndecorated(true);
 		setExtendedState(JFrame.MAXIMIZED_BOTH);
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 		setBounds(100, 100, 800, 480);
 		contentPane = new JPanel();
 		contentPane.setBackground(Color.WHITE);
@@ -142,6 +160,34 @@ public class ViewFrame extends JFrame {
 		
 	}
 	
+	protected void actExit(WindowEvent e) {
+		if (telaSenha == null) telaSenha = new ViewSenha();
+		this.setAlwaysOnTop(false);
+		telaSenha.setModalExclusionType(ModalExclusionType.APPLICATION_EXCLUDE);
+		telaSenha.setModal(true);
+		telaSenha.setVisible(true);
+		
+		switch (telaSenha.tipoSenha) {
+		//Invalido
+		case 0:
+			JOptionPane.showMessageDialog(null, "Senha invalida");
+			break;
+		//Permissao de usuario
+		case 1:
+			control.desligar();
+			break;
+		//Permissão de Adm
+		case 2:
+			control.fecharApp();
+			e.getWindow().dispose();
+			break;
+		default:
+			break;
+		}
+		
+		telaSenha.dispose();
+	}
+
 	private void switchScreen(int numTela)
 	{
 		if (!confirmarMudancaTela()) return;
@@ -184,10 +230,30 @@ public class ViewFrame extends JFrame {
 			
 			
 		}else if(numTela == DESLIGAR){
-			if (telaSenha == null) telaSenha = new ViewSenha(this);
+			if (telaSenha == null) telaSenha = new ViewSenha();
 			this.setAlwaysOnTop(false);
-			telaSenha.setAlwaysOnTop(true);
+			telaSenha.setModalExclusionType(ModalExclusionType.APPLICATION_EXCLUDE);
+			telaSenha.setModal(true);
 			telaSenha.setVisible(true);
+			
+			switch (telaSenha.tipoSenha) {
+			//Invalido
+			case 0:
+				JOptionPane.showMessageDialog(null, "Senha invalida");
+				break;
+			//Permissao de usuario
+			case 1:
+				control.desligar();
+				break;
+			//Permissão de Adm
+			case 2:
+				control.fecharApp();
+				break;
+			default:
+				break;
+			}
+			
+			telaSenha.dispose();
 		}
 		panelTelas_1.repaint();
 		panelTelas_1.revalidate();
@@ -198,5 +264,7 @@ public class ViewFrame extends JFrame {
 		return true;
 	}
 	
+	
+
 	
 }

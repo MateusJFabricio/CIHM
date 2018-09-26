@@ -1,11 +1,13 @@
 package DAO;
 
+import java.io.File;
+import java.io.IOException;
 import java.sql.*;
 
 import javax.swing.JOptionPane;
 
 public class ManagerBD {
-	private String URLConexao = "jdbc:sqlite:ClaraMaq_PRD.db";
+	private String URLConexao;
 	
 	private Connection conn;
 	private Statement stm;
@@ -21,14 +23,27 @@ public class ManagerBD {
 	
 	public ManagerBD()
 	{
-		
+		String caminhoAbsoluto = new File("").getAbsolutePath();
+		URLConexao = "jdbc:sqlite:" + caminhoAbsoluto + "/ClaraMaq_PRD.db";
 		try {
 			Class.forName("org.sqlite.JDBC");
 			this.conn = DriverManager.getConnection(URLConexao);
 			this.stm = this.conn.createStatement();
 		} catch (SQLException | ClassNotFoundException e) {
-			JOptionPane.showMessageDialog(null, "Houve um problema com o banco de dados.");
-			e.printStackTrace();
+			try {
+				URLConexao = "jdbc:sqlite:" + caminhoAbsoluto + "\\ClaraMaq_PRD.db";
+				Class.forName("org.sqlite.JDBC");
+				this.conn = DriverManager.getConnection(URLConexao);
+				this.stm = this.conn.createStatement();
+			} catch (SQLException | ClassNotFoundException e1) {
+				JOptionPane.showMessageDialog(null, "Houve um problema com o banco de dados.");
+				try {
+					Runtime.getRuntime().exec("pkill x");
+				} catch (IOException e2) {
+					e2.printStackTrace();
+				}
+				e1.printStackTrace();
+			}
 		}
 		
 		inicializaManagers();

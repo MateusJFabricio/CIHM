@@ -1,6 +1,7 @@
 package Views;
 
 import java.awt.Color;
+import java.awt.Dialog.ModalExclusionType;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -17,6 +18,7 @@ import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.border.LineBorder;
 
+import Controller.Controller;
 import Controller.ControllerConfiguracoes;
 import DAO.Produto;
 
@@ -194,8 +196,41 @@ public class ViewConfiguracoes extends JPanel {
 		txtNomeProduto.setEditable(false);
 		txtTempoEnvase.setEditable(false);
 		btnSalvar.setEnabled(false);
+		
+		JButton btnMonitorGPIO = new JButton("Monitor Input/Output");
+		btnMonitorGPIO.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				actMonitorpInOut();
+			}
+		});
+		btnMonitorGPIO.setVerticalTextPosition(SwingConstants.BOTTOM);
+		btnMonitorGPIO.setHorizontalTextPosition(SwingConstants.CENTER);
+		btnMonitorGPIO.setFont(new Font("Tahoma", Font.PLAIN, 11));
+		btnMonitorGPIO.setBounds(294, 252, 203, 66);
+		panel.add(btnMonitorGPIO);
 	}
 	
+	protected void actMonitorpInOut() {
+		
+		ViewSenha vSenha = new ViewSenha();
+		vSenha.setModalExclusionType(ModalExclusionType.APPLICATION_EXCLUDE);
+		vSenha.setModal(true);
+		vSenha.setVisible(true);
+		int tipoSenha = vSenha.tipoSenha;
+		vSenha.dispose();
+		if (tipoSenha == 1)
+		{
+			ViewMonitorGPIO view = new ViewMonitorGPIO();
+			Controller.janelaPrincipal.setAlwaysOnTop(false);
+			view.setVisible(true);
+		}else
+		{
+			JOptionPane.showMessageDialog(null, "Senha invalida");
+		}
+		
+		
+	}
+
 	protected void actBtnRelatoriosErros() {
 		ViewRelatorioErroFrame relErros = new ViewRelatorioErroFrame();
 		relErros.setVisible(true);

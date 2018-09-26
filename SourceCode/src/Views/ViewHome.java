@@ -1,6 +1,7 @@
 package Views;
 
 import java.awt.Color;
+import java.awt.Dialog.ModalExclusionType;
 import java.awt.Font;
 import java.awt.SystemColor;
 import java.awt.event.ActionEvent;
@@ -20,7 +21,6 @@ import javax.swing.border.LineBorder;
 
 import Controller.ControllerHome;
 import DAO.Maquina;
-import DAO.Produto;
 
 public class ViewHome extends JPanel {
 
@@ -35,6 +35,8 @@ public class ViewHome extends JPanel {
 	private JLabel lblProximaManutencao;
 	public ControllerHome control;
 	ViewIniciarCicloDialog viewIniciarCiclo;
+	private JButton btnLiga;
+	private JButton btnDesliga;
 
 	public ViewHome(JFrame frame) {
 		control = new ControllerHome();
@@ -52,20 +54,16 @@ public class ViewHome extends JPanel {
 		panel_2.setBounds(65, 220, 271, 90);
 		panel.add(panel_2);
 		
-		JButton btnLiga = new JButton("LIGA");
-		JButton btnDesliga = new JButton("DESLIGA");
+		btnLiga = new JButton("LIGA");
+		btnDesliga = new JButton("DESLIGA");
 		btnDesliga.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				btnLiga.setEnabled(true);
-				btnDesliga.setEnabled(false);
 				actBtnDesliga();
 			}
 		});
 		
 		btnLiga.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				btnLiga.setEnabled(false);
-				btnDesliga.setEnabled(true);
 				actBtnLiga();
 			}
 		});
@@ -277,33 +275,43 @@ public class ViewHome extends JPanel {
 	public void carregarDadosViewIniciaCiclo()
 	{
 		Calendar data = Calendar.getInstance();
-		lblNomeProduto.setText(viewIniciarCiclo.getProduto());
+		lblNomeProduto.setText(viewIniciarCiclo.getProdutoSelecionado().getNome());
 		lblInicioProducao.setText(
 				String.valueOf(data.get(Calendar.HOUR_OF_DAY)) + ":" +
 				String.valueOf(data.get(Calendar.MINUTE)) + ":" +
 				String.valueOf(data.get(Calendar.SECOND))
 				);
-		lblMetaProducao.setText(viewIniciarCiclo.getMetaProducao());
+		lblMetaProducao.setText(String.valueOf(viewIniciarCiclo.getMetaProducao()));
 		lblProduzido.setText("0");
-		lblFaltando.setText(viewIniciarCiclo.getMetaProducao());
+		lblFaltando.setText(String.valueOf(viewIniciarCiclo.getMetaProducao()));
 		lblPrevisaoTermino.setText("Indeterminado");
-	}
-	
-	public void viewIniciaCiclo(Produto produto, boolean frascosPosicionados, int meta)
-	{
-		control.iniciarCiclo(produto, frascosPosicionados, meta);
 	}
 	
 	private void actBtnLiga()
 	{
 		viewIniciarCiclo = new ViewIniciarCicloDialog(this);
-		Controller.Controller.janelaPrincipal.setAlwaysOnTop(false);
+		viewIniciarCiclo.setModalExclusionType(ModalExclusionType.APPLICATION_EXCLUDE);
+		//Controller.Controller.janelaPrincipal.setAlwaysOnTop(false);
+		//viewIniciarCiclo.setAlwaysOnTop(true);
+		viewIniciarCiclo.setModal(true);
 		viewIniciarCiclo.setVisible(true);
-		viewIniciarCiclo.setAlwaysOnTop(true);
+		
+		if (viewIniciarCiclo.comando == 1)
+		{
+			btnLiga.setEnabled(false);
+			btnDesliga.setEnabled(true);
+			carregarDadosViewIniciaCiclo();
+			control.iniciarCiclo(viewIniciarCiclo.getProdutoSelecionado(), viewIniciarCiclo.isFrascosPosicionados(), viewIniciarCiclo.getMetaProducao());
+		}
+		
+		viewIniciarCiclo.comando = 0;
+		viewIniciarCiclo.dispose();
 	}
 	
 	private void actBtnDesliga()
 	{
+		btnLiga.setEnabled(true);
+		btnDesliga.setEnabled(false);
 		control.interromperCiclo();
 	}
 }
