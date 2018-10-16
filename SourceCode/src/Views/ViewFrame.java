@@ -51,6 +51,7 @@ public class ViewFrame extends JFrame {
 		addWindowListener(new WindowAdapter() {
 			@Override
 			public void windowClosing(WindowEvent arg0) {
+				Main.Main.mannIO.gpio.getGpio().shutdown();
 				actExit(arg0);
 			}
 		});

@@ -15,10 +15,16 @@ public class CommEnvase {
 	private int frascosParaEnvasar = 0;
 	private int metaProducao = 0;
 	private boolean isAlive = false;
+	private int frascoEnviadoTampamento;
 	
 	public int getTempoEnvase()
 	{
 		return tempoEnvase;
+	}
+	
+	public void setTempoEnvase(int tempo)
+	{
+		tempoEnvase = tempo;
 	}
 	
 	public boolean isInicioRapido() {
@@ -112,5 +118,13 @@ public class CommEnvase {
 
 	public void setAlive(boolean isAlive) {
 		this.isAlive = isAlive;
+	}
+
+	public int getFrascoEnviadoTampamento() {
+		return frascoEnviadoTampamento;
+	}
+
+	public void setFrascoEnviadoTampamento(int frascoEnviadoTampamento) {
+		this.frascoEnviadoTampamento = frascoEnviadoTampamento;
 	}
 }

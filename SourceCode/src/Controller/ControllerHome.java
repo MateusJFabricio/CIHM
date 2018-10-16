@@ -2,6 +2,7 @@ package Controller;
 
 import java.util.ArrayList;
 
+import Background.Services.CommFrame;
 import DAO.Maquina;
 import DAO.Produto;
 import Model.ModelHome;
@@ -24,12 +25,16 @@ public class ControllerHome {
 		model.iniciarCiclo(produto, frascosPosicionados, meta);
 	}
 	
-	public void interromperCiclo()
+	public void interromperCiclo(int produzido)
 	{
-		model.interromperCiclo();
+		model.interromperCiclo(produzido);
 	}
 
 	public Maquina dadosMaquina() {
 		return Main.Main.mannBD.mannMaquina.selectMaquina();
+	}
+
+	public void atualizarDados(CommFrame comunicador) {
+		Main.Main.mannIO.atualizarDadosFrame(comunicador);
 	}
 }

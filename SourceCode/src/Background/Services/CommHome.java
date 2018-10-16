@@ -3,7 +3,7 @@ package Background.Services;
 public class CommHome {
 	private boolean goGome = false;
 	private boolean finalizado = true;
-	private String statusAtual = "";
+	private boolean Alive = false;
 	
 	public synchronized void setGoGome(boolean goGome) {
 		this.goGome = goGome;
@@ -24,12 +24,12 @@ public class CommHome {
 		notifyAll();
 	}
 
-	public synchronized String getStatusAtual() {
-		return statusAtual;
+	public boolean isAlive() {
+		return Alive;
 	}
 
-	public synchronized void setStatusAtual(String statusAtual) {
-		this.statusAtual = statusAtual;
+	public void setAlive(boolean alive) {
+		Alive = alive;
 	}
 	
 	

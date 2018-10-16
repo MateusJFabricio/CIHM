@@ -20,6 +20,8 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 
 public class ViewMonitorGPIO extends JFrame {
 
@@ -33,7 +35,7 @@ public class ViewMonitorGPIO extends JFrame {
 	private JLabel lblInput16;
 	private JLabel lblInput15;
 	private JLabel lblInput14;
-	private JLabel lblInput31;
+	private JLabel lblInput24;
 	private JLabel lblInput27;
 	private JLabel lblInput25;
 	private JLabel lblOutput3;
@@ -50,12 +52,20 @@ public class ViewMonitorGPIO extends JFrame {
 	private JLabel lblOutput28;
 	private JLabel lblOutput29;
 	private JLabel lblOutput22;
+	private JLabel lblInput0;
 	private ActionListener actMonitorGPIO;
 	private Timer timerMonitorGPIO;
 	private JLabel lblInput;
 	private int numDots = 0;
+	
 
 	public ViewMonitorGPIO() {
+		addWindowListener(new WindowAdapter() {
+			@Override
+			public void windowClosing(WindowEvent arg0) {
+				actClosing();
+			}
+		});
 		control = new ControllerMonitorGPIO();
 		actMonitorGPIO = new ActionListener() {
 			public void actionPerformed(java.awt.event.ActionEvent e) {
@@ -189,7 +199,7 @@ public class ViewMonitorGPIO extends JFrame {
 		panel_2.setLayout(null);
 		
 		JLabel lblInput_1 = new JLabel("### Entradas ###");
-		lblInput_1.setBounds(10, 11, 275, 14);
+		lblInput_1.setBounds(10, 0, 275, 14);
 		lblInput_1.setHorizontalAlignment(SwingConstants.CENTER);
 		panel_2.add(lblInput_1);
 		
@@ -222,9 +232,9 @@ public class ViewMonitorGPIO extends JFrame {
 		lblInput14.setBounds(10, 73, 334, 14);
 		panel_2.add(lblInput14);
 		
-		lblInput31 = new JLabel("Input 31: Sensor Frasco Pos. Tampador - ");
-		lblInput31.setBounds(10, 148, 376, 14);
-		panel_2.add(lblInput31);
+		lblInput24 = new JLabel("Input 24: Sensor Frasco Pos. Tampador - ");
+		lblInput24.setBounds(10, 148, 376, 14);
+		panel_2.add(lblInput24);
 		
 		lblInput27 = new JLabel("Input 27: Sensor Nivel alto - ");
 		lblInput27.setBounds(10, 133, 334, 14);
@@ -290,11 +300,20 @@ public class ViewMonitorGPIO extends JFrame {
 		lblOutput22.setBounds(10, 400, 334, 14);
 		panel_2.add(lblOutput22);
 		
+		lblInput0 = new JLabel("Input 0: Bateria - ");
+		lblInput0.setBounds(10, 11, 334, 14);
+		panel_2.add(lblInput0);
+		
 		adicionarEstadosOutput();
 		adicionarEstadosInput();
 	}
 	
 	
+	protected void actClosing() {
+		timerMonitorGPIO.stop();
+	}
+
+
 	private void adicionarEstadosOutput() {
 		lblOutput1.setText(lblOutput1.getText() + " ( " + control.buscarEstadoOutput(1) + " )");
 		lblOutput2.setText(lblOutput2.getText() + " ( " + control.buscarEstadoOutput(2) + " )");
@@ -313,6 +332,7 @@ public class ViewMonitorGPIO extends JFrame {
 	
 	private void adicionarEstadosInput() {
 		
+		lblInput0.setText(lblInput0.getText() + " ( " + control.buscarEstadoInput(0) + " )");
 		lblInput11.setText(lblInput11.getText() + " ( " + control.buscarEstadoInput(11) + " )");
 		lblInput12.setText(lblInput12.getText() + " ( " + control.buscarEstadoInput(12) + " )");
 		lblInput13.setText(lblInput13.getText() + " ( " + control.buscarEstadoInput(13) + " )");
@@ -321,12 +341,13 @@ public class ViewMonitorGPIO extends JFrame {
 		lblInput16.setText(lblInput16.getText() + " ( " + control.buscarEstadoInput(16) + " )");
 		lblInput25.setText(lblInput25.getText() + " ( " + control.buscarEstadoInput(25) + " )");
 		lblInput27.setText(lblInput27.getText() + " ( " + control.buscarEstadoInput(27) + " )");
-		lblInput31.setText(lblInput31.getText() + " ( " + control.buscarEstadoInput(31) + " )");
+		lblInput24.setText(lblInput24.getText() + " ( " + control.buscarEstadoInput(24) + " )");
 		lblInput21.setText(lblInput21.getText() + " ( " + control.buscarEstadoInput(21) + " )");
 		lblInput23.setText(lblInput23.getText() + " ( " + control.buscarEstadoInput(23) + " )");
 	}
 	
 private void atualizarEstadosInput() {
+		lblInput0.setText(formatarTextoLabel(control.buscarEstadoInput(0), lblInput0.getText()));
 		lblInput11.setText(formatarTextoLabel(control.buscarEstadoInput(11), lblInput11.getText()));
 		lblInput12.setText(formatarTextoLabel(control.buscarEstadoInput(12), lblInput12.getText()));
 		lblInput13.setText(formatarTextoLabel(control.buscarEstadoInput(13), lblInput13.getText()));
@@ -335,7 +356,7 @@ private void atualizarEstadosInput() {
 		lblInput16.setText(formatarTextoLabel(control.buscarEstadoInput(16), lblInput16.getText()));
 		lblInput25.setText(formatarTextoLabel(control.buscarEstadoInput(25), lblInput25.getText()));
 		lblInput27.setText(formatarTextoLabel(control.buscarEstadoInput(27), lblInput27.getText()));
-		lblInput31.setText(formatarTextoLabel(control.buscarEstadoInput(31), lblInput31.getText()));
+		lblInput24.setText(formatarTextoLabel(control.buscarEstadoInput(24), lblInput24.getText()));
 		lblInput21.setText(formatarTextoLabel(control.buscarEstadoInput(21), lblInput21.getText()));
 		lblInput23.setText(formatarTextoLabel(control.buscarEstadoInput(23), lblInput23.getText()));
 	}

@@ -7,15 +7,16 @@ import java.util.concurrent.TimeUnit;
 
 import javax.swing.Timer;
 
-import Background.Executor.TaskAcumulador;
 import Background.Executor.TaskEmergencia;
 import Background.Executor.TaskEnvase;
 import Background.Executor.TaskHome;
+import Background.Executor.TaskNivel;
 import Background.Executor.TaskTampador;
-import Background.Services.CommAcumulador;
 import Background.Services.CommEmergencia;
 import Background.Services.CommEnvase;
+import Background.Services.CommFrame;
 import Background.Services.CommHome;
+import Background.Services.CommNivel;
 import Background.Services.CommTampador;
 import Background.Services.GPIO;
 import DAO.Produto;
@@ -26,13 +27,11 @@ public class ManagerIO {
 	
 	//Threads tarefas
 	private TaskEnvase envase;
-	private TaskAcumulador acumulador;
 	private TaskTampador tampador;
 	private TaskHome home;
 	private TaskEmergencia emergencia;
 	
 	//Comunicadores
-	private CommAcumulador commAcumulador;
 	private CommEnvase commEnvase;
 	private CommTampador commTampador;
 	private CommHome commHome;
@@ -45,6 +44,10 @@ public class ManagerIO {
 	//Obj Comuns
 	public Produto produto;
 	public GPIO gpio;
+
+	private CommNivel commNivel;
+
+	private TaskNivel nivel;
 	
 	public ManagerIO()
 	{
@@ -53,21 +56,27 @@ public class ManagerIO {
 		initTasks();
 		submitThreads();
 		iniciaMonitorEmergencia();
+		
+		goHome();
+	}
+	
+	public void goHome()
+	{
+		commHome.setGoGome(true);
+		
+		if (!commHome.isAlive())
+			pool.submit(home);
 	}
 	
 	private void iniciaMonitorEmergencia() {
 		actEmergencia = new ActionListener() {
 			public void actionPerformed(java.awt.event.ActionEvent e) {
-				if (commEmergencia.isEmEmergencia())
-				{
-					if (gpio.inEnvBotaoEmergenciaAcionado.isLow())
-						voltarEmergencia();
-					
-				}else if(!commEmergencia.isEmEmergencia())
-				{
-					if (gpio.inEnvBotaoEmergenciaAcionado.isHigh())
-						actEmergencia();
-				}
+				if (commEmergencia.isEmEmergencia() && (!commEmergencia.isGPIOLiberada()))
+					actEmergencia();
+				
+				if (!commEmergencia.isEmEmergencia() && (commEmergencia.isGPIOLiberada()))
+					voltarEmergencia();
+				
 		}};
 		
 		timerMonitorEmergencia = new Timer(10, actEmergencia);
@@ -82,20 +91,20 @@ public class ManagerIO {
 	
 	private void initComunicadores()
 	{
-		commAcumulador 	=  new CommAcumulador();
 		commEnvase 		= new CommEnvase();
 		commTampador 	= new CommTampador();
 		commHome 		= new CommHome();
 		commEmergencia 	= new CommEmergencia();
+		commNivel		= new CommNivel();
 	}
 	
 	private void initTasks()
 	{
 		envase 		= new TaskEnvase(commEnvase, gpio);
-		acumulador 	= new TaskAcumulador(commAcumulador, gpio);
 		tampador 	= new TaskTampador(commTampador, gpio);
 		home 		= new TaskHome(commHome, gpio);
 		emergencia 	= new TaskEmergencia(commEmergencia, gpio);
+		nivel		= new TaskNivel(commNivel, gpio);
 	}
 	
 	private void submitThreads()
@@ -103,10 +112,10 @@ public class ManagerIO {
 		pool = new ThreadPoolExecutor(5, 10, 1, TimeUnit.HOURS, new ArrayBlockingQueue<Runnable>(10));
 		
 		pool.submit(envase);
-		pool.submit(acumulador);
 		pool.submit(tampador);
 		pool.submit(home);
 		pool.submit(emergencia);
+		pool.submit(nivel);
 		
 	}
 	
@@ -114,49 +123,59 @@ public class ManagerIO {
 	{
 		commEnvase.setCicloContinuo(meta <= 0);
 		commEnvase.setIniciaProducao(true);
-
+		commEnvase.setInicioRapido(frascosPosicionados);
+		commEnvase.setTempoEnvase(produto.getTempoEnvase());
 		if (commEnvase.isAlive())
 		{
 			commEnvase.setMetaProducao(commEnvase.getMetaProducao() + meta);
 		}else
 		{
 			commEnvase.setMetaProducao(meta);
-			pool.execute(envase);
+			pool.submit(envase);
 		}
-	}
-	
-	public void goHome()
-	{
-		commHome.setGoGome(true);
+		
+		
+		commTampador.setIniciaProducao(true);
+		if (!commTampador.isAlive())
+			pool.submit(tampador);
+		
+		gpio.outAcumMotor.low();
 	}
 	
 	private void actEmergencia()
 	{
 		envase.gpio = null;
-		acumulador.gpio = null;
 		tampador.gpio = null;
 		home.gpio = null;
 
 		commEmergencia.setGPIOLiberada(true);
+		
+		commTampador.setIniciaProducao(false);
+		gpio.outAcumMotor.high();
 	}
 	
 	public void voltarEmergencia()
 	{
 		commEmergencia.setGPIOLiberada(false);
-		
+		gpio.outAcumMotor.high();
 		envase.gpio = gpio;
-		acumulador.gpio = gpio;
 		tampador.gpio = gpio;
 		home.gpio = gpio;
 		
-		pool.execute(envase);
-		pool.execute(acumulador);
-		pool.execute(tampador);
-		pool.execute(home);
+		goHome();
 	}
 
 	public void interromperCiclo() {
 		commEnvase.setIniciaProducao(false);
+		commTampador.setIniciaProducao(false);
+		gpio.outAcumMotor.high();
+	}
+
+	public void atualizarDadosFrame(CommFrame comunicador) {
+		comunicador.setEmergencia(commEmergencia.isEmEmergencia());
+		comunicador.setProduzido(commEnvase.getMetaProducao());
+		comunicador.setNivelAlto(commNivel.isNivelAlto());
+		comunicador.setNivelBaixo(commNivel.isNivelBaixo());
 	}
 
 }

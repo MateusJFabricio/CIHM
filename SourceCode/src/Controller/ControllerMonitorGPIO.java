@@ -80,6 +80,11 @@ public class ControllerMonitorGPIO {
 	public String buscarEstadoInput(int numIn)
 	{
 		switch (numIn) {
+		case 0:
+			if (Main.Main.mannIO.gpio.inEnvBateria.isHigh())
+				return "ON";
+			else
+				return "OFF";
 		case 11:
 			if (Main.Main.mannIO.gpio.inEnvBombaLigada.isHigh())
 				return "ON";
@@ -121,7 +126,7 @@ public class ControllerMonitorGPIO {
 				return "ON";
 			else
 				return "OFF";
-		case 31:
+		case 24:
 			if (Main.Main.mannIO.gpio.inTampFrascoEmPosicao.isHigh())
 				return "ON";
 			else

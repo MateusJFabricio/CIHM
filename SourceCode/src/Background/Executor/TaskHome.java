@@ -15,30 +15,52 @@ public class TaskHome implements Runnable {
 
 	@Override
 	public void run() {
-		ciclo();
-	}
-
-	private void ciclo() {
-		while(true)
-		{
-			if (comm.isGoHome())
-			{
-				comm.setGoGome(false);
-				comm.setFinalizado(false);
-				
-				pararEsteira1();
-				desligarBomba();
-				subirBicos();
-				recuarEnforcador();
-				abrirTrava1();
-				abrirTrava2();
-				
-				comm.setFinalizado(true);
-			}
-			aguardar(1000);
+		try {
+			comm.setAlive(true);
+			ciclo();
+		} catch (Exception e) {
+			System.out.println(e.getMessage());
+		} finally {
+			comm.setAlive(false);
 		}
 	}
+
+	private void ciclo() throws Exception {
+		if (comm.isGoHome())
+		{
+			comm.setGoGome(false);
+			comm.setFinalizado(false);
+			
+			pararEsteira1();
+			pararEsteira2();
+			recuarTampador();
+			desligarAcumulador();
+			desligarBomba();
+			subirBicos();
+			recuarEnforcador();
+			abrirTrava1();
+			abrirTrava2();
+			
+			comm.setFinalizado(true);
+		}
+		aguardar(1000);
+	}
 	
+	private void desligarAcumulador() {
+		gpio.outAcumMotor.high();
+		aguardar(100);
+	}
+
+	private void recuarTampador() {
+		gpio.outTampTampador.high();
+		aguardar(100);
+	}
+
+	private void pararEsteira2() {
+		gpio.outEnvEsteira2.high();
+		aguardar(100);
+	}
+
 	private void aguardar(int i)
 	{
 		try {
@@ -49,58 +71,58 @@ public class TaskHome implements Runnable {
 	}
 	
 	private void abrirTrava2() {
-		if (gpio.outEnvTrava2.isHigh())
-		{
-			gpio.outEnvTrava2.low();
-			aguardar(100);
-		}
+		gpio.outEnvTrava2.high();
+		aguardar(100);
 	}
 
 	private void abrirTrava1() {
-		if (gpio.outEnvTrava1.isHigh())
-		{
-			gpio.outEnvTrava1.low();
-			aguardar(100);
-		}
+		gpio.outEnvTrava1.high();
+		aguardar(100);
 	}
 	
 	private void recuarEnforcador() {
-		if (gpio.outEnvPistaoEnforcador.isHigh())
-		{
-			gpio.outEnvPistaoEnforcador.low();
-			aguardar(100);
-		}
+		gpio.outEnvPistaoEnforcador.high();
+		aguardar(100);
 	}
 
-	private void desligarBomba() {
+	private void desligarBomba() throws Exception {
+		int tempo = 5000, i = 0;
 		if (gpio.inEnvBombaLigada.isHigh())
 		{
-			gpio.outEnvBombaEnvase.low();
+			gpio.outEnvBombaEnvase.high();
 			while(gpio.inEnvBombaLigada.isHigh())
 			{
+				i += 100;
+				if (i >= tempo) sair();
 				aguardar(100);
 			}
 		}
 	}
+	
 
-	private void subirBicos() {
-		if (gpio.inEnvFimDeCursoEnvasadoraEmbaixo.isHigh())
+	private void subirBicos() throws Exception {
+		int tempo = 5000, i = 0;
+		if (!gpio.inEnvFimDeCursoEnvasadoraEmCima.isHigh())
 		{
-			gpio.outEnvPistaoEnvaseRecua.low();
 			gpio.outEnvPistaoEnvaseAvanca.high();
+			gpio.outEnvPistaoEnvaseRecua.low();
 			
 			while(gpio.inEnvFimDeCursoEnvasadoraEmCima.isLow())
 			{
+				i += 100;
+				if (i >= tempo) sair();
 				aguardar(100);
 			}
 		}
 	}
+	
+	
+	private void sair() throws Exception {
+		throw new Exception("Sair da rotina por emergencia acionado");
+	}
 
 	private void pararEsteira1() {
-		if (!gpio.outEnvEsteira1.isHigh())
-		{
-			gpio.outEnvEsteira1.low();
-			aguardar(200);
-		}
+		gpio.outEnvEsteira1.high();
+		aguardar(100);
 	}
 }

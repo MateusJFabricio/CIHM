@@ -1,8 +1,6 @@
 package Background.Executor;
 
 import java.awt.event.ActionListener;
-
-import javax.swing.JOptionPane;
 import javax.swing.Timer;
 
 import com.pi4j.io.gpio.event.GpioPinDigitalStateChangeEvent;
@@ -25,72 +23,123 @@ public class TaskEnvase implements Runnable {
 		this.comm = comm;
 		this.gpio = gpio;
 		
+		inicializaTimers();
+	}
+	
+	private void inicializaTimers() {
 		actionInicioLinha = new ActionListener() {
 			public void actionPerformed(java.awt.event.ActionEvent e) {
-				tempoAguardoInicioLinha = tempoAguardoInicioLinha + 10;
-				if ((tempoAguardoInicioLinha >=3000) && (comm.getFrascosParaEnvasar() > 0))
-				{
-					finalizaContagemFrascosInicioLinha();
-				}
-		}};
-		
-		actionFimLinha = new ActionListener() {
-			public void actionPerformed(java.awt.event.ActionEvent e) {
-				tempoAguardoFimLinha = tempoAguardoFimLinha + 10;
-				if (tempoAguardoFimLinha >=3000)
-				{
-					finalizaContagemFrascosFimLinha();
+				int tempoEspera = 5000;
+				try{
+					if (tempoAguardoInicioLinha <= tempoEspera)
+					{
+						tempoAguardoInicioLinha = tempoAguardoInicioLinha + 10;  
+					}
+					
+					if ((tempoAguardoInicioLinha >=tempoEspera) && (comm.getFrascosParaEnvasar() > 0))
+					{
+						finalizaContagemFrascosInicioLinha();
+					}else if (comm.getFrascosParaEnvasar() >=12)
+						finalizaContagemFrascosInicioLinha();
+				} catch (Exception e1) {
+					e1.printStackTrace();
 				}
 		}};
 		
 		timerInicioLinha = new Timer(10, actionInicioLinha);
+		
+		actionFimLinha = new ActionListener() {
+			public void actionPerformed(java.awt.event.ActionEvent e) {
+				int tempo = 200;
+				if (gpio.inEnvFrascoSaindoDaAreaEnvase.isLow())
+					tempoAguardoFimLinha = tempoAguardoFimLinha + 10;
+				else
+					tempoAguardoFimLinha = 0;
+				
+				if (tempoAguardoFimLinha >= tempo)
+					finalizaContagemFrascosFimLinha();
+		}};
+		
 		timerFimLinha = new Timer(10, actionFimLinha);
 	}
-	
-	
-	
+
 	@Override
 	public void run() {
 		try{
 			comm.setAlive(true);
+			goHome();
+			
+			if (comm.isIniciaProducao())
+			{
+				if (!emPosicaoHome())
+					posicaoEnvase();
+				
+				if (!comm.isInicioRapido())
+				{
+					comm.setInicioRapido(true);
+					buscarFrascos();
+				}
+			}
+				
 			while(comm.isIniciaProducao())
 			{
 				
 				if (comm.isCicloContinuo())
+				{
+					if (!emPosicaoHome())
+						posicaoEnvase();
 					ciclo();
+					enviarParaTampador();
+				}
 				else if (comm.getMetaProducao() > 0)
+				{
+					if (!emPosicaoHome())
+						posicaoEnvase();
 					ciclo();
+					enviarParaTampador();
+				}
 				else
 					comm.setIniciaProducao(false);
 			}
 			
+			desligaBomba();
+			subirBicosEnvase();
+			recuarEnforcador();
+			
 		}catch (Exception e) {
-			System.out.println("Thread Envase finalizada");
+			System.out.println("Ciclo Envase finalizado");
 			comm.setCicloContinuo(false);
 			comm.setIniciaProducao(false);
+			comm.setAlive(false);
+			try {
+				goHome();
+			} catch (Exception e1) {
+				e1.printStackTrace();
+			}
 		}finally {
 			comm.setAlive(false);
 		}
 	}
 	
-	private void ciclo()
+	private void posicaoEnvase() throws Exception {
+		desligaBomba();
+		pararEsteira1();
+		subirBicosEnvase();
+		recuarEnforcador();
+	}
+
+	private void ciclo() throws Exception
 	{
-		goHome();
-		
-		if (!comm.isInicioRapido())
-		{
-			comm.setInicioRapido(true);
-			buscarFrascos();
-		}
 		
 		envase();
-		enviarParaTampador();
+		
 		aguarda(1000);
 	}
 
 
-	private void envase()
+	private void envase() throws Exception
 	{
+		pararEsteira1();
 		avancarTrava1();
 		avancarTrava2();
 		avancarEnforcador();
@@ -102,34 +151,41 @@ public class TaskEnvase implements Runnable {
 		recuarEnforcador();
 		recuarTrava1();
 		recuarTrava2();
-		goHome();
 	}
 	
-	private void buscarFrascos()
+	private void buscarFrascos() throws Exception
 	{
 		recuarTrava2();
 		avancarTrava1();
 		ligarEsteira1();
 		contarFrascosEntradaLinha();
 		while(!contagemInicioLinhaFinalizada)
+		{
+			if (!comm.isIniciaProducao()) exit();
 			aguarda(100);
-		avancarTrava2();
+		}
 		posicionarFrascos();
 	}
 	
-	private void posicionarFrascos() {
-		while(gpio.inEnvFrascoSaindoDaAreaEnvase.isLow())
-			aguarda(100);
-		
-		aguarda(1000);
+	private void exit() throws Exception {
+		throw new Exception("interrompido por emergencia");
 	}
 
-	private void finalizaContagemFrascosInicioLinha()
+	private void posicionarFrascos() throws Exception {
+		while(gpio.inEnvFrascoSaindoDaAreaEnvase.isLow())
+		{
+			if (!comm.isIniciaProducao()) exit();
+			aguarda(100);
+		}
+	}
+
+	private void finalizaContagemFrascosInicioLinha() throws Exception
 	{
-		avancarTrava2();
 		retiraListenerFrascoInicioLinha();
 		timerInicioLinha.stop();
 		tempoAguardoInicioLinha = 0;
+		avancarTrava2();
+		posicionarFrascos();
 		contagemInicioLinhaFinalizada = true;
 	}
 	
@@ -138,7 +194,6 @@ public class TaskEnvase implements Runnable {
 		avancarTrava1();
 		retiraListenerFrascoFimLinha();
 		timerFimLinha.stop();
-		tempoAguardoFimLinha = 0;
 		contagemFimLinhaFinalizada = true;
 	}
 	
@@ -150,38 +205,63 @@ public class TaskEnvase implements Runnable {
 		gpio.inEnvFrascoEntrandoNaAreaEnvase.removeAllListeners();
 	}
 	
-	private void enviarParaTampador()
+	private void enviarParaTampador() throws Exception
 	{
-		ligarEsteira1();
-		ligarEsteira2();
-		contarFrascosEntradaLinha();
-		contarFrascosSaidaLinha();
-		
-		while(!contagemFimLinhaFinalizada && !contagemInicioLinhaFinalizada)
-		{
-			aguarda(100);
-		}
+		//Ajusta a meta de producao
+		comm.setFrascosEnvasado(comm.getFrascosParaEnvasar());
 		comm.setMetaProducao(comm.getMetaProducao() - comm.getFrascosEnvasado());
+		
 		if (comm.getMetaProducao() <= 0)
 			comm.setMetaProducao(0);
+		
+		contagemFimLinhaFinalizada = false;
+		contagemInicioLinhaFinalizada = false;
+		contarFrascosEntradaLinha();
+		contarFrascosSaidaLinha();
+		ligarEsteira1();
+		
+		//Sempre aguarda o fim e o inicio de producao
+		if (comm.isCicloContinuo())
+		{
+			while((!(contagemFimLinhaFinalizada)) || (!(contagemInicioLinhaFinalizada)))
+			{
+				if (!comm.isIniciaProducao() && !(contagemInicioLinhaFinalizada)) break;
+				aguarda(100);
+			}
+		}else
+		{
+			//Com meta, caso a meta seja atingida, deve aguardar somente o fim da producao
+			if (comm.getMetaProducao() <= 0)
+			{
+				while(!contagemFimLinhaFinalizada && comm.isIniciaProducao())
+				{
+					aguarda(100);
+				}
+				//Aguarda este tempo para desligar a esteira 1
+				aguarda(4000);
+			}else
+				while((!(contagemFimLinhaFinalizada)) || (!(contagemInicioLinhaFinalizada)))
+				{
+					if (!comm.isIniciaProducao() && !(contagemInicioLinhaFinalizada)) break;
+					aguarda(100);
+				}
+		}
+			
 	}
 	
 	private void contarFrascosSaidaLinha() {
-		comm.setFrascosEnvasado(0);
 		contagemFimLinhaFinalizada = false;
 		
 		gpio.inEnvFrascoSaindoDaAreaEnvase.addListener(new GpioPinListenerDigital() {
-            @Override
+			@Override
             public void handleGpioPinDigitalStateChangeEvent(GpioPinDigitalStateChangeEvent event) {
-            	if (event.getState().isHigh())
-                {
-                	comm.setFrascosEnvasado(comm.getFrascosEnvasado() + 1);
-                	if(comm.getFrascosEnvasado() >= 12)
-                	{
-                		finalizaContagemFrascosFimLinha();
-                	}else
-                		tempoAguardoFimLinha = 0;
-                }
+				if (gpio.outEnvEsteira1.isLow())
+            	{
+					if (event.getState().isLow())
+	            	{
+	            		comm.setFrascoEnviadoTampamento(comm.getFrascoEnviadoTampamento() + 1);
+	            	}
+            	}
             }
 
     	});
@@ -194,18 +274,17 @@ public class TaskEnvase implements Runnable {
 		contagemInicioLinhaFinalizada = false;
 		
 		gpio.inEnvFrascoEntrandoNaAreaEnvase.addListener(new GpioPinListenerDigital() {
-            @Override
+            private boolean contado = false;
+
+			@Override
             public void handleGpioPinDigitalStateChangeEvent(GpioPinDigitalStateChangeEvent event) {
-                if (event.getState().isHigh())
+                if (event.getState().isHigh() && !contado )
                 {
+                	contado = false;
                 	comm.setFrascosParaEnvasar(comm.getFrascosParaEnvasar() + 1);
-                	if (comm.getFrascosParaEnvasar() >= 12)
-                	{
-                		finalizaContagemFrascosInicioLinha();
-                	}else
-                		tempoAguardoInicioLinha = 0;
-                	
-                }
+                	tempoAguardoInicioLinha = 0;
+                }else if (event.getState().isLow() && contado )
+                	contado = false;
             }
 
     	});
@@ -215,84 +294,82 @@ public class TaskEnvase implements Runnable {
 	}
 
 	private void avancarEnforcador() {
-		if (!gpio.outEnvPistaoEnforcador.isHigh())
+		if (gpio.outEnvPistaoEnforcador.isHigh())
 		{
-			gpio.outEnvPistaoEnforcador.high();
-			aguarda(500);
+			gpio.outEnvPistaoEnforcador.low();
 		}
 	}
 
 
 	private void aguardaTempoEnvase() {
-		aguarda(comm.getTempoEnvase() * 1000);
+		for (int i = 0; i < comm.getTempoEnvase() * 10; i++) {
+			gpio.inAcumFrascoEmPosicao.isHigh();
+			aguarda(100);
+		}
 	}
 
 
 	private void ligaBomba() {
-		if (!gpio.inEnvBombaLigada.isHigh())
+		if (gpio.inEnvBombaLigada.isLow())
 		{
-			gpio.outEnvBombaEnvase.high();
-			aguarda(100);
+			gpio.outEnvBombaEnvase.low();
 		}
 	}
 
-	private void baixarBicosEnvase() {
-		if (!gpio.inEnvFimDeCursoEnvasadoraEmbaixo.isHigh())
+	private void baixarBicosEnvase() throws Exception {
+		if (gpio.inEnvFimDeCursoEnvasadoraEmbaixo.isLow())
 		{
-			gpio.outEnvPistaoEnvaseAvanca.low();
-			aguarda(100);
 			gpio.outEnvPistaoEnvaseRecua.high();
-			aguarda(100);
-			
+			gpio.outEnvPistaoEnvaseAvanca.low();
 			while(!gpio.inEnvFimDeCursoEnvasadoraEmbaixo.isHigh())
 			{
+				if (!comm.isIniciaProducao()) exit();
 				aguarda(500);
 			}
 			
-			gpio.outEnvPistaoEnvaseRecua.low();
 		}
 	}
 
-	private void subirBicosEnvase() {
+	private void subirBicosEnvase() throws Exception {
 		
-		if (!gpio.inEnvFimDeCursoEnvasadoraEmCima.isHigh())
+		if (gpio.inEnvFimDeCursoEnvasadoraEmCima.isLow())
 		{
-			gpio.outEnvPistaoEnvaseRecua.low();
-			
-			aguarda(100);
 			gpio.outEnvPistaoEnvaseAvanca.high();
 			
-			while(!gpio.inEnvFimDeCursoEnvasadoraEmCima.isHigh())
+			gpio.outEnvPistaoEnvaseRecua.low();
+			
+			while(gpio.inEnvFimDeCursoEnvasadoraEmCima.isLow())
 			{
+				if (!comm.isIniciaProducao()) exit();
 				aguarda(100);
 			}
-			gpio.outEnvPistaoEnvaseAvanca.low();
 		}
 	}
 
 	private void avancarTrava2() {
-		if (gpio.outEnvTrava2.isLow())
+		if (gpio.outEnvTrava2.isHigh())
 		{
-			gpio.outEnvTrava2.high();
+			gpio.outEnvTrava2.low();
 			aguarda(200);
 		}
 	}
 
 
 	private void avancarTrava1() {
-		if (gpio.outEnvTrava1.isLow())
+		if (gpio.outEnvTrava1.isHigh())
 		{
-			gpio.outEnvTrava1.high();
+			gpio.outEnvTrava1.low();
 			aguarda(200);
 		}
 	}
 	
-	private void goHome()
+	private void goHome() throws Exception
 	{
 		while (!emPosicaoHome())
 		{
 			desligaBomba();
 			pararEsteira1();
+			pararEsteira2();
 			subirBicosEnvase();
 			recuarEnforcador();
 			recuarTrava1();
@@ -300,85 +377,61 @@ public class TaskEnvase implements Runnable {
 		}
 	}
 	
+	private void pararEsteira2() {
+		gpio.outEnvEsteira2.high();
+	}
+
 	private void recuarTrava2() {
-		gpio.outEnvTrava2.low();
+		gpio.outEnvTrava2.high();
 		aguarda(100);
 	}
 
 
 	private void recuarTrava1() {
-		gpio.outEnvTrava1.low();
+		gpio.outEnvTrava1.high();
 		aguarda(100);
 	}
 
 
 	private void recuarEnforcador() {
-		gpio.outEnvPistaoEnforcador.low();
+		gpio.outEnvPistaoEnforcador.high();
 		aguarda(200);
 	}
 
 
 	private void pararEsteira1() {
-		if (!gpio.outEnvEsteira1.isLow())
-		{
-			gpio.outEnvEsteira1.low();
-			aguarda(200);
-		}
-	}
-	
-	private void ligarEsteira1() {
-		
-		if (gpio.outEnvTrava1.isHigh())
-			JOptionPane.showMessageDialog(null, "A trava 1 ainda esta acionada");
-		
-		if (gpio.outEnvTrava2.isHigh())
-			JOptionPane.showMessageDialog(null, "A trava 2 ainda esta acionada");
-		
-		
-		if (gpio.outEnvEsteira1.isLow())
+		if (!gpio.outEnvEsteira1.isHigh())
 		{
 			gpio.outEnvEsteira1.high();
 			aguarda(200);
 		}
 	}
-
-	private void ligarEsteira2() {
-		
-		if (gpio.outEnvEsteira2.isLow())
+	
+	private void ligarEsteira1() {
+		if (gpio.outEnvEsteira1.isHigh())
 		{
-			gpio.outEnvEsteira2.high();
+			gpio.outEnvEsteira1.low();
 			aguarda(200);
 		}
 	}
-
-
-
 
 	private boolean emPosicaoHome()
 	{
 		return (gpio.inEnvFimDeCursoEnvasadoraEmCima.isHigh() &&
 				gpio.inEnvFimDeCursoEnvasadoraEmbaixo.isLow() &&
-				gpio.inEnvFimDeCursoEnforcadorAvancado.isLow() &&
 				gpio.inEnvBombaLigada.isLow() &&
-				gpio.inEnvFrascoSaindoDaAreaEnvase.isHigh() &&
-				gpio.inEnvProdutoNivelCriticoBaixo.isLow() &&
-				gpio.outEnvBombaEnvase.isLow() &&
-				gpio.outEnvEsteira1.isLow() &&
-				gpio.outEnvTrava2.isLow() &&
-				gpio.outEnvTrava1.isLow()
+				gpio.outEnvBombaEnvase.isHigh() &&
+				gpio.outEnvEsteira1.isHigh() &&
+				gpio.outEnvTrava2.isHigh() &&
+				gpio.outEnvTrava1.isHigh()
 				);
 	}
 	
 	private void desligaBomba()
 	{
 		//Deliga a bomba
-		gpio.outEnvBombaEnvase.low();
-		//Aguarda desligar a bomba
-		while(!gpio.inEnvBombaLigada.isLow())
-		{
-			aguarda(100);
-		}
-		
+		gpio.outEnvBombaEnvase.high();
+
 	}
 	
 	/**

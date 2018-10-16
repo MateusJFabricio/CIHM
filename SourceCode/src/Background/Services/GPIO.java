@@ -25,9 +25,9 @@ public class GPIO {
 	public GpioPinDigitalOutput outEnvBuzzerNivel;
 	
 	//Entradas Envase
+	public GpioPinDigitalInput inEnvBateria;
 	public GpioPinDigitalInput inEnvFimDeCursoEnvasadoraEmCima;
 	public GpioPinDigitalInput inEnvFimDeCursoEnvasadoraEmbaixo;
-	public GpioPinDigitalInput inEnvFimDeCursoEnforcadorAvancado;
 	public GpioPinDigitalInput inEnvBombaLigada;
 	public GpioPinDigitalInput inEnvFrascoEntrandoNaAreaEnvase;
 	public GpioPinDigitalInput inEnvFrascoSaindoDaAreaEnvase;
@@ -77,7 +77,7 @@ public class GPIO {
 	public void registraGPIOEnvase(GpioController gpio)
 	{
 		//Saídas
-		outEnvBombaEnvase 		= gpio.provisionDigitalOutputPin(RaspiPin.GPIO_01, "outEnvBombaEnvase", PinState.HIGH);
+		outEnvBombaEnvase 		= gpio.provisionDigitalOutputPin(RaspiPin.GPIO_06, "outEnvBombaEnvase", PinState.HIGH);
 		outEnvEsteira1			= gpio.provisionDigitalOutputPin(RaspiPin.GPIO_02, "outEnvEsteira1", PinState.HIGH);
 		outEnvEsteira2 			= gpio.provisionDigitalOutputPin(RaspiPin.GPIO_03, "outEnvEsteira2", PinState.HIGH);
 		outEnvPistaoEnforcador	= gpio.provisionDigitalOutputPin(RaspiPin.GPIO_04, "outEnvPistaoEnforcador", PinState.HIGH);
@@ -85,9 +85,10 @@ public class GPIO {
 		outEnvPistaoEnvaseRecua	= gpio.provisionDigitalOutputPin(RaspiPin.GPIO_07, "outEnvPistaoEnvaseRecua", PinState.HIGH);
 		outEnvTrava1			= gpio.provisionDigitalOutputPin(RaspiPin.GPIO_08, "outEnvTrava1", PinState.HIGH);
 		outEnvTrava2			= gpio.provisionDigitalOutputPin(RaspiPin.GPIO_10, "outEnvTrava2", PinState.HIGH);
-		outEnvBuzzerNivel		= gpio.provisionDigitalOutputPin(RaspiPin.GPIO_26, "outEnvBuzzerNivel", PinState.HIGH);
+		outEnvBuzzerNivel		= gpio.provisionDigitalOutputPin(RaspiPin.GPIO_30, "outEnvBuzzerNivel", PinState.HIGH);
 		
 		//Entradas
+		inEnvBateria						= gpio.provisionDigitalInputPin(RaspiPin.GPIO_00,"inEnvBateria", PinPullResistance.PULL_DOWN);
 		inEnvBombaLigada 					= gpio.provisionDigitalInputPin(RaspiPin.GPIO_11,"inEnvBombaLigada", PinPullResistance.PULL_DOWN); 
 		inEnvBotaoEmergenciaAcionado 		= gpio.provisionDigitalInputPin(RaspiPin.GPIO_12,"inEnvBotaoEmergenciaAcionado", PinPullResistance.PULL_DOWN);
 		inEnvFrascoSaindoDaAreaEnvase 		= gpio.provisionDigitalInputPin(RaspiPin.GPIO_13,"inEnvFrascoSaindoDaAreaEnvase", PinPullResistance.PULL_DOWN);

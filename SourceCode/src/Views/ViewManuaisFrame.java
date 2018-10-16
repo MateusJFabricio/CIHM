@@ -30,6 +30,8 @@ import javax.swing.border.EmptyBorder;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.rendering.ImageType;
 import org.apache.pdfbox.rendering.PDFRenderer;
+import java.awt.Window.Type;
+import java.awt.Frame;
 
 public class ViewManuaisFrame extends JFrame {
 
@@ -42,8 +44,6 @@ public class ViewManuaisFrame extends JFrame {
 	private JButton btnZoomMenos;
 	private JLabel lblImagem;
 	private String diretorioManual;
-	private JLabel lblPaginaAtual;
-	private JLabel lblTotalPaginas;
 	private int paginaAtual = 0;
 	private int totalPaginas = 0;
 	private File file;
@@ -57,13 +57,13 @@ public class ViewManuaisFrame extends JFrame {
 	
 	public ViewManuaisFrame(String pathManual) {
 		Controller.Controller.janelaPrincipal.setAlwaysOnTop(false);
-		diretorioManual = pathManual;
+		setExtendedState(Frame.MAXIMIZED_BOTH);
 		setType(Type.UTILITY);
-		setIconImage(Toolkit.getDefaultToolkit().getImage(ViewManuaisFrame.class.getResource("/Assets/LogoClaraMaq - 800 x 480.PNG")));
+		diretorioManual = pathManual;
+		//setIconImage(Toolkit.getDefaultToolkit().getImage(ViewManuaisFrame.class.getResource("/Assets/LogoClaraMaq - 800 x 480.PNG")));
 		setResizable(false);
-		setExtendedState(JFrame.MAXIMIZED_BOTH);
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-		setBounds(100, 100, 800, 480);
+		setBounds(0, 0, 800, 480);
 		contentPane = new JPanel();
 		contentPane.setBackground(new Color(30, 144, 255));
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -93,6 +93,7 @@ public class ViewManuaisFrame extends JFrame {
 		);
 		
 		lblImagem = new JLabel("Nenhum PDF a ser exibido");
+		lblImagem.setIcon(new ImageIcon(ViewManuaisFrame.class.getResource("/img/EsquemaEletricoFinal.jpg")));
 		lblImagem.setHorizontalAlignment(SwingConstants.CENTER);
 		scrollPane.setViewportView(lblImagem);
 		panel.setLayout(null);
@@ -113,8 +114,9 @@ public class ViewManuaisFrame extends JFrame {
 		btnAnterior = new JButton("Anterior");
 		btnAnterior.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				paginaAtual--;
-				carregaPagina();
+				//paginaAtual--;
+				voltaScroll(10);
+				//carregaPagina();
 			}
 		});
 		btnAnterior.setIcon(new ImageIcon(ViewManuaisFrame.class.getResource("/Assets/left-arrow (32).png")));
@@ -127,8 +129,8 @@ public class ViewManuaisFrame extends JFrame {
 		btnProximo = new JButton("Pr\u00F3ximo");
 		btnProximo.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				paginaAtual++;
-				carregaPagina();
+				//paginaAtual++;
+				avancaScroll(10);
 			}
 		});
 		btnProximo.setIcon(new ImageIcon(ViewManuaisFrame.class.getResource("/Assets/right-arrow (32).png")));
@@ -139,14 +141,15 @@ public class ViewManuaisFrame extends JFrame {
 		panel.add(btnProximo);
 		
 		btnZoomMais = new JButton("Zoom +");
+		btnZoomMais.setEnabled(false);
 		btnZoomMais.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				if (escala <= 1000)
+				/*if (escala <= 1000)
 				{
 					escala+=100;
 					carregaPagina();
 					lblZoom.setText(String.valueOf(Integer.parseInt(lblZoom.getText())+1));
-				}
+				}*/
 			}
 		});
 		btnZoomMais.setIcon(new ImageIcon(ViewManuaisFrame.class.getResource("/Assets/zoom-in (32).png")));
@@ -157,14 +160,15 @@ public class ViewManuaisFrame extends JFrame {
 		panel.add(btnZoomMais);
 		
 		btnZoomMenos = new JButton("Zoom -");
+		btnZoomMenos.setEnabled(false);
 		btnZoomMenos.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				if (escala >= -300)
+				/*if (escala >= -300)
 				{
 					escala-=100;
 					carregaPagina();
 					lblZoom.setText(String.valueOf(Integer.parseInt(lblZoom.getText())-1));
-				}
+				}*/
 			}
 		});
 		btnZoomMenos.setIcon(new ImageIcon(ViewManuaisFrame.class.getResource("/Assets/zoom-out (32).png")));
@@ -174,52 +178,49 @@ public class ViewManuaisFrame extends JFrame {
 		btnZoomMenos.setBounds(441, 11, 97, 61);
 		panel.add(btnZoomMenos);
 		
-		JLabel lblPgina = new JLabel("P\u00E1gina:");
-		lblPgina.setHorizontalAlignment(SwingConstants.RIGHT);
-		lblPgina.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		lblPgina.setBounds(574, 11, 72, 22);
-		panel.add(lblPgina);
-		
-		JLabel lblDe = new JLabel("de:");
+		JLabel lblDe = new JLabel("Total de Paginas: 18");
 		lblDe.setHorizontalAlignment(SwingConstants.RIGHT);
 		lblDe.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		lblDe.setBounds(574, 36, 72, 22);
+		lblDe.setBounds(574, 21, 154, 22);
 		panel.add(lblDe);
 		
-		lblPaginaAtual = new JLabel("");
-		lblPaginaAtual.setHorizontalAlignment(SwingConstants.LEFT);
-		lblPaginaAtual.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		lblPaginaAtual.setBounds(656, 11, 72, 22);
-		panel.add(lblPaginaAtual);
-		
-		lblTotalPaginas = new JLabel("");
-		lblTotalPaginas.setHorizontalAlignment(SwingConstants.LEFT);
-		lblTotalPaginas.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		lblTotalPaginas.setBounds(656, 36, 72, 22);
-		panel.add(lblTotalPaginas);
-		
 		lblTZomm = new JLabel("Zomm:");
+		lblTZomm.setEnabled(false);
 		lblTZomm.setHorizontalAlignment(SwingConstants.RIGHT);
 		lblTZomm.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		lblTZomm.setBounds(574, 54, 72, 22);
+		lblTZomm.setBounds(574, 48, 72, 22);
 		panel.add(lblTZomm);
 		
 		lblZoom = new JLabel("0");
+		lblZoom.setEnabled(false);
 		lblZoom.setHorizontalAlignment(SwingConstants.LEFT);
 		lblZoom.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		lblZoom.setBounds(656, 57, 72, 17);
+		lblZoom.setBounds(656, 51, 72, 17);
 		panel.add(lblZoom);
 		
 		
 		contentPane.setLayout(gl_contentPane);	
-		carregarPDF();
+		/*carregarPDF();
 		carregaPagina();
+		*/
+		
 	}
 	
+	protected void avancaScroll(int i) {
+		scrollPane.getVerticalScrollBar().setValue(scrollPane.getVerticalScrollBar().getValue() + i);
+	}
+
+	protected void voltaScroll(int i) {
+		scrollPane.getVerticalScrollBar().setValue(scrollPane.getVerticalScrollBar().getValue() - i);
+	}
+
 	protected void actBtnSalvar() {
 		ViewUnidades viewUnidade = new ViewUnidades();
 		if (viewUnidade.path != null)
 		{
+			String p = viewUnidade.path;
+			file = new File(diretorioManual);
+			String a = file.getName();
 			File fileDestino = new File (viewUnidade.path + file.getName());	
 			copyFile(file, fileDestino);
 		}
@@ -262,7 +263,6 @@ public class ViewManuaisFrame extends JFrame {
 			doc = PDDocument.load(new FileInputStream(file));
 			pdfRenderer = new PDFRenderer(doc);
 			totalPaginas = doc.getNumberOfPages();
-		    lblTotalPaginas.setText(String.valueOf(doc.getNumberOfPages()));
 			
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -272,22 +272,21 @@ public class ViewManuaisFrame extends JFrame {
 	
 	private void carregaPagina()
 	{
+		/*
 		if (paginaAtual > totalPaginas)
 			paginaAtual = totalPaginas;
 		
 		if (paginaAtual < 0)
 			paginaAtual = 0;
 		  try {
-			BufferedImage bim = pdfRenderer.renderImageWithDPI(paginaAtual, 300, ImageType.RGB);
 			Image img = new ImageIcon(bim).getImage().getScaledInstance(bim.getWidth() + escala - 1700, bim.getHeight() + escala - 1700,Image.SCALE_DEFAULT );
-		    lblImagem.setText(null);
-		    lblImagem.setIcon(new ImageIcon(img));
+			ViewManuaisFrame.class.getResource("/img/EsquemaEletricoFinal.jpg")).getIconImage().
+			lblImagem.setIcon(new ImageIcon(ViewManuaisFrame.class.getResource("/img/EsquemaEletricoFinal.jpg")).getImage().getScaledInstance(bim.getWidth() + escala - 1700, bim.getHeight() + escala - 1700,Image.SCALE_DEFAULT);
+			lblImagem.setText(null);
 		
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
-		  
-		  lblPaginaAtual.setText(String.valueOf(paginaAtual + 1));
-	      
+	      */
 	}
 }

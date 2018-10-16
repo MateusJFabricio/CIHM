@@ -13,12 +13,15 @@ import javax.swing.GroupLayout.Alignment;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextPane;
 import javax.swing.LayoutStyle.ComponentPlacement;
 import javax.swing.SwingConstants;
+import javax.swing.Timer;
 import javax.swing.border.LineBorder;
 
+import Background.Services.CommFrame;
 import Controller.ControllerHome;
 import DAO.Maquina;
 
@@ -30,16 +33,20 @@ public class ViewHome extends JPanel {
 	private JLabel lblMetaProducao;
 	private JLabel lblProduzido;
 	private JLabel lblFaltando;
-	private JLabel lblPrevisaoTermino;
 	private JLabel lblTempoCiclo;
-	private JLabel lblProximaManutencao;
 	public ControllerHome control;
 	ViewIniciarCicloDialog viewIniciarCiclo;
 	private JButton btnLiga;
 	private JButton btnDesliga;
+	private ActionListener actMonitorEstado;
+	private Timer timerMonitorEstado;
+	private CommFrame comunicador;
+	private JLabel lblEstadoMaquina;
+	private JTextPane txtFalhas;
 
 	public ViewHome(JFrame frame) {
 		control = new ControllerHome();
+		comunicador = new CommFrame();
 		setLayout(null);
 		setBackground(SystemColor.textHighlight);
 		JPanel panel = new JPanel();
@@ -180,11 +187,6 @@ public class ViewHome extends JPanel {
 		lblDescFaltando.setBounds(26, 166, 81, 22);
 		panel.add(lblDescFaltando);
 		
-		JLabel lblPrevisoDeTrmino = new JLabel("T\u00E9rmino em: ");
-		lblPrevisoDeTrmino.setFont(new Font("Tahoma", Font.PLAIN, 18));
-		lblPrevisoDeTrmino.setBounds(26, 187, 127, 22);
-		panel.add(lblPrevisoDeTrmino);
-		
 		lblInicioProducao = new JLabel("");
 		lblInicioProducao.setFont(new Font("Tahoma", Font.PLAIN, 18));
 		lblInicioProducao.setBounds(163, 101, 214, 22);
@@ -205,11 +207,6 @@ public class ViewHome extends JPanel {
 		lblFaltando.setBounds(163, 166, 214, 22);
 		panel.add(lblFaltando);
 		
-		lblPrevisaoTermino = new JLabel("");
-		lblPrevisaoTermino.setFont(new Font("Tahoma", Font.PLAIN, 18));
-		lblPrevisaoTermino.setBounds(163, 187, 214, 22);
-		panel.add(lblPrevisaoTermino);
-		
 		JLabel lblEstado = new JLabel("Estado:");
 		lblEstado.setFont(new Font("Tahoma", Font.PLAIN, 18));
 		lblEstado.setBounds(439, 53, 158, 22);
@@ -220,12 +217,7 @@ public class ViewHome extends JPanel {
 		lblTempoDeCiclo.setBounds(439, 89, 158, 22);
 		panel.add(lblTempoDeCiclo);
 		
-		JLabel lblPrximaManuteno = new JLabel("Pr\u00F3x. Manuten\u00E7\u00E3o:");
-		lblPrximaManuteno.setFont(new Font("Tahoma", Font.PLAIN, 16));
-		lblPrximaManuteno.setBounds(439, 123, 158, 22);
-		panel.add(lblPrximaManuteno);
-		
-		JLabel lblEstadoMaquina = new JLabel("Aguardando Ciclo");
+		lblEstadoMaquina = new JLabel("Aguardando Ciclo");
 		lblEstadoMaquina.setFont(new Font("Tahoma", Font.PLAIN, 18));
 		lblEstadoMaquina.setBounds(599, 53, 173, 22);
 		panel.add(lblEstadoMaquina);
@@ -235,25 +227,21 @@ public class ViewHome extends JPanel {
 		lblTempoCiclo.setBounds(599, 89, 170, 22);
 		panel.add(lblTempoCiclo);
 		
-		lblProximaManutencao = new JLabel("");
-		lblProximaManutencao.setFont(new Font("Tahoma", Font.PLAIN, 18));
-		lblProximaManutencao.setBounds(647, 123, 106, 22);
-		panel.add(lblProximaManutencao);
-		
 		JLabel lblUltimaFalha = new JLabel("Ultimas falhas:");
 		lblUltimaFalha.setFont(new Font("Tahoma", Font.PLAIN, 18));
 		lblUltimaFalha.setBounds(439, 156, 158, 22);
 		panel.add(lblUltimaFalha);
 		
-		JTextPane txtpnLAs = new JTextPane();
-		txtpnLAs.setEditable(false);
-		txtpnLAs.setFont(new Font("Tahoma", Font.PLAIN, 11));
-		txtpnLAs.setBounds(439, 187, 330, 106);
-		panel.add(txtpnLAs);
+		txtFalhas = new JTextPane();
+		txtFalhas.setEditable(false);
+		txtFalhas.setFont(new Font("Tahoma", Font.PLAIN, 11));
+		txtFalhas.setBounds(439, 187, 330, 106);
+		panel.add(txtFalhas);
 		
 		JButton btnLimpar = new JButton("Limpar");
 		btnLimpar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
+				txtFalhas.setText("");
 			}
 		});
 		btnLimpar.setBounds(680, 295, 89, 23);
@@ -262,6 +250,7 @@ public class ViewHome extends JPanel {
 		CarregarEstadoInicial();
 		btnLiga.setEnabled(true);
 		btnDesliga.setEnabled(false);
+		iniciaMonitorEstado();
 	}
 
 	private void CarregarEstadoInicial()
@@ -269,7 +258,6 @@ public class ViewHome extends JPanel {
 		
 		Maquina maq = new Maquina(); 
 		maq = control.dadosMaquina();
-		lblProximaManutencao.setText(maq.getProximaManutencao());
 	}
 	
 	public void carregarDadosViewIniciaCiclo()
@@ -281,18 +269,33 @@ public class ViewHome extends JPanel {
 				String.valueOf(data.get(Calendar.MINUTE)) + ":" +
 				String.valueOf(data.get(Calendar.SECOND))
 				);
-		lblMetaProducao.setText(String.valueOf(viewIniciarCiclo.getMetaProducao()));
+		if (String.valueOf(viewIniciarCiclo.getMetaProducao()).equals(""))
+			lblMetaProducao.setText("Modo Contínuo");
+		else
+			lblMetaProducao.setText(String.valueOf(viewIniciarCiclo.getMetaProducao()));
+		
 		lblProduzido.setText("0");
 		lblFaltando.setText(String.valueOf(viewIniciarCiclo.getMetaProducao()));
-		lblPrevisaoTermino.setText("Indeterminado");
+		try {
+			lblTempoCiclo.setText(String.valueOf(viewIniciarCiclo.getProdutoSelecionado().getTempoEnvase() / 12));
+		} catch (Exception e) {
+			lblTempoCiclo.setText("Indeterminado");
+		}
+		lblEstadoMaquina.setText("Em ciclo");
+		
 	}
 	
 	private void actBtnLiga()
 	{
+		control.atualizarDados(comunicador);
+		if (comunicador.isEmergencia())
+		{
+			JOptionPane.showMessageDialog(this, "Emergencia acionado. Desabilite para prosseguir");
+			return;
+		}
+			
 		viewIniciarCiclo = new ViewIniciarCicloDialog(this);
 		viewIniciarCiclo.setModalExclusionType(ModalExclusionType.APPLICATION_EXCLUDE);
-		//Controller.Controller.janelaPrincipal.setAlwaysOnTop(false);
-		//viewIniciarCiclo.setAlwaysOnTop(true);
 		viewIniciarCiclo.setModal(true);
 		viewIniciarCiclo.setVisible(true);
 		
@@ -306,12 +309,81 @@ public class ViewHome extends JPanel {
 		
 		viewIniciarCiclo.comando = 0;
 		viewIniciarCiclo.dispose();
+		timerMonitorEstado.start();
 	}
 	
 	private void actBtnDesliga()
 	{
+		control.atualizarDados(comunicador);
+		int meta = Integer.parseInt(lblMetaProducao.getText());
+		
 		btnLiga.setEnabled(true);
 		btnDesliga.setEnabled(false);
-		control.interromperCiclo();
+		control.interromperCiclo(comunicador.getProduzido());
+		timerMonitorEstado.stop();
+		
+		lblEstadoMaquina.setText("Aguardando ciclo");
+		lblNomeProduto.setText("");
+		lblMetaProducao.setText("");
+		lblFaltando.setText("");
+		lblTempoCiclo.setText("");
+		lblInicioProducao.setText("");
+		lblProduzido.setText("");
+
+	}
+	
+	private void iniciaMonitorEstado() {
+		actMonitorEstado = new ActionListener() {
+			private boolean msgEmergenciaRegistrada = false;
+			private boolean msgNivelBaixoRegistrada;
+			private boolean msgNivelAltoRegistrada;
+			public void actionPerformed(java.awt.event.ActionEvent e) {
+				control.atualizarDados(comunicador);
+				
+				if (comunicador.isEmergencia())
+					actBtnDesliga();
+				
+				if (!lblMetaProducao.getText().equals("Modo contínuo"))
+				{
+					int meta = Integer.parseInt(lblMetaProducao.getText());
+					lblProduzido.setText(String.valueOf(meta - comunicador.getProduzido()));
+					lblFaltando.setText(String.valueOf(meta - Integer.parseInt(lblProduzido.getText())));
+				}
+				
+				//Mensagens
+				if (comunicador.isEmergencia() && !msgEmergenciaRegistrada )
+				{
+					txtFalhas. setText(txtFalhas.getText() + "Emergencia acionado - Hora: "+ retornarDataHora() +"\n");
+					msgEmergenciaRegistrada = true;
+				}else if (!comunicador.isEmergencia() && msgEmergenciaRegistrada)
+					msgEmergenciaRegistrada = false;
+				
+				if (comunicador.isNivelBaixo() && !msgNivelBaixoRegistrada)
+				{
+					txtFalhas. setText(txtFalhas.getText() + "Nivel baixo de produto - Hora: "+ retornarDataHora() +"\n");
+					msgNivelBaixoRegistrada = true;
+				}else if (!comunicador.isNivelBaixo() && msgNivelBaixoRegistrada)
+				{
+					msgNivelBaixoRegistrada = false;
+				}
+				
+				if (comunicador.isNivelAlto() && !msgNivelAltoRegistrada)
+				{
+					txtFalhas.setText(txtFalhas.getText() + "Nivel alto de produto - Hora: "+ retornarDataHora() +" \n");
+					msgNivelAltoRegistrada = true;
+				}else if (!comunicador.isNivelAlto() && msgNivelAltoRegistrada)
+				{
+					msgNivelAltoRegistrada = false;
+				}
+				
+		}};
+		
+		timerMonitorEstado = new Timer(500, actMonitorEstado);
+	}
+	
+	private String retornarDataHora()
+	{
+        Calendar data = Calendar.getInstance();
+        return String.valueOf(data.get(Calendar.HOUR_OF_DAY)) + ":" + String.valueOf(data.get(Calendar.MINUTE)) + ":" + String.valueOf(data.get(Calendar.SECOND));
 	}
 }

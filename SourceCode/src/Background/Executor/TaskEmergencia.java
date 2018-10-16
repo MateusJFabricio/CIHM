@@ -1,12 +1,15 @@
 package Background.Executor;
 
+import java.io.IOException;
+
+import javax.swing.JOptionPane;
+
 import Background.Services.CommEmergencia;
 import Background.Services.GPIO;
 
 public class TaskEmergencia implements Runnable {
 	private CommEmergencia comm;
 	private GPIO gpio;
-	
 	
 	public TaskEmergencia(CommEmergencia comm, GPIO gpio)
 	{
@@ -19,14 +22,36 @@ public class TaskEmergencia implements Runnable {
 	public void run() {
 		while(true)
 		{
-			if (gpio.inEnvBotaoEmergenciaAcionado.isHigh())
+			if (gpio.inEnvBateria.isLow())
 			{
-				comm.setEmEmergencia(true);
-				while(!comm.isGPIOLiberada())
-					aguardar(10);
-				
-				iniciaCicloEmergencia();	
+				aguardar(500);
+				if (gpio.inEnvBateria.isLow())
+				{
+					try {
+						Main.Main.mannIO.goHome();
+						Main.Main.mannIO.gpio.getGpio().shutdown();
+						Runtime.getRuntime().exec("shutdown -h now");
+						JOptionPane.showMessageDialog(null, "Desligando");
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
+				}
 			}
+			
+			if (gpio.inEnvBotaoEmergenciaAcionado.isLow() && !comm.isEmEmergencia())
+			{
+				aguardar(500);
+				if (gpio.inEnvBotaoEmergenciaAcionado.isLow())
+				{
+					comm.setEmEmergencia(true);
+				}
+			}
+			
+			if (comm.isEmEmergencia())// && comm.isGPIOLiberada())
+				iniciaCicloEmergencia();
+			
+			if (comm.isEmEmergencia() && gpio.inEnvBotaoEmergenciaAcionado.isHigh())
+				comm.setEmEmergencia(false);
 		}
 	}
 
@@ -35,30 +60,32 @@ public class TaskEmergencia implements Runnable {
 		bloquearPistaoPrincipal();
 		desligarEsteiras();
 		pararAcumulador();
-		
-		while(gpio.inEnvBotaoEmergenciaAcionado.isLow())
-			aguardar(200);
+		pararTampador();
 	}
 	
+	private void pararTampador() {
+		gpio.outTampMotor.high();
+	}
+
 	private void pararAcumulador() {
-		gpio.outAcumMotor.low();
+		gpio.outAcumMotor.high();
 	}
 
 
 	private void desligarEsteiras() {
-		gpio.outEnvEsteira1.low();
-		gpio.outEnvEsteira2.low();
+		gpio.outEnvEsteira1.high();
+		gpio.outEnvEsteira2.high();
 	}
 
 
 	private void bloquearPistaoPrincipal() {
-		gpio.outEnvPistaoEnvaseAvanca.low();
-		gpio.outEnvPistaoEnvaseRecua.low();
+		gpio.outEnvPistaoEnvaseAvanca.high();
+		gpio.outEnvPistaoEnvaseRecua.high();
 	}
 
 
 	private void desabilitarBomba() {
-		gpio.outEnvBombaEnvase.low();
+		gpio.outEnvBombaEnvase.high();
 	}
 
 

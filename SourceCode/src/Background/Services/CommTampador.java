@@ -5,6 +5,16 @@ public class CommTampador {
 	private int frascosNoCarrossel = 0;
 	private int frascosTampados = 0;
 	private int tempoGiroCarrossel = 0;
+	private boolean iniciaProducao = false;
+	private boolean Alive = false;
+	
+	public boolean isIniciaProducao() {
+		return iniciaProducao;
+	}
+	
+	public void setIniciaProducao(boolean a) {
+		iniciaProducao = a;
+	}
 	
 	public int getFrascosParaTampar() {
 		return frascosParaTampar;
@@ -41,4 +51,13 @@ public class CommTampador {
 	public void setTempoGiroCarrossel(int tempoGiroCarrossel) {
 		this.tempoGiroCarrossel = tempoGiroCarrossel;
 	}
+
+	public boolean isAlive() {
+		return Alive;
+	}
+
+	public void setAlive(boolean alive) {
+		Alive = alive;
+	}
+
 }

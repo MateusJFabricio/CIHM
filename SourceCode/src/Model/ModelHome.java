@@ -14,10 +14,12 @@ public class ModelHome {
 	public void iniciarCiclo(Produto produto, boolean frascosPosicionados, int meta)
 	{
 		Main.Main.mannIO.iniciarCiclo(produto, frascosPosicionados, meta);
+		Main.Main.mannBD.mannProducao.insereNovaProducao(produto, meta);
 	}
 
-	public void interromperCiclo() {
+	public void interromperCiclo(int produzido) {
 		Main.Main.mannIO.interromperCiclo();
+		Main.Main.mannBD.mannProducao.finalizaProducao(produzido);
 	}
 	
 	

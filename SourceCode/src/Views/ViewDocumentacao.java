@@ -87,6 +87,7 @@ public class ViewDocumentacao extends JPanel {
 		panel_1.add(txtpnVersoDoSoftware);
 		
 		JButton btnManualMaquina = new JButton("Manual da M\u00E1quina");
+		btnManualMaquina.setEnabled(false);
 		btnManualMaquina.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				actBtnManualMaquina();
@@ -100,6 +101,7 @@ public class ViewDocumentacao extends JPanel {
 		panel.add(btnManualMaquina);
 		
 		JButton btnManuaisPerifericos = new JButton("Manuais dos Perif\u00E9ricos");
+		btnManuaisPerifericos.setEnabled(false);
 		btnManuaisPerifericos.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				actBtnManuaisPerifericos();
@@ -128,17 +130,17 @@ public class ViewDocumentacao extends JPanel {
 	}
 
 	protected void actBtnEsquemaEletrico() {
-			ViewManuaisFrame manualFrame = new ViewManuaisFrame("/home/pi/Desktop/boleto.pdf");
+			ViewManuaisFrame manualFrame = new ViewManuaisFrame("/home/pi/EsquemaEletrico.pdf");
 			manualFrame.setVisible(true);
 	}
 
 	protected void actBtnManuaisPerifericos() {
-		ViewManuaisFrame manualFrame = new ViewManuaisFrame("/home/pi/Desktop/boleto.pdf");
+		ViewManuaisFrame manualFrame = new ViewManuaisFrame("/home/pi/ManuaisPerifericos.pdf");
 		manualFrame.setVisible(true);
 	}
 
 	protected void actBtnManualMaquina() {
-		ViewManuaisFrame manualFrame = new ViewManuaisFrame("C:\\Users\\Mateus\\Desktop\\Temp\\boletos\\Fonte 24 vcc.pdf");
+		ViewManuaisFrame manualFrame = new ViewManuaisFrame("/home/pi/ManualMaquina.pdf");
 		manualFrame.setVisible(true);
 	}
 }

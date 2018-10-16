@@ -21,6 +21,8 @@ public class ControllerFrame {
 
 	public void desligar() {
 		try {
+			Main.Main.mannIO.goHome();
+			Main.Main.mannIO.gpio.getGpio().shutdown();
 			Runtime.getRuntime().exec("shutdown -h now");
 			JOptionPane.showMessageDialog(null, "Desligando");
 		} catch (IOException e) {
@@ -29,6 +31,7 @@ public class ControllerFrame {
 	}
 
 	public void fecharApp() {
+		Main.Main.mannIO.gpio.getGpio().shutdown();
 		System.exit(0);
 	}
 }

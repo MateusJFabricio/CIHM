@@ -173,6 +173,7 @@ public class ViewConfiguracoes extends JPanel {
 		panel_1.add(txtTempoEnvase);
 		
 		JButton btnRelatorioErros = new JButton("Relat\u00F3rio de Erros");
+		btnRelatorioErros.setEnabled(false);
 		btnRelatorioErros.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				actBtnRelatoriosErros();
@@ -186,6 +187,7 @@ public class ViewConfiguracoes extends JPanel {
 		panel.add(btnRelatorioErros);
 		
 		JButton btnTesteParametros = new JButton("Testar Par\u00E2metros");
+		btnTesteParametros.setEnabled(false);
 		btnTesteParametros.setVerticalTextPosition(SwingConstants.BOTTOM);
 		btnTesteParametros.setHorizontalTextPosition(SwingConstants.CENTER);
 		btnTesteParametros.setFont(new Font("Tahoma", Font.PLAIN, 11));
@@ -220,6 +222,7 @@ public class ViewConfiguracoes extends JPanel {
 		vSenha.dispose();
 		if (tipoSenha == 1)
 		{
+			//Main.Main.mannIO.closeThreads();
 			ViewMonitorGPIO view = new ViewMonitorGPIO();
 			Controller.janelaPrincipal.setAlwaysOnTop(false);
 			view.setVisible(true);

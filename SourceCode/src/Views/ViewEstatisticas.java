@@ -41,6 +41,8 @@ public class ViewEstatisticas extends JPanel {
 	private ControllerEstatisticas control;
 	private JRadioButton rdbtnIgual, rdbtnMenorQue, rdbtnMaiorQue;
 	private ArrayList<Producao> listProducao;
+	private JLabel lblSeg;
+	private JLabel lblUn;
 	
 	public ViewEstatisticas() {
 		setLayout(null);
@@ -64,7 +66,7 @@ public class ViewEstatisticas extends JPanel {
 		lblStatusDaProduo.setForeground(Color.BLACK);
 		lblStatusDaProduo.setFont(new Font("Times New Roman", Font.PLAIN, 20));
 		
-		JLabel lblSeg = new JLabel("36 seg");
+		lblSeg = new JLabel("0 seg");
 		lblSeg.setHorizontalAlignment(SwingConstants.CENTER);
 		lblSeg.setForeground(Color.BLUE);
 		lblSeg.setFont(new Font("Times New Roman", Font.PLAIN, 24));
@@ -74,7 +76,7 @@ public class ViewEstatisticas extends JPanel {
 		lblProduoMdiaDiria.setForeground(Color.BLACK);
 		lblProduoMdiaDiria.setFont(new Font("Times New Roman", Font.PLAIN, 20));
 		
-		JLabel lblUn = new JLabel("4300 un");
+		lblUn = new JLabel("0 un");
 		lblUn.setHorizontalAlignment(SwingConstants.CENTER);
 		lblUn.setForeground(Color.BLUE);
 		lblUn.setFont(new Font("Times New Roman", Font.PLAIN, 24));
@@ -86,21 +88,22 @@ public class ViewEstatisticas extends JPanel {
 					.addComponent(lblStatusDaProduo, GroupLayout.PREFERRED_SIZE, 236, GroupLayout.PREFERRED_SIZE)
 					.addPreferredGap(ComponentPlacement.RELATED)
 					.addComponent(lblSeg, GroupLayout.PREFERRED_SIZE, 119, GroupLayout.PREFERRED_SIZE)
-					.addGap(18)
+					.addGap(29)
 					.addComponent(lblProduoMdiaDiria, GroupLayout.PREFERRED_SIZE, 236, GroupLayout.PREFERRED_SIZE)
 					.addPreferredGap(ComponentPlacement.RELATED)
 					.addComponent(lblUn, GroupLayout.PREFERRED_SIZE, 119, GroupLayout.PREFERRED_SIZE)
-					.addContainerGap(30, Short.MAX_VALUE))
+					.addContainerGap(28, Short.MAX_VALUE))
 		);
 		gl_panel_3.setVerticalGroup(
-			gl_panel_3.createParallelGroup(Alignment.LEADING)
-				.addGroup(Alignment.TRAILING, gl_panel_3.createSequentialGroup()
+			gl_panel_3.createParallelGroup(Alignment.TRAILING)
+				.addGroup(gl_panel_3.createSequentialGroup()
 					.addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
 					.addGroup(gl_panel_3.createParallelGroup(Alignment.LEADING)
 						.addComponent(lblUn, GroupLayout.PREFERRED_SIZE, 28, GroupLayout.PREFERRED_SIZE)
 						.addComponent(lblProduoMdiaDiria, GroupLayout.PREFERRED_SIZE, 28, GroupLayout.PREFERRED_SIZE)
-						.addComponent(lblSeg, GroupLayout.PREFERRED_SIZE, 28, GroupLayout.PREFERRED_SIZE)
-						.addComponent(lblStatusDaProduo))
+						.addGroup(gl_panel_3.createParallelGroup(Alignment.BASELINE)
+							.addComponent(lblStatusDaProduo)
+							.addComponent(lblSeg, GroupLayout.PREFERRED_SIZE, 28, GroupLayout.PREFERRED_SIZE)))
 					.addContainerGap())
 		);
 		panel_3.setLayout(gl_panel_3);
@@ -178,19 +181,9 @@ public class ViewEstatisticas extends JPanel {
 			new Object[][] {
 			},
 			new String[] {
-				"Data", "Produto", "Meta (un)", "Produzido (un)", "Tempo de Produ\u00E7\u00E3o (h:m:ss)"
+				"Data", "Produto", "Meta (un)", "Produzido (un)", "Tempo de Produ\u00E7\u00E3o (h:m:ss)", "Tempo Medio Prod."
 			}
-		) {
-			private static final long serialVersionUID = 1L;
-			@SuppressWarnings("rawtypes")
-			Class[] columnTypes = new Class[] {
-				String.class, String.class, Integer.class, Integer.class, String.class
-			};
-			@SuppressWarnings({ "rawtypes", "unchecked" })
-			public Class getColumnClass(int columnIndex) {
-				return columnTypes[columnIndex];
-			}
-		});
+		));
 		tblHistoricoProd.getColumnModel().getColumn(1).setPreferredWidth(151);
 		tblHistoricoProd.getColumnModel().getColumn(3).setPreferredWidth(117);
 		tblHistoricoProd.getColumnModel().getColumn(4).setPreferredWidth(159);
@@ -222,7 +215,6 @@ public class ViewEstatisticas extends JPanel {
 		txtData.setBounds(176, 41, 102, 20);
 
 		panel_1.add(txtData);
-
 	}
 
 	protected void actBtnExportarCSV() {
@@ -279,8 +271,30 @@ public class ViewEstatisticas extends JPanel {
 					producao.getNomeProduto(),
 					producao.getMeta(),
 					producao.getProduzido(),
-					producao.getTempoProducao()
+					producao.getTempoProducao(),
+					producao.getMediaProducao()
 					});
 		}
+		
+		double tempoMedioCiclo = 0;
+		int prodMediaDiaria = 0, diasProducao = 0;
+		String temp = "";
+		if (!listProducao.isEmpty())
+		{
+			for (Producao prod : listProducao) {
+				if (!temp.equals(prod.getDataProducao()))
+				{
+					temp = prod.getDataProducao();
+					diasProducao++;
+				}
+				tempoMedioCiclo = tempoMedioCiclo + prod.getMediaProducao();
+				prodMediaDiaria = prodMediaDiaria + prod.getProduzido();
+			}
+			
+			tempoMedioCiclo = tempoMedioCiclo / listProducao.size();
+			prodMediaDiaria = prodMediaDiaria / diasProducao;
+		}
+		lblSeg.setText(tempoMedioCiclo + " seg");
+		lblUn.setText(prodMediaDiaria + " Un");
 	}
 }
