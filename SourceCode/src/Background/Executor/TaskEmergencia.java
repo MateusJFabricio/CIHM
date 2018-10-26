@@ -28,10 +28,14 @@ public class TaskEmergencia implements Runnable {
 				if (gpio.inEnvBateria.isLow())
 				{
 					try {
-						Main.Main.mannIO.goHome();
-						Main.Main.mannIO.gpio.getGpio().shutdown();
-						Runtime.getRuntime().exec("shutdown -h now");
-						JOptionPane.showMessageDialog(null, "Desligando");
+						aguardar(1000 * 60);
+						if (gpio.inEnvBateria.isLow())
+						{
+							Main.Main.mannIO.goHome();
+							Main.Main.mannIO.gpio.getGpio().shutdown();
+							Runtime.getRuntime().exec("shutdown -h now");
+							JOptionPane.showMessageDialog(null, "Desligando");
+						}
 					} catch (IOException e) {
 						e.printStackTrace();
 					}

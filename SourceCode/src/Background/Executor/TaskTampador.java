@@ -16,9 +16,9 @@ public class TaskTampador implements Runnable {
 	
 	private void tampar() {
 		gpio.outTampTampador.low();
-		aguardar(500);
+		aguardar(200);
 		gpio.outTampTampador.high();
-		aguardar(500);
+		aguardar(200);
 	}
 
 	@Override
@@ -32,7 +32,7 @@ public class TaskTampador implements Runnable {
 				
 				while(gpio.inTampFrascoEmPosicao.isLow())
 					continue;
-				aguardar(100);
+				aguardar(30);
 				
 				if (gpio.inTampFrascoEmPosicao.isLow())
 					continue;

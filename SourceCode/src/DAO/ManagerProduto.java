@@ -18,10 +18,12 @@ public class ManagerProduto {
 		try {		  
 			query.executeUpdate("INSERT INTO Produto("
 					+ "	Nome, "
-					+ "TempoEnvase) "
+					+ "TempoEnvase,"
+					+ "DelayInicioProd) "
 					+ "VALUES ('" 
 					+ produto.getNome() + "',"
-					+ produto.getTempoEnvase()+ ")");
+					+ produto.getTempoEnvase()+ ","
+					+ produto.getDelayInicioProd() + " )");
 		}
 		catch (SQLException e) {
 			JOptionPane.showMessageDialog(null, e.getMessage());
@@ -50,6 +52,7 @@ public class ManagerProduto {
 				prod.setId(rs.getInt("Id"));
 				prod.setNome(rs.getString("Nome"));
 				prod.setTempoEnvase(rs.getInt("TempoEnvase"));
+				prod.setDelayInicioProd(rs.getInt("DelayInicioProd"));
 				
 				lista.add(prod);
 			}

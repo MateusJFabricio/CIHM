@@ -16,6 +16,10 @@ public class CommEnvase {
 	private int metaProducao = 0;
 	private boolean isAlive = false;
 	private int frascoEnviadoTampamento;
+	private boolean nivelBaixo = false;
+	private boolean nivelAlto = false;
+	private int delayInicioProd = 3;
+	
 	
 	public int getTempoEnvase()
 	{
@@ -126,5 +130,29 @@ public class CommEnvase {
 
 	public void setFrascoEnviadoTampamento(int frascoEnviadoTampamento) {
 		this.frascoEnviadoTampamento = frascoEnviadoTampamento;
+	}
+
+	public boolean isNivelBaixo() {
+		return nivelBaixo;
+	}
+
+	public void setNivelBaixo(boolean nivelBaixo) {
+		this.nivelBaixo = nivelBaixo;
+	}
+
+	public boolean isNivelAlto() {
+		return nivelAlto;
+	}
+
+	public void setNivelAlto(boolean nivelAlto) {
+		this.nivelAlto = nivelAlto;
+	}
+
+	public int getDelayInicioProd() {
+		return delayInicioProd;
+	}
+
+	public void setDelayInicioProd(int delayInicioProd) {
+		this.delayInicioProd = delayInicioProd;
 	}
 }

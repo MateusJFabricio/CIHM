@@ -1,9 +1,5 @@
 package Model;
 
-import java.io.IOException;
-
-import javax.swing.JOptionPane;
-
 import DAO.Senha;
 
 public class ModelSenha {

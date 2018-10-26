@@ -116,15 +116,17 @@ public class ManagerIO {
 		pool.submit(home);
 		pool.submit(emergencia);
 		pool.submit(nivel);
-		
 	}
 	
 	public void iniciarCiclo(Produto produto, boolean frascosPosicionados, int meta)
 	{
+		commNivel.setMonitorar(true);
+		
 		commEnvase.setCicloContinuo(meta <= 0);
 		commEnvase.setIniciaProducao(true);
 		commEnvase.setInicioRapido(frascosPosicionados);
 		commEnvase.setTempoEnvase(produto.getTempoEnvase());
+		commEnvase.setDelayInicioProd(produto.getDelayInicioProd());
 		if (commEnvase.isAlive())
 		{
 			commEnvase.setMetaProducao(commEnvase.getMetaProducao() + meta);
@@ -151,6 +153,7 @@ public class ManagerIO {
 		commEmergencia.setGPIOLiberada(true);
 		
 		commTampador.setIniciaProducao(false);
+		commNivel.setMonitorar(false);
 		gpio.outAcumMotor.high();
 	}
 	
@@ -168,14 +171,27 @@ public class ManagerIO {
 	public void interromperCiclo() {
 		commEnvase.setIniciaProducao(false);
 		commTampador.setIniciaProducao(false);
+		commNivel.setMonitorar(false);
 		gpio.outAcumMotor.high();
 	}
 
 	public void atualizarDadosFrame(CommFrame comunicador) {
 		comunicador.setEmergencia(commEmergencia.isEmEmergencia());
-		comunicador.setProduzido(commEnvase.getMetaProducao());
+		comunicador.setProduzido(commEnvase.getFrascosEnvasado());
 		comunicador.setNivelAlto(commNivel.isNivelAlto());
 		comunicador.setNivelBaixo(commNivel.isNivelBaixo());
+		
+		
+	}
+	
+	private void aguardar(int i)
+	{
+		try {
+			Thread.sleep(i);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 }

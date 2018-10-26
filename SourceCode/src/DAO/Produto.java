@@ -4,6 +4,7 @@ public class Produto {
 	private int Id;
 	private String Nome;
 	private int TempoEnvase; //tempo em que a bomba fica ligada
+	private int DelayInicioProd;
 	
 	public String getNome() {
 		return Nome;
@@ -22,6 +23,12 @@ public class Produto {
 	}
 	public void setId(int Id) {
 		this.Id = Id;
+	}
+	public int getDelayInicioProd() {
+		return DelayInicioProd;
+	}
+	public void setDelayInicioProd(int delayInicioProd) {
+		DelayInicioProd = delayInicioProd;
 	}
 	
 }

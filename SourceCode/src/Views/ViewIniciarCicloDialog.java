@@ -280,7 +280,8 @@ public class ViewIniciarCicloDialog extends JDialog {
 	
 	private boolean validarMeta() {
 		try {
-	        if (Integer.parseInt(txtMeta.getText()) > 0)
+			int meta = Integer.parseInt(txtMeta.getText());
+	        if (meta > 0)
 	        	return true;
 	        else
 	        	return false;

@@ -39,6 +39,7 @@ public class ViewConfiguracoes extends JPanel {
 	private ArrayList<Produto> listProduto;
 	private Produto produto;
 	private int indexProduto = 0;
+	private JTextField txtDelayInicioProducao;
 	
 	public ViewConfiguracoes() {
 		setLayout(null);
@@ -194,9 +195,27 @@ public class ViewConfiguracoes extends JPanel {
 		btnTesteParametros.setBounds(571, 254, 203, 66);
 		panel.add(btnTesteParametros);
 		
-		carregarDadosIniciais();
-		txtNomeProduto.setEditable(false);
-		txtTempoEnvase.setEditable(false);
+		JLabel lblDelayDeInicio = new JLabel("Delay de Inicio de Produ\u00E7\u00E3o:");
+		lblDelayDeInicio.setHorizontalAlignment(SwingConstants.LEFT);
+		lblDelayDeInicio.setForeground(Color.BLACK);
+		lblDelayDeInicio.setFont(new Font("Times New Roman", Font.PLAIN, 18));
+		lblDelayDeInicio.setBounds(10, 98, 247, 22);
+		panel_1.add(lblDelayDeInicio);
+		
+		txtDelayInicioProducao = new JTextField();
+		txtDelayInicioProducao.setFont(new Font("Tahoma", Font.PLAIN, 14));
+		txtDelayInicioProducao.setHorizontalAlignment(SwingConstants.CENTER);
+		txtDelayInicioProducao.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent arg0) {
+				Main.Main.teclado.setNumberOnly(true);
+				Main.Main.teclado.showKeyboard();
+			}
+		});
+		
+		txtDelayInicioProducao.setBounds(267, 101, 139, 20);
+		panel_1.add(txtDelayInicioProducao);
+		txtDelayInicioProducao.setColumns(10);
 		btnSalvar.setEnabled(false);
 		
 		JButton btnMonitorGPIO = new JButton("Monitor Input/Output");
@@ -210,6 +229,13 @@ public class ViewConfiguracoes extends JPanel {
 		btnMonitorGPIO.setFont(new Font("Tahoma", Font.PLAIN, 11));
 		btnMonitorGPIO.setBounds(294, 252, 203, 66);
 		panel.add(btnMonitorGPIO);
+		
+		carregarDadosIniciais();
+		txtNomeProduto.setEditable(false);
+		txtTempoEnvase.setEditable(false);
+		txtDelayInicioProducao.setEditable(false);
+		
+		
 	}
 	
 	protected void actMonitorpInOut() {
@@ -268,6 +294,9 @@ public class ViewConfiguracoes extends JPanel {
 		txtTempoEnvase.setEditable(true);
 		txtTempoEnvase.setText("");
 		
+		txtDelayInicioProducao.setEditable(true);
+		txtDelayInicioProducao.setText("3");
+		
 		btnProximo.setEnabled(false);
 		btnAnterior.setEnabled(false);
 		btnExcluir.setEnabled(false);
@@ -298,6 +327,12 @@ public class ViewConfiguracoes extends JPanel {
 			return;
 		}
 		
+		if (txtDelayInicioProducao.getText().isEmpty())
+		{
+			JOptionPane.showMessageDialog(null, "Você não preencheu o delay de inicio de produção");
+			return;
+		}
+		
 		int tempoEnvase = 0;
 		try
 		{
@@ -311,6 +346,7 @@ public class ViewConfiguracoes extends JPanel {
 		{
 			txtNomeProduto.setEditable(false);
 			txtTempoEnvase.setEditable(false);
+			txtDelayInicioProducao.setEditable(false);
 			
 			btnProximo.setEnabled(true);
 			btnAnterior.setEnabled(true);
@@ -323,6 +359,8 @@ public class ViewConfiguracoes extends JPanel {
 		
 		produto.setNome(txtNomeProduto.getText());
 		produto.setTempoEnvase(tempoEnvase);
+		produto.setDelayInicioProd(Integer.parseInt(txtDelayInicioProducao.getText()));
+		
 		control.inserirNovoProduto(produto);
 		
 		
@@ -385,10 +423,12 @@ public class ViewConfiguracoes extends JPanel {
 		{
 			txtNomeProduto.setText("");
 			txtTempoEnvase.setText("");
+			txtDelayInicioProducao.setText("");
 		}else
 		{
 			txtNomeProduto.setText(produto.getNome());
 			txtTempoEnvase.setText(String.valueOf(produto.getTempoEnvase()));
+			txtDelayInicioProducao.setText(String.valueOf(produto.getDelayInicioProd()));
 		}
 	}
 }
