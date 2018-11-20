@@ -88,11 +88,15 @@ public class GPIO {
 		outEnvBuzzerNivel		= gpio.provisionDigitalOutputPin(RaspiPin.GPIO_30, "outEnvBuzzerNivel", PinState.HIGH);
 		
 		//Entradas
-		inEnvBateria						= gpio.provisionDigitalInputPin(RaspiPin.GPIO_00,"inEnvBateria", PinPullResistance.PULL_DOWN);
-		inEnvBombaLigada 					= gpio.provisionDigitalInputPin(RaspiPin.GPIO_11,"inEnvBombaLigada", PinPullResistance.PULL_DOWN); 
+		//inEnvBateria						= gpio.provisionDigitalInputPin(RaspiPin.GPIO_00,"inEnvBateria", PinPullResistance.PULL_DOWN);
+		inEnvBateria						= gpio.provisionDigitalInputPin(RaspiPin.GPIO_14,"inEnvBateria", PinPullResistance.PULL_DOWN);
+		
+		//inEnvBombaLigada 					= gpio.provisionDigitalInputPin(RaspiPin.GPIO_11,"inEnvBombaLigada", PinPullResistance.PULL_DOWN); 
 		inEnvBotaoEmergenciaAcionado 		= gpio.provisionDigitalInputPin(RaspiPin.GPIO_12,"inEnvBotaoEmergenciaAcionado", PinPullResistance.PULL_DOWN);
 		inEnvFrascoSaindoDaAreaEnvase 		= gpio.provisionDigitalInputPin(RaspiPin.GPIO_13,"inEnvFrascoSaindoDaAreaEnvase", PinPullResistance.PULL_DOWN);
-		inEnvFimDeCursoEnvasadoraEmbaixo 	= gpio.provisionDigitalInputPin(RaspiPin.GPIO_14,"inEnvFimDeCursoEnvasadoraEmbaixo", PinPullResistance.PULL_DOWN);
+		//inEnvFimDeCursoEnvasadoraEmbaixo 	= gpio.provisionDigitalInputPin(RaspiPin.GPIO_14,"inEnvFimDeCursoEnvasadoraEmbaixo", PinPullResistance.PULL_DOWN);
+		inEnvFimDeCursoEnvasadoraEmbaixo 	= gpio.provisionDigitalInputPin(RaspiPin.GPIO_11,"inEnvFimDeCursoEnvasadoraEmbaixo", PinPullResistance.PULL_DOWN);
+		
 		inEnvFimDeCursoEnvasadoraEmCima 	= gpio.provisionDigitalInputPin(RaspiPin.GPIO_15,"inEnvFimDeCursoEnvasadoraEmCima", PinPullResistance.PULL_DOWN);
 		inEnvFrascoEntrandoNaAreaEnvase 	= gpio.provisionDigitalInputPin(RaspiPin.GPIO_16,"inEnvFrascoEntrandoNaAreaEnvase", PinPullResistance.PULL_DOWN);
 		inEnvProdutoNivelCriticoBaixo 		= gpio.provisionDigitalInputPin(RaspiPin.GPIO_25,"inEnvProdutoNivelCriticoBaixo", PinPullResistance.PULL_DOWN);

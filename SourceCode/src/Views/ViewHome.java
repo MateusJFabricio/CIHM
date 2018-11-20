@@ -43,6 +43,7 @@ public class ViewHome extends JPanel {
 	private CommFrame comunicador;
 	private JLabel lblEstadoMaquina;
 	private JTextPane txtFalhas;
+	private int initProd_Hora = 0, initProd_Min = 0, initProd_Seg = 0; 
 
 	public ViewHome(JFrame frame) {
 		control = new ControllerHome();
@@ -262,13 +263,8 @@ public class ViewHome extends JPanel {
 	
 	public void carregarDadosViewIniciaCiclo()
 	{
-		Calendar data = Calendar.getInstance();
 		lblNomeProduto.setText(viewIniciarCiclo.getProdutoSelecionado().getNome());
-		lblInicioProducao.setText(
-				String.valueOf(data.get(Calendar.HOUR_OF_DAY)) + ":" +
-				String.valueOf(data.get(Calendar.MINUTE)) + ":" +
-				String.valueOf(data.get(Calendar.SECOND))
-				);
+		lblInicioProducao.setText(gravarDataHoraInicioProd());
 		if (String.valueOf(viewIniciarCiclo.getMetaProducao()).equals(""))
 			lblMetaProducao.setText("Modo Contínuo");
 		else
@@ -285,6 +281,14 @@ public class ViewHome extends JPanel {
 		
 	}
 	
+	private String gravarDataHoraInicioProd() {
+        Calendar data = Calendar.getInstance();
+        initProd_Hora = data.get(Calendar.HOUR_OF_DAY);
+        initProd_Min = data.get(Calendar.MINUTE);
+        initProd_Seg = data.get(Calendar.SECOND);
+        return String.valueOf(initProd_Hora) + ":" + String.valueOf(initProd_Min) + ":" + String.valueOf(initProd_Seg);
+	}
+
 	private void actBtnLiga()
 	{
 		control.atualizarDados(comunicador);
@@ -341,14 +345,22 @@ public class ViewHome extends JPanel {
 				control.atualizarDados(comunicador);
 				
 				if (comunicador.isEmergencia())
-					actBtnDesliga();
-				
-				if (!lblMetaProducao.getText().equals("Modo contínuo"))
 				{
-					int meta = Integer.parseInt(lblMetaProducao.getText());
-					lblProduzido.setText(String.valueOf(meta - comunicador.getProduzido()));
-					lblFaltando.setText(String.valueOf(meta - Integer.parseInt(lblProduzido.getText())));
+					lblEstadoMaquina.setText("Em Emergência");
+					actBtnDesliga();
 				}
+				
+				int meta = Integer.parseInt(lblMetaProducao.getText());
+				if (meta > 0)
+				{
+					lblProduzido.setText(String.valueOf(comunicador.getProduzido()));
+					lblFaltando.setText(String.valueOf(meta - comunicador.getProduzido()));
+				}else
+				{
+					lblProduzido.setText(String.valueOf(comunicador.getProduzido()));
+				}
+				
+				lblTempoCiclo.setText(buscarTempoCiclo(comunicador.getProduzido()));
 				
 				//Mensagens
 				if (comunicador.isEmergencia() && !msgEmergenciaRegistrada )
@@ -378,9 +390,32 @@ public class ViewHome extends JPanel {
 				
 		}};
 		
-		timerMonitorEstado = new Timer(500, actMonitorEstado);
+		timerMonitorEstado = new Timer(1000, actMonitorEstado);
 	}
 	
+	protected String buscarTempoCiclo(int produzido) {
+		Calendar data = Calendar.getInstance();
+		int tempoProducao;
+		int hora = (data.get(Calendar.HOUR) - initProd_Hora) * 3600;
+		if (hora < 0 )
+			hora = (24 - initProd_Hora + data.get(Calendar.HOUR)) * 3600;
+		
+		int min = ((data.get(Calendar.MINUTE) - initProd_Min) * 60);
+		if (min < 0)
+			min = (60 - initProd_Min + data.get(Calendar.MINUTE)) * 60;
+		
+		int seg =  (data.get(Calendar.SECOND) - initProd_Seg); 
+		if (seg < 0)
+			seg =  60 - initProd_Seg + data.get(Calendar.SECOND);
+		
+		tempoProducao = hora + min + seg;
+		try {
+			return String.valueOf(tempoProducao / produzido);
+		} catch (Exception e) {
+			return "Não foi possivel contabilizar";
+		}
+	}
+
 	private String retornarDataHora()
 	{
         Calendar data = Calendar.getInstance();

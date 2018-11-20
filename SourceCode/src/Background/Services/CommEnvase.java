@@ -19,6 +19,7 @@ public class CommEnvase {
 	private boolean nivelBaixo = false;
 	private boolean nivelAlto = false;
 	private int delayInicioProd = 3;
+	private int delayPosEnvase = 0;
 	
 	
 	public int getTempoEnvase()
@@ -154,5 +155,13 @@ public class CommEnvase {
 
 	public void setDelayInicioProd(int delayInicioProd) {
 		this.delayInicioProd = delayInicioProd;
+	}
+
+	public int getDelayPosEnvase() {
+		return delayPosEnvase;
+	}
+
+	public void setDelayPosEnvase(int delayPosEnvase) {
+		this.delayPosEnvase = delayPosEnvase;
 	}
 }

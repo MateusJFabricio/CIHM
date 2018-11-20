@@ -40,6 +40,7 @@ public class ViewConfiguracoes extends JPanel {
 	private Produto produto;
 	private int indexProduto = 0;
 	private JTextField txtDelayInicioProducao;
+	private JTextField txtDelayPosEnvase;
 	
 	public ViewConfiguracoes() {
 		setLayout(null);
@@ -229,13 +230,34 @@ public class ViewConfiguracoes extends JPanel {
 		btnMonitorGPIO.setFont(new Font("Tahoma", Font.PLAIN, 11));
 		btnMonitorGPIO.setBounds(294, 252, 203, 66);
 		panel.add(btnMonitorGPIO);
+				
+		JLabel lblDelayPsEnvase = new JLabel("Delay P\u00F3s Envase:");
+		lblDelayPsEnvase.setHorizontalAlignment(SwingConstants.LEFT);
+		lblDelayPsEnvase.setForeground(Color.BLACK);
+		lblDelayPsEnvase.setFont(new Font("Times New Roman", Font.PLAIN, 18));
+		lblDelayPsEnvase.setBounds(10, 131, 247, 22);
+		panel_1.add(lblDelayPsEnvase);
+		
+		txtDelayPosEnvase = new JTextField();
+		txtDelayPosEnvase.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent arg0) {
+				Main.Main.teclado.setNumberOnly(true);
+				Main.Main.teclado.showKeyboard();
+			}
+		});
+		txtDelayPosEnvase.setHorizontalAlignment(SwingConstants.CENTER);
+		txtDelayPosEnvase.setFont(new Font("Tahoma", Font.PLAIN, 14));
+		txtDelayPosEnvase.setEditable(false);
+		txtDelayPosEnvase.setColumns(10);
+		txtDelayPosEnvase.setBounds(267, 132, 139, 20);
+		panel_1.add(txtDelayPosEnvase);
 		
 		carregarDadosIniciais();
 		txtNomeProduto.setEditable(false);
 		txtTempoEnvase.setEditable(false);
 		txtDelayInicioProducao.setEditable(false);
-		
-		
+		txtDelayPosEnvase.setEditable(false);
 	}
 	
 	protected void actMonitorpInOut() {
@@ -297,6 +319,9 @@ public class ViewConfiguracoes extends JPanel {
 		txtDelayInicioProducao.setEditable(true);
 		txtDelayInicioProducao.setText("3");
 		
+		txtDelayPosEnvase.setEditable(true);
+		txtDelayPosEnvase.setText("0");
+		
 		btnProximo.setEnabled(false);
 		btnAnterior.setEnabled(false);
 		btnExcluir.setEnabled(false);
@@ -333,6 +358,12 @@ public class ViewConfiguracoes extends JPanel {
 			return;
 		}
 		
+		if (txtDelayPosEnvase.getText().isEmpty())
+		{
+			JOptionPane.showMessageDialog(null, "Você não preencheu o delay de PosEnvase");
+			return;
+		}
+		
 		int tempoEnvase = 0;
 		try
 		{
@@ -347,6 +378,7 @@ public class ViewConfiguracoes extends JPanel {
 			txtNomeProduto.setEditable(false);
 			txtTempoEnvase.setEditable(false);
 			txtDelayInicioProducao.setEditable(false);
+			txtDelayPosEnvase.setEditable(false);
 			
 			btnProximo.setEnabled(true);
 			btnAnterior.setEnabled(true);
@@ -360,6 +392,7 @@ public class ViewConfiguracoes extends JPanel {
 		produto.setNome(txtNomeProduto.getText());
 		produto.setTempoEnvase(tempoEnvase);
 		produto.setDelayInicioProd(Integer.parseInt(txtDelayInicioProducao.getText()));
+		produto.setDelayPosEnvase(Integer.parseInt(txtDelayPosEnvase.getText()));
 		
 		control.inserirNovoProduto(produto);
 		
@@ -424,11 +457,13 @@ public class ViewConfiguracoes extends JPanel {
 			txtNomeProduto.setText("");
 			txtTempoEnvase.setText("");
 			txtDelayInicioProducao.setText("");
+			txtDelayPosEnvase.setText("");
 		}else
 		{
 			txtNomeProduto.setText(produto.getNome());
 			txtTempoEnvase.setText(String.valueOf(produto.getTempoEnvase()));
 			txtDelayInicioProducao.setText(String.valueOf(produto.getDelayInicioProd()));
+			txtDelayPosEnvase.setText(String.valueOf(produto.getDelayPosEnvase()));
 		}
 	}
 }

@@ -5,6 +5,7 @@ public class Produto {
 	private String Nome;
 	private int TempoEnvase; //tempo em que a bomba fica ligada
 	private int DelayInicioProd;
+	private int DelayPosEnvase;
 	
 	public String getNome() {
 		return Nome;
@@ -29,6 +30,12 @@ public class Produto {
 	}
 	public void setDelayInicioProd(int delayInicioProd) {
 		DelayInicioProd = delayInicioProd;
+	}
+	public int getDelayPosEnvase() {
+		return DelayPosEnvase;
+	}
+	public void setDelayPosEnvase(int delayPosEnvase) {
+		DelayPosEnvase = delayPosEnvase;
 	}
 	
 }

@@ -81,14 +81,14 @@ public class ControllerMonitorGPIO {
 	{
 		switch (numIn) {
 		case 0:
-			if (Main.Main.mannIO.gpio.inEnvBateria.isHigh())
-				return "ON";
-			else
+			//if (Main.Main.mannIO.gpio.inEnvBateria.isHigh())
+			//	return "ON";
+			//else
 				return "OFF";
 		case 11:
-			if (Main.Main.mannIO.gpio.inEnvBombaLigada.isHigh())
-				return "ON";
-			else
+			//if (Main.Main.mannIO.gpio.inEnvBombaLigada.isHigh())
+			//	return "ON";
+			//else
 				return "OFF";
 			
 		case 12:

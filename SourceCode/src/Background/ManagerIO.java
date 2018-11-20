@@ -64,8 +64,7 @@ public class ManagerIO {
 	{
 		commHome.setGoGome(true);
 		
-		if (!commHome.isAlive())
-			pool.submit(home);
+		pool.submit(home);
 	}
 	
 	private void iniciaMonitorEmergencia() {
@@ -127,6 +126,7 @@ public class ManagerIO {
 		commEnvase.setInicioRapido(frascosPosicionados);
 		commEnvase.setTempoEnvase(produto.getTempoEnvase());
 		commEnvase.setDelayInicioProd(produto.getDelayInicioProd());
+		commEnvase.setDelayPosEnvase(produto.getDelayPosEnvase());
 		if (commEnvase.isAlive())
 		{
 			commEnvase.setMetaProducao(commEnvase.getMetaProducao() + meta);
@@ -136,10 +136,17 @@ public class ManagerIO {
 			pool.submit(envase);
 		}
 		
-		
 		commTampador.setIniciaProducao(true);
-		if (!commTampador.isAlive())
+		
+		gpio.outEnvEsteira2.high();
+		for (int i = 0; i < 2; i++) {
 			pool.submit(tampador);
+			aguardar(100);
+			if(!gpio.outEnvEsteira2.isLow())
+				aguardar(1000);
+			else
+				break;
+		}
 		
 		gpio.outAcumMotor.low();
 	}
@@ -180,8 +187,6 @@ public class ManagerIO {
 		comunicador.setProduzido(commEnvase.getFrascosEnvasado());
 		comunicador.setNivelAlto(commNivel.isNivelAlto());
 		comunicador.setNivelBaixo(commNivel.isNivelBaixo());
-		
-		
 	}
 	
 	private void aguardar(int i)

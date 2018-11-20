@@ -86,17 +86,7 @@ public class TaskHome implements Runnable {
 	}
 
 	private void desligarBomba() throws Exception {
-		int tempo = 5000, i = 0;
-		if (gpio.inEnvBombaLigada.isHigh())
-		{
-			gpio.outEnvBombaEnvase.high();
-			while(gpio.inEnvBombaLigada.isHigh())
-			{
-				i += 100;
-				if (i >= tempo) sair();
-				aguardar(100);
-			}
-		}
+		gpio.outEnvBombaEnvase.high();
 	}
 	
 

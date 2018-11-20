@@ -16,7 +16,7 @@ public class TaskTampador implements Runnable {
 	
 	private void tampar() {
 		gpio.outTampTampador.low();
-		aguardar(200);
+		aguardar(300);
 		gpio.outTampTampador.high();
 		aguardar(200);
 	}
@@ -25,12 +25,12 @@ public class TaskTampador implements Runnable {
 	public void run() {
 	
 		try {
-			comm.setAlive(true);
+			//comm.setAlive(true);
 			gpio.outEnvEsteira2.low();
 			while(comm.isIniciaProducao())
 			{
 				
-				while(gpio.inTampFrascoEmPosicao.isLow())
+				while(gpio.inTampFrascoEmPosicao.isLow() && comm.isIniciaProducao())
 					continue;
 				aguardar(30);
 				
@@ -44,14 +44,14 @@ public class TaskTampador implements Runnable {
 				
 				if (gpio.inTampFrascoEntrandoCarrossel.isLow())
 				{	
-					while (gpio.inTampFrascoEntrandoCarrossel.isLow())
+					while (gpio.inTampFrascoEntrandoCarrossel.isLow() && comm.isIniciaProducao())
 						aguardar(10);
 				}else
 				{
-					while (gpio.inTampFrascoEntrandoCarrossel.isHigh())
+					while (gpio.inTampFrascoEntrandoCarrossel.isHigh() && comm.isIniciaProducao())
 						aguardar(10);
 					
-					while (gpio.inTampFrascoEntrandoCarrossel.isLow())
+					while (gpio.inTampFrascoEntrandoCarrossel.isLow() && comm.isIniciaProducao())
 						aguardar(10);
 					
 				}
@@ -66,7 +66,7 @@ public class TaskTampador implements Runnable {
 			
 			
 		} catch (Exception e) {
-			
+			comm.setAlive(false);
 		}finally {
 			comm.setAlive(false);
 		}

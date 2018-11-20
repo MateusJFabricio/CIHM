@@ -22,6 +22,7 @@ public class TaskEmergencia implements Runnable {
 	public void run() {
 		while(true)
 		{
+			/*
 			if (gpio.inEnvBateria.isLow())
 			{
 				aguardar(500);
@@ -41,7 +42,7 @@ public class TaskEmergencia implements Runnable {
 					}
 				}
 			}
-			
+			*/
 			if (gpio.inEnvBotaoEmergenciaAcionado.isLow() && !comm.isEmEmergencia())
 			{
 				aguardar(500);
