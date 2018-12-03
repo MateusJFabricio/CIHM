@@ -1,9 +1,5 @@
 package Background.Executor;
 
-import java.io.IOException;
-
-import javax.swing.JOptionPane;
-
 import Background.Services.CommEmergencia;
 import Background.Services.GPIO;
 
@@ -70,6 +66,8 @@ public class TaskEmergencia implements Runnable {
 	
 	private void pararTampador() {
 		gpio.outTampMotor.high();
+		gpio.outTampPosicionador.high();
+		gpio.outTampTampador.high();
 	}
 
 	private void pararAcumulador() {

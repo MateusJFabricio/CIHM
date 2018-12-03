@@ -16,7 +16,7 @@ public class TaskTampador implements Runnable {
 	
 	private void tampar() {
 		gpio.outTampTampador.low();
-		aguardar(300);
+		aguardar(350);
 		gpio.outTampTampador.high();
 		aguardar(200);
 	}
@@ -27,6 +27,7 @@ public class TaskTampador implements Runnable {
 		try {
 			//comm.setAlive(true);
 			gpio.outEnvEsteira2.low();
+			gpio.outTampPosicionador.high();
 			while(comm.isIniciaProducao())
 			{
 				
@@ -37,6 +38,10 @@ public class TaskTampador implements Runnable {
 				if (gpio.inTampFrascoEmPosicao.isLow())
 					continue;
 				
+				//avancar posicionador
+				gpio.outTampPosicionador.low();
+				aguardar(350);
+				
 				tampar();
 				
 				//Faz o carrossel sair de posicao
@@ -44,33 +49,68 @@ public class TaskTampador implements Runnable {
 				
 				if (gpio.inTampFrascoEntrandoCarrossel.isLow())
 				{	
+					System.out.println("Passei aqui");
 					while (gpio.inTampFrascoEntrandoCarrossel.isLow() && comm.isIniciaProducao())
 						aguardar(10);
 				}else
 				{
-					while (gpio.inTampFrascoEntrandoCarrossel.isHigh() && comm.isIniciaProducao())
-						aguardar(10);
-					
-					while (gpio.inTampFrascoEntrandoCarrossel.isLow() && comm.isIniciaProducao())
-						aguardar(10);
-					
+					System.out.println("Passei ali");
+					aguardaSensorDenteDesacionar();
+					aguardaSensorDenteAcionar();
+										
 				}
 				
 				gpio.outTampMotor.high();
 				
-
+				//recua posicionador
+				gpio.outTampPosicionador.high();
+				aguardar(350);
 			}
+
+			
 			
 			gpio.outEnvEsteira2.high();
 			
-			
-			
+				
 		} catch (Exception e) {
 			comm.setAlive(false);
 		}finally {
 			comm.setAlive(false);
 		}
 		
+	}
+
+	private void aguardaSensorDenteAcionar() {
+		while(comm.isIniciaProducao())
+		{
+			if (gpio.inTampFrascoEntrandoCarrossel.isHigh())
+			{
+				aguardar(20);
+				if (gpio.inTampFrascoEntrandoCarrossel.isHigh())
+				{
+					aguardar(20);
+					if(gpio.inTampFrascoEntrandoCarrossel.isHigh())
+						return;
+				}
+			}
+			
+		}
+	}
+
+	private void aguardaSensorDenteDesacionar() {
+		while(comm.isIniciaProducao())
+		{
+			if (gpio.inTampFrascoEntrandoCarrossel.isLow())
+			{
+				aguardar(20);
+				if (gpio.inTampFrascoEntrandoCarrossel.isLow())
+				{
+						aguardar(20);
+					if(gpio.inTampFrascoEntrandoCarrossel.isLow())
+						return;
+				}
+			}
+		}
 	}
 
 	private void aguardar(int i) {

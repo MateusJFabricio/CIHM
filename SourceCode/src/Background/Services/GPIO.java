@@ -38,6 +38,7 @@ public class GPIO {
 	//Saídas Tampador
 	public GpioPinDigitalOutput outTampMotor;
 	public GpioPinDigitalOutput outTampTampador;
+	public GpioPinDigitalOutput outTampPosicionador;
 	
 	//Entradas Tampador
 	public GpioPinDigitalInput inTampFrascoEntrandoCarrossel;
@@ -56,7 +57,9 @@ public class GPIO {
 				gpio = GpioFactory.getInstance();
 			
 		} catch (Exception e) {
-			System.out.println("Mensagem de erro: " + e.getMessage());
+			System.out.println("GPIO com erro ao buscar instancia. Mensagem de erro: " + e.getMessage());
+			System.out.println("O computador ira desligar em 5 segundos");
+			aguardar(5000);
 			try {
 				Runtime.getRuntime().exec("pkill x");
 			} catch (IOException e2) {
@@ -109,6 +112,7 @@ public class GPIO {
 		//Saídas
 		outTampMotor 					= gpio.provisionDigitalOutputPin(RaspiPin.GPIO_28, "outTampMotor", PinState.HIGH);
 		outTampTampador					= gpio.provisionDigitalOutputPin(RaspiPin.GPIO_29, "outTampTampador", PinState.HIGH);
+		outTampPosicionador				= gpio.provisionDigitalOutputPin(RaspiPin.GPIO_00, "outTampPosicionador", PinState.HIGH);
 		
 		//Entradas
 		inTampFrascoEmPosicao 			= gpio.provisionDigitalInputPin(RaspiPin.GPIO_24,"inTampFrascoEmPosicao", PinPullResistance.PULL_DOWN);
@@ -128,6 +132,16 @@ public class GPIO {
 	{
 		if (!(gpio == null))
 			gpio.shutdown();
+		
+	}
+	
+	private void aguardar(int i)
+	{
+		try {
+			Thread.sleep(i);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
 	}
 
 }

@@ -52,11 +52,11 @@ public class ViewMonitorGPIO extends JFrame {
 	private JLabel lblOutput28;
 	private JLabel lblOutput29;
 	private JLabel lblOutput22;
-	private JLabel lblInput0;
 	private ActionListener actMonitorGPIO;
 	private Timer timerMonitorGPIO;
 	private JLabel lblInput;
 	private int numDots = 0;
+	private JLabel lblOutput0;
 	
 
 	public ViewMonitorGPIO() {
@@ -102,7 +102,7 @@ public class ViewMonitorGPIO extends JFrame {
 		
 		JPanel panel = new JPanel();
 		panel.setBorder(new LineBorder(new Color(0, 0, 0), 3));
-		panel.setBounds(10, 43, 354, 214);
+		panel.setBounds(10, 31, 354, 214);
 		contentPane.add(panel);
 		panel.setLayout(null);
 		
@@ -194,115 +194,115 @@ public class ViewMonitorGPIO extends JFrame {
 		
 		JPanel panel_2 = new JPanel();
 		panel_2.setBorder(new LineBorder(new Color(0, 0, 0), 3));
-		panel_2.setBounds(366, 43, 396, 421);
+		panel_2.setBounds(366, 31, 396, 414);
 		contentPane.add(panel_2);
 		panel_2.setLayout(null);
 		
 		JLabel lblInput_1 = new JLabel("### Entradas ###");
-		lblInput_1.setBounds(10, 0, 275, 14);
+		lblInput_1.setBounds(10, 3, 275, 14);
 		lblInput_1.setHorizontalAlignment(SwingConstants.CENTER);
 		panel_2.add(lblInput_1);
 		
 		JLabel lblOutput_1 = new JLabel("####  Sa\u00EDdas ###");
-		lblOutput_1.setBounds(10, 204, 275, 14);
+		lblOutput_1.setBounds(10, 188, 275, 14);
 		lblOutput_1.setHorizontalAlignment(SwingConstants.CENTER);
 		panel_2.add(lblOutput_1);
 		
 		lblInput11 = new JLabel("Input 11: Bomba Ligada - ");
-		lblInput11.setBounds(10, 28, 334, 14);
+		lblInput11.setBounds(10, 19, 334, 14);
 		panel_2.add(lblInput11);
 		
 		lblInput12 = new JLabel("Input 12: Bot\u00E3o de Emergencia - ");
-		lblInput12.setBounds(10, 43, 334, 14);
+		lblInput12.setBounds(10, 34, 334, 14);
 		panel_2.add(lblInput12);
 		
 		lblInput13 = new JLabel("Input 13: Frasco saindo envase - ");
-		lblInput13.setBounds(10, 58, 334, 14);
+		lblInput13.setBounds(10, 49, 334, 14);
 		panel_2.add(lblInput13);
 		
 		lblInput16 = new JLabel("Input 16: Frasco entrando envase - ");
-		lblInput16.setBounds(10, 103, 334, 14);
+		lblInput16.setBounds(10, 94, 334, 14);
 		panel_2.add(lblInput16);
 		
 		lblInput15 = new JLabel("Input 15: Fim de curso em cima - ");
-		lblInput15.setBounds(10, 88, 334, 14);
+		lblInput15.setBounds(10, 79, 334, 14);
 		panel_2.add(lblInput15);
 		
 		lblInput14 = new JLabel("Input 14: Fim de curso embaixo - ");
-		lblInput14.setBounds(10, 73, 334, 14);
+		lblInput14.setBounds(10, 64, 334, 14);
 		panel_2.add(lblInput14);
 		
 		lblInput24 = new JLabel("Input 24: Sensor Frasco Pos. Tampador - ");
-		lblInput24.setBounds(10, 148, 376, 14);
+		lblInput24.setBounds(10, 139, 376, 14);
 		panel_2.add(lblInput24);
 		
 		lblInput27 = new JLabel("Input 27: Sensor Nivel alto - ");
-		lblInput27.setBounds(10, 133, 334, 14);
+		lblInput27.setBounds(10, 124, 334, 14);
 		panel_2.add(lblInput27);
 		
 		lblInput25 = new JLabel("Input 25: Sensor Nivel baixo - ");
-		lblInput25.setBounds(10, 118, 334, 14);
+		lblInput25.setBounds(10, 109, 334, 14);
 		panel_2.add(lblInput25);
 		
 		lblOutput3 = new JLabel("Output 3: Esteira 2 - ");
-		lblOutput3.setBounds(10, 252, 334, 14);
+		lblOutput3.setBounds(10, 235, 334, 14);
 		panel_2.add(lblOutput3);
 		
 		lblOutput2 = new JLabel("Output 2: Esteira 1 - ");
-		lblOutput2.setBounds(10, 236, 334, 14);
+		lblOutput2.setBounds(10, 219, 334, 14);
 		panel_2.add(lblOutput2);
 		
 		lblOutput1 = new JLabel("Output 1: Bomba Envase - ");
-		lblOutput1.setBounds(10, 220, 334, 14);
+		lblOutput1.setBounds(10, 203, 334, 14);
 		panel_2.add(lblOutput1);
 		
 		lblOutput7 = new JLabel("Output 7: Valvula Pistao Env. Recua - ");
-		lblOutput7.setBounds(10, 301, 334, 14);
+		lblOutput7.setBounds(10, 284, 334, 14);
 		panel_2.add(lblOutput7);
 		
 		lblOutput5 = new JLabel("Output 5: Valvula Pistao Env. Avanca - ");
-		lblOutput5.setBounds(10, 285, 334, 14);
+		lblOutput5.setBounds(10, 268, 334, 14);
 		panel_2.add(lblOutput5);
 		
 		lblOutput4 = new JLabel("Output 4: Valvula Enforcador - ");
-		lblOutput4.setBounds(10, 269, 334, 14);
+		lblOutput4.setBounds(10, 252, 334, 14);
 		panel_2.add(lblOutput4);
 		
 		lblOutput26 = new JLabel("Output 26: Sinal sonoro - ");
-		lblOutput26.setBounds(10, 349, 334, 14);
+		lblOutput26.setBounds(10, 332, 334, 14);
 		panel_2.add(lblOutput26);
 		
 		lblOutput10 = new JLabel("Output 10: Valvula Trava 2 - ");
-		lblOutput10.setBounds(10, 333, 334, 14);
+		lblOutput10.setBounds(10, 316, 334, 14);
 		panel_2.add(lblOutput10);
 		
 		lblOutput8 = new JLabel("Output 8: Valvula Trava 1 - ");
-		lblOutput8.setBounds(10, 317, 334, 14);
+		lblOutput8.setBounds(10, 300, 334, 14);
 		panel_2.add(lblOutput8);
 		
 		lblInput23 = new JLabel("Input 23: Sensor Frasco Pos. Acumulador - ");
-		lblInput23.setBounds(10, 178, 376, 14);
+		lblInput23.setBounds(10, 169, 376, 14);
 		panel_2.add(lblInput23);
 		
 		lblInput21 = new JLabel("Input 21: Sensor Frasco Entrando Carrossel - ");
-		lblInput21.setBounds(10, 163, 376, 14);
+		lblInput21.setBounds(10, 154, 376, 14);
 		panel_2.add(lblInput21);
 		
 		lblOutput28 = new JLabel("Output 28: Motor Carrossel - ");
-		lblOutput28.setBounds(10, 368, 334, 14);
+		lblOutput28.setBounds(10, 347, 334, 14);
 		panel_2.add(lblOutput28);
 		
 		lblOutput29 = new JLabel("Output 29: Valvula Tampador - ");
-		lblOutput29.setBounds(10, 384, 334, 14);
+		lblOutput29.setBounds(10, 363, 334, 14);
 		panel_2.add(lblOutput29);
 		
 		lblOutput22 = new JLabel("Output 22: Motor acumulador - ");
-		lblOutput22.setBounds(10, 400, 334, 14);
+		lblOutput22.setBounds(10, 379, 334, 14);
 		panel_2.add(lblOutput22);
 		
-		lblInput0 = new JLabel("Input 0: Bateria - ");
-		lblInput0.setBounds(10, 11, 334, 14);
-		panel_2.add(lblInput0);
+		lblOutput0 = new JLabel("Output 0: - Pistao Posicionador - ");
+		lblOutput0.setBounds(11, 393, 334, 14);
+		panel_2.add(lblOutput0);
 		
 		adicionarEstadosOutput();
 		adicionarEstadosInput();
@@ -327,12 +327,11 @@ public class ViewMonitorGPIO extends JFrame {
 		lblOutput28.setText(lblOutput28.getText() + " ( " + control.buscarEstadoOutput(28) + " )");
 		lblOutput29.setText(lblOutput29.getText() + " ( " + control.buscarEstadoOutput(29) + " )");
 		lblOutput22.setText(lblOutput22.getText() + " ( " + control.buscarEstadoOutput(22) + " )");
+		lblOutput0.setText(lblOutput0.getText() + " ( " + control.buscarEstadoOutput(0) + " )");
 	}
 	
 	
 	private void adicionarEstadosInput() {
-		
-		lblInput0.setText(lblInput0.getText() + " ( " + control.buscarEstadoInput(0) + " )");
 		lblInput11.setText(lblInput11.getText() + " ( " + control.buscarEstadoInput(11) + " )");
 		lblInput12.setText(lblInput12.getText() + " ( " + control.buscarEstadoInput(12) + " )");
 		lblInput13.setText(lblInput13.getText() + " ( " + control.buscarEstadoInput(13) + " )");
@@ -347,7 +346,6 @@ public class ViewMonitorGPIO extends JFrame {
 	}
 	
 private void atualizarEstadosInput() {
-		lblInput0.setText(formatarTextoLabel(control.buscarEstadoInput(0), lblInput0.getText()));
 		lblInput11.setText(formatarTextoLabel(control.buscarEstadoInput(11), lblInput11.getText()));
 		lblInput12.setText(formatarTextoLabel(control.buscarEstadoInput(12), lblInput12.getText()));
 		lblInput13.setText(formatarTextoLabel(control.buscarEstadoInput(13), lblInput13.getText()));
@@ -409,6 +407,9 @@ private void atualizarEstadosInput() {
 		case 22:
 			lblOutput22.setText(formatarTextoLabel("ON", lblOutput22.getText()));
 			break;
+		case 0:
+			lblOutput22.setText(formatarTextoLabel("ON", lblOutput0.getText()));
+			break;
 		default:
 			break;
 		}
@@ -460,6 +461,9 @@ private void atualizarEstadosInput() {
 			break;
 		case 22:
 			lblOutput22.setText(formatarTextoLabel("OFF", lblOutput22.getText()));
+			break;
+		case 0:
+			lblOutput0.setText(formatarTextoLabel("OFF", lblOutput0.getText()));
 			break;
 		default:
 			break;

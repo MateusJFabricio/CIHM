@@ -19,7 +19,7 @@ public class TaskHome implements Runnable {
 			comm.setAlive(true);
 			ciclo();
 		} catch (Exception e) {
-			System.out.println(e.getMessage());
+			System.out.println("Ciclo TaskHome finalizado com erro: " + e.getMessage());
 		} finally {
 			comm.setAlive(false);
 		}

@@ -110,9 +110,9 @@ public class TaskEnvase implements Runnable {
 			desligaBomba();
 			subirBicosEnvase();
 			recuarEnforcador();
-			
+			System.out.println("Ciclo Envase finalizado sem erro");
 		}catch (Exception e) {
-			System.out.println("Ciclo Envase finalizado");
+			System.out.println("Ciclo Envase finalizado com erro: " + e.getMessage());
 			comm.setCicloContinuo(false);
 			comm.setIniciaProducao(false);
 			comm.setAlive(false);
@@ -171,9 +171,10 @@ public class TaskEnvase implements Runnable {
 		avancarTrava1();
 		ligarEsteira1();
 		contarFrascosEntradaLinha();
+		
+		System.out.println("Aguardando finalizar a busca pelos frascos");
 		while(!contagemInicioLinhaFinalizada)
 		{
-			System.out.println("Aguardando finalizar a busca pelos frascos");
 			if (!comm.isIniciaProducao()) exit();
 			aguarda(100);
 		}
@@ -185,9 +186,9 @@ public class TaskEnvase implements Runnable {
 	}
 
 	private void posicionarFrascos() throws Exception {
+		System.out.println("Aguardando posicionamento dos frascos");
 		while(gpio.inEnvFrascoSaindoDaAreaEnvase.isLow())
 		{
-			System.out.println("Aguardando posicionamento dos frascos");
 			if (!comm.isIniciaProducao()) exit();
 			aguarda(100);
 		}
@@ -239,9 +240,9 @@ public class TaskEnvase implements Runnable {
 		ligarEsteira1();
 		
 		//Aguarda todos os frascos sairem da area de envase
+		System.out.println("Aguardando contagem do fim da linha");
 		while(!(contagemFimLinhaFinalizada))
 		{
-			System.out.println("Aguardando contagem do fim da linha");
 			if (!comm.isIniciaProducao()) break;
 			aguarda(100);
 		}
@@ -261,9 +262,9 @@ public class TaskEnvase implements Runnable {
 			contarFrascosEntradaLinha();
 			
 			//Aguarda a contagem dos frascos no inicio da linha
+			System.out.println("Aguardando contagem do inicio da linha");
 			while(!(contagemInicioLinhaFinalizada))
 			{
-				System.out.println("Aguardando contagem do inicio da linha");
 				if (!comm.isIniciaProducao()) break;
 					aguarda(100);
 			}
@@ -343,9 +344,9 @@ public class TaskEnvase implements Runnable {
 		{
 			gpio.outEnvPistaoEnvaseRecua.high();
 			gpio.outEnvPistaoEnvaseAvanca.low();
+			System.out.println("Aguardando baixar bicos envase");
 			while(!gpio.inEnvFimDeCursoEnvasadoraEmbaixo.isHigh())
 			{
-				System.out.println("Aguardando baixar bicos envase");
 				if (!comm.isIniciaProducao()) exit();
 				aguarda(500);
 			}
@@ -361,9 +362,9 @@ public class TaskEnvase implements Runnable {
 			
 			gpio.outEnvPistaoEnvaseRecua.low();
 			
+			System.out.println("Aguardando subir bicos envase");
 			while(gpio.inEnvFimDeCursoEnvasadoraEmCima.isLow())
 			{
-				System.out.println("Aguardando subir bicos envase");
 				if (!comm.isIniciaProducao()) exit();
 				aguarda(100);
 			}
@@ -389,9 +390,9 @@ public class TaskEnvase implements Runnable {
 	
 	private void goHome() throws Exception
 	{
+		System.out.println("Aguardando posicao Home");
 		while (!emPosicaoHome())
 		{
-			System.out.println("Aguardando posicao Home");
 			desligaBomba();
 			pararEsteira1();
 			pararEsteira2();

@@ -71,6 +71,11 @@ public class ControllerMonitorGPIO {
 				return "ON";
 			else
 				return "OFF";
+		case 0:
+			if (Main.Main.mannIO.gpio.outTampPosicionador.isHigh())
+				return "ON";
+			else
+				return "OFF";
 		default:
 			break;
 		}
@@ -188,6 +193,9 @@ public class ControllerMonitorGPIO {
 			case 22:
 				Main.Main.mannIO.gpio.outAcumMotor.high();
 				break;
+			case 0:
+				Main.Main.mannIO.gpio.outTampPosicionador.high();
+				break;
 			default:
 				break;
 			}
@@ -229,6 +237,9 @@ public class ControllerMonitorGPIO {
 				break;
 			case 22:
 				Main.Main.mannIO.gpio.outAcumMotor.low();
+				break;
+			case 0:
+				Main.Main.mannIO.gpio.outTampPosicionador.low();
 				break;
 			default:
 				break;

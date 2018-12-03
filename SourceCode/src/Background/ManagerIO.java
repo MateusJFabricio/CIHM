@@ -108,7 +108,7 @@ public class ManagerIO {
 	
 	private void submitThreads()
 	{
-		pool = new ThreadPoolExecutor(5, 10, 1, TimeUnit.HOURS, new ArrayBlockingQueue<Runnable>(10));
+		pool = new ThreadPoolExecutor(5, 10, 20, TimeUnit.HOURS, new ArrayBlockingQueue<Runnable>(10));
 		
 		pool.submit(envase);
 		pool.submit(tampador);
@@ -140,8 +140,9 @@ public class ManagerIO {
 		
 		gpio.outEnvEsteira2.high();
 		for (int i = 0; i < 2; i++) {
+			System.out.println("Tentativas para iniciar o tampador: " + i);
 			pool.submit(tampador);
-			aguardar(100);
+			aguardar(300);
 			if(!gpio.outEnvEsteira2.isLow())
 				aguardar(1000);
 			else
